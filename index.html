@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -7,17 +8,19 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* CSS para forçar o destaque visual dos grupos */
-        optgroup {
-            color: #FF8C00 !important; /* Laranja Vibrante para contraste */
+        /* Estilo para os títulos simulados dentro do select */
+        .select-header {
+            color: #D35400 !important; /* Laranja Escuro */
             font-weight: 900 !important;
-            background-color: #2A2A2A !important; /* Fundo escuro força o navegador a destacar a cor */
-            text-transform: uppercase;
+            background-color: #f8f8f8 !important; /* Leve fundo para destaque */
+            font-size: 14px;
         }
-        option {
+
+        /* Garante que as opções normais não herdem o laranja */
+        option:not(.select-header) {
             color: #333 !important;
             font-weight: normal !important;
-            background-color: #fff !important; /* Opções voltam para o fundo branco padrão */
+            background-color: #fff !important;
         }
     </style>
 </head>
@@ -100,27 +103,27 @@
                     <select id="maquina">
                         <option value="" disabled selected>Escolha a atividade ou equipamento...</option>
                         
-                        <optgroup label="➤ ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS">
-                            <option value="1">1.1 - Dosagem Marshall: Gmb-Compactação de CPs</option>
-                            <option value="2">1.2 - Dosagem Marshall: Gmm-Massa solta ou DMT</option>
-                            <option value="3">2.1 - Dosagem Superpave: Gmb-Compactação de CPs</option>
-                            <option value="4">2.2 - Dosagem Superpave: Gmm-Massa solta ou DMT</option>
-                            <option value="5">3 - Extração de ligante [DNER 053/94]</option>
-                            <option value="6">4 - Abrasão Los Angeles [DNIT 451/2024]</option>
-                            <option value="7">5 - Adesividade (Tradicional) [DNER 078/94]</option>
-                            <option value="8">6 - Fluir ligante</option>
-                        </optgroup>
+                        <option disabled class="select-header">➤ ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS</option>
+                        <option value="1">1.1 - Dosagem Marshall: Gmb-Compactação de CPs</option>
+                        <option value="2">1.2 - Dosagem Marshall: Gmm-Massa solta ou DMT</option>
+                        <option value="3">2.1 - Dosagem Superpave: Gmb-Compactação de CPs</option>
+                        <option value="4">2.2 - Dosagem Superpave: Gmm-Massa solta ou DMT</option>
+                        <option value="5">3 - Extração de ligante [DNER 053/94]</option>
+                        <option value="6">4 - Abrasão Los Angeles [DNIT 451/2024]</option>
+                        <option value="7">5 - Adesividade (Tradicional) [DNER 078/94]</option>
+                        <option value="8">6 - Fluir ligante</option>
 
-                        <optgroup label="➤ EQUIPAMENTOS INDIVIDUAIS">
-                            <option value="2">7 - Homogeneização e quarteamento</option>
-                            <option value="3">8 - Granulometria</option>
-                            <option value="4">9 - Densidade e absorção</option>
-                            <option value="5">10 - Indice de forma</option>
-                            <option value="6">11 - Abrasão Los Angeles</option>
-                            <option value="7">12 - Adesividade</option>
-                            <option value="8">13 - Sanidade</option>
-                            <option value="13">14 - Secagem de material</option>
-                        </optgroup>
+                        <option disabled>──────────────────────────────</option>
+
+                        <option disabled class="select-header">➤ EQUIPAMENTOS INDIVIDUAIS</option>
+                        <option value="9">7 - Homogeneização e quarteamento</option>
+                        <option value="10">8 - Granulometria</option>
+                        <option value="11">9 - Densidade e absorção</option>
+                        <option value="12">10 - Indice de forma</option>
+                        <option value="13">11 - Abrasão Los Angeles</option>
+                        <option value="14">12 - Adesividade</option>
+                        <option value="15">13 - Sanidade</option>
+                        <option value="16">14 - Secagem de material</option>
                     </select>
                 </div>
             </div>
