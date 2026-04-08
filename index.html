@@ -208,8 +208,8 @@
             const corpo = document.getElementById('corpo-agenda');
             let html = '';
             
-            // Gerando de 0:00 até 23:00 (ou ajuste para o horário comercial se preferir)
-            for (let h = 0; h <= 23; h++) {
+            // Gerando de 07:00 até 18:00 (ou ajuste para o horário comercial se preferir)
+            for (let h = 7; h <= 17; h++) {
                 const hInicio = h;
                 const hFim = h + 1;
                 const intervalo = `${hInicio}:00 - ${hFim}:00`;
