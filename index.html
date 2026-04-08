@@ -7,20 +7,23 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* ESTILO PARA OS TÍTULOS - Agora visíveis e coloridos */
+        /* ESTILO PARA OS TÍTULOS - Negrito Ultra Intenso */
         .select-header {
-            color: #D35400 !important; /* Laranja Forte */
-            font-weight: 900 !important;
-            background-color: #f4f4f4 !important; /* Fundo sutil para destacar que é cabeçalho */
+            color: #D35400 !important; /* Mantém o laranja solicitado anteriormente */
+            font-weight: 900 !important; /* Peso máximo da fonte */
+            background-color: #f4f4f4 !important;
             font-size: 13px;
             padding: 5px 0;
+            /* Técnica para forçar um negrito ainda mais forte no navegador */
+            text-shadow: 0.6px 0 0 currentColor, -0.2px 0 0 currentColor;
         }
 
         /* Opções normais */
         option:not(.select-header) {
             color: #333 !important;
-            font-weight: normal !important;
+            font-weight: 400 !important;
             background-color: #fff !important;
+            text-shadow: none;
         }
     </style>
 </head>
@@ -153,11 +156,10 @@
     </main>
 
     <script>
-        // Esta função impede que o usuário selecione o título laranja
         function verificarTitulo(select) {
             if (select.value === "TITULO") {
                 alert("Por favor, selecione uma atividade válida abaixo do título.");
-                select.selectedIndex = 0; // Reseta para o padrão
+                select.selectedIndex = 0;
             }
         }
     </script>
