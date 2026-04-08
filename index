@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento | Lab Misturas Asfálticas</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1>Sistema de Agendamento</h1>
+            <p>Laboratório de Misturas Asfálticas - DET/UFC</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section class="info-section">
+            <div class="card info-geral">
+                <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>
+                <ul class="info-list">
+                    <li>Utilizar equipamentos de proteção individual (EPIs).</li>
+                    <li>Manter exaustor ligado em ensaios que gerem resíduos ou calor.</li>
+                    <li>Manter o laboratório limpo e organizado.</li>
+                    <li>Agendamentos até sexta-feira às 17:00. <a href="#">Acesse o cronograma externo</a>.</li>
+                </ul>
+            </div>
+
+            <div class="card instrucoes" id="container-instrucoes">
+                <h3><span class="icon">📝</span> INSTRUÇÕES DA ATIVIDADE</h3>
+                <p id="texto-instrucoes">Selecione uma opção abaixo para carregar as instruções.</p>
+            </div>
+        </section>
+
+        <section class="booking-section card">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="nome">Nome Completo</label>
+                    <input type="text" id="nome" placeholder="Ex: João Silva">
+                </div>
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="email@ufc.br">
+                </div>
+                <div class="input-group">
+                    <label for="orientador">Orientador</label>
+                    <input type="text" id="orientador" placeholder="Nome do Professor">
+                </div>
+                <div class="input-group">
+                    <label for="data">Data do Uso</label>
+                    <input type="date" id="data">
+                </div>
+                <div class="input-group full-width">
+                    <label for="maquina">Atividade / Equipamento</label>
+                    <select id="maquina">
+                        <option value="" disabled selected>Escolha uma opção...</option>
+                        <option value="1">Coleta de agregados</option>
+                        <option value="2">Homogeneização e quarteamento</option>
+                        <option value="3">Granulometria</option>
+                        <option value="4">Densidade e absorção</option>
+                        <option value="9">Dosagem Marshall</option>
+                        <option value="10">Dosagem Superpave</option>
+                        </select>
+                </div>
+            </div>
+
+            <div class="action-area">
+                <div class="password-box">
+                    <input type="password" id="senha-lab" placeholder="Senha do Laboratório">
+                    <button class="btn-primary" onclick="reservarSelecionados()">Confirmar Reserva</button>
+                </div>
+                <p class="cancel-notice">Cancelamentos: <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a></p>
+            </div>
+        </section>
+
+        <section class="table-section card">
+            <table id="tabela-horarios">
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-agenda">
+                    </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
