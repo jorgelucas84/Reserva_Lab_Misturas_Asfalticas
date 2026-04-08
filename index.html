@@ -51,27 +51,34 @@
                     <input type="text" id="orientador" placeholder="Nome do orientador">
                 </div>
                 <div class="input-group">
-                    <label for="data">Data:</label>
+                    <label for="data">Data do Uso</label>
                     <input type="date" id="data">
                 </div>
+                
                 <div class="input-group full-width">
-                    <label for="maquina">Opções:</label>
+                    <label for="maquina">Opções de Agendamento:</label>
                     <select id="maquina">
-                        <option value="" disabled selected>Selecione a atividade...</option>
-                        <option value="1">Coleta de agregados</option>
-                        <option value="2">Homogeneização e quarteamento</option>
-                        <option value="3">Granulometria</option>
-                        <option value="4">Densidade e absorção</option>
-                        <option value="5">Indice de forma</option>
-                        <option value="6">Abrasão Los Angeles</option>
-                        <option value="7">Adesividade</option>
-                        <option value="8">Sanidade</option>
-                        <option value="9">Dosagem Marshall</option>
-                        <option value="10">Dosagem Superpave</option>
-                        <option value="11">Compactação de Corpo de Prova</option>
-                        <option value="12">Extração de ligante</option>
-                        <option value="13">Secagem de material</option>
-                        <option value="14">Fluir ligante</option>
+                        <option value="" disabled selected>Escolha a atividade ou equipamento...</option>
+                        
+                        <optgroup label="ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS">
+                            <option value="9">Dosagem Marshall</option>
+                            <option value="10">Dosagem Superpave</option>
+                            <option value="11">Compactação de Corpo de Prova</option>
+                            <option value="12">Extração de ligante</option>
+                        </optgroup>
+
+                        <optgroup label="EQUIPAMENTOS INDIVIDUAIS">
+                            <option value="1">Coleta de agregados</option>
+                            <option value="2">Homogeneização e quarteamento</option>
+                            <option value="3">Granulometria</option>
+                            <option value="4">Densidade e absorção</option>
+                            <option value="5">Indice de forma</option>
+                            <option value="6">Abrasão Los Angeles</option>
+                            <option value="7">Adesividade</option>
+                            <option value="8">Sanidade</option>
+                            <option value="13">Secagem de material</option>
+                            <option value="14">Fluir ligante</option>
+                        </optgroup>
                     </select>
                 </div>
             </div>
@@ -79,9 +86,7 @@
             <div class="action-area">
                 <div class="password-box">
                     <input type="password" id="senha-lab" placeholder="Senha">
-                    <button class="btn-primary" id="btn-confirmar" onclick="reservarSelecionados()">
-                        Confirmar Reservas Selecionadas
-                    </button>
+                    <button class="btn-primary" onclick="reservarSelecionados()">Confirmar Reservas Selecionadas</button>
                 </div>
                 <p class="cancel-notice">
                     Solicitação de <strong>CANCELAMENTO</strong> apenas via e-mail: 
