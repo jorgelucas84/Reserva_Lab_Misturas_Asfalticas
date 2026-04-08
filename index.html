@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento Profissional | Lab Misturas Asfálticas</title>
+    <title>Agendamento | Lab Misturas Asfálticas</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="main-header" style="background: linear-gradient(135deg, #004080 0%, #007bff 100%); padding: 50px 0; text-align: center; color: white;">
-        <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+    <header class="main-header" style="background: linear-gradient(135deg, #003366 0%, #0056b3 100%); padding: 40px 0; color: white;">
+        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 40px; max-width: 1000px; margin: 0 auto;">
             
-            <img src="img/foto.png" alt="Logotipo Profissional do Laboratório" style="max-width: 180px; border-radius: 12px; height: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            <div style="flex-shrink: 0;">
+                <img src="img/foto.png" alt="Logotipo do Laboratório" style="width: 180px; height: auto; border-radius: 12px; box-shadow: 0 8px 15px rgba(0,0,0,0.3);">
+            </div>
             
-            <div>
-                <h1 style="margin: 0; font-size: 2.8rem; font-weight: 700; letter-spacing: -1px;">Sistema de Agendamento</h1>
-                <p style="margin: 10px 0; font-size: 1.3rem; opacity: 0.9;">Laboratório de Misturas Asfálticas - DET/UFC</p>
-                <span class="sub-text" style="font-size: 1.1rem; opacity: 0.8; font-weight: 400;">Selecione uma opção e reserve seu horário com facilidade.</span>
+            <div style="text-align: left;">
+                <h1 style="margin: 0; font-size: 2.5rem; font-weight: 700; line-height: 1.2;">Sistema de Agendamento</h1>
+                <p style="margin: 8px 0; font-size: 1.2rem; opacity: 0.9;">Laboratório de Misturas Asfálticas - DET/UFC</p>
+                <span class="sub-text" style="font-size: 1rem; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block;">
+                    Selecione uma opção e reserve um horário.
+                </span>
             </div>
         </div>
     </header>
 
-    <main class="container" style="margin-top: 30px;">
+    <main class="container">
         
         <section class="info-section">
             <div class="card info-geral">
@@ -45,15 +49,15 @@
             <div class="form-grid">
                 <div class="input-group">
                     <label for="nome">Nome Completo</label>
-                    <input type="text" id="nome" placeholder="Nome e sobrenome">
+                    <input type="text" id="nome" placeholder="Seu nome">
                 </div>
                 <div class="input-group">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="E-mail de contato" required>
+                    <input type="email" id="email" placeholder="seu-email@ufc.br" required>
                 </div>
                 <div class="input-group">
                     <label for="orientador">Orientador</label>
-                    <input type="text" id="orientador" placeholder="Nome do orientador">
+                    <input type="text" id="orientador" placeholder="Nome do Prof.">
                 </div>
                 <div class="input-group">
                     <label for="data">Data do Uso</label>
@@ -65,15 +69,15 @@
                     <select id="maquina">
                         <option value="" disabled selected>Escolha a atividade ou equipamento...</option>
                         
-                        <optgroup label="ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS E/OU O TÉCNICO DE LABORATÓRIO">
+                        <optgroup label="ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS">
                             <option value="1">1.1 Dosagem Marshall: Gmb-Compactação de CPs</option>
                             <option value="2">1.2 Dosagem Marshall: Gmm-Massa solta ou DMT</option>
                             <option value="3">2.1 Dosagem Superpave: Gmb-Compactação de CPs</option>
                             <option value="4">2.2 Dosagem Superpave: Gmm-Massa solta ou DMT</option>
-                            <option value="5">  3 Extração de ligante [DNER 053/94]</option>
-                            <option value="6">  4 Abrasão Los Angeles [DNIT 451/2024]</option>
-                            <option value="7">  5 Adesividade (Tradicional) [DNER 078/94]</option>
-                            <option value="8">  6 Fluir ligante</option>
+                            <option value="5">3 Extração de ligante [DNER 053/94]</option>
+                            <option value="6">4 Abrasão Los Angeles [DNIT 451/2024]</option>
+                            <option value="7">5 Adesividade (Tradicional) [DNER 078/94]</option>
+                            <option value="8">6 Fluir ligante</option>
                         </optgroup>
 
                         <optgroup label="EQUIPAMENTOS INDIVIDUAIS">
@@ -96,7 +100,7 @@
                     <button class="btn-primary" onclick="reservarSelecionados()">Confirmar Reservas Selecionadas</button>
                 </div>
                 <p class="cancel-notice">
-                    Solicitação de <strong>CANCELAMENTO</strong> apenas via e-mail: 
+                    Solicitação de <strong>CANCELAMENTO</strong> via e-mail: 
                     <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a>
                 </p>
             </div>
