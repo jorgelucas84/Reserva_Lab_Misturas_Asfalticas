@@ -24,32 +24,38 @@
             text-shadow: none;
         }
 
-        /* ESTILO DA TABELA (Conforme a imagem) */
+        /* ESTILO DA TABELA - CORREÇÃO DE ALINHAMENTO */
         .table-section {
             margin-top: 20px;
             overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
         #tabela-horarios {
             width: 100%;
             border-collapse: collapse;
             font-family: 'Inter', sans-serif;
+            table-layout: fixed; /* Garante que as larguras das colunas sejam consistentes */
         }
 
         #tabela-horarios thead th {
             background-color: #1A4A5A;
             color: white;
-            padding: 15px;
+            padding: 18px 15px;
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 1px;
+            text-align: center; /* Centraliza o texto do cabeçalho */
+            border: none;
         }
 
         #tabela-horarios td {
             padding: 15px;
-            text-align: center;
+            text-align: center; /* Centraliza o conteúdo das células */
             border-bottom: 1px solid #eee;
             font-size: 0.95rem;
+            vertical-align: middle;
         }
 
         .col-horario {
@@ -62,17 +68,23 @@
             font-weight: 700;
         }
 
-        /* Estilo do Checkbox */
+        /* Estilo do Checkbox centralizado */
         input[type="checkbox"] {
             width: 18px;
             height: 18px;
             cursor: pointer;
             accent-color: #1A4A5A;
+            margin: 0 auto;
+            display: block; /* Garante que o margin auto funcione para centralizar */
         }
 
         /* Linhas alternadas para leitura */
         #tabela-horarios tbody tr:nth-child(even) {
             background-color: #fafafa;
+        }
+
+        #tabela-horarios tbody tr:hover {
+            background-color: #f1f5f7;
         }
     </style>
 </head>
@@ -197,18 +209,17 @@
                     </tr>
                 </thead>
                 <tbody id="corpo-agenda">
-                    </tbody>
+                </tbody>
             </table>
         </section>
     </main>
 
     <script>
-        // Função para gerar os horários com intervalo (Ex: 8:00 - 9:00) e checkbox
         function carregarHorarios() {
             const corpo = document.getElementById('corpo-agenda');
             let html = '';
             
-            // Gerando de 07:00 até 18:00 (ou ajuste para o horário comercial se preferir)
+            // Gerando de 07:00 até 17:00 para cobrir o intervalo comercial
             for (let h = 7; h <= 17; h++) {
                 const hInicio = h;
                 const hFim = h + 1;
