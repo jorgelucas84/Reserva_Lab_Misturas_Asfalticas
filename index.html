@@ -13,6 +13,7 @@
         <div class="container">
             <h1>Sistema de Agendamento</h1>
             <p>Laboratório de Misturas Asfálticas - DET/UFC</p>
+            <span class="sub-text">Selecione uma opção e reserve um horário.</span>
         </div>
     </header>
 
@@ -22,16 +23,16 @@
             <div class="card info-geral">
                 <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>
                 <ul class="info-list">
-                    <li>Utilizar equipamentos de proteção individual (EPIs).</li>
-                    <li>Manter exaustor ligado em ensaios que gerem resíduos ou calor.</li>
-                    <li>Manter o laboratório limpo e organizado.</li>
-                    <li>Agendamentos até sexta-feira às 17:00. <a href="#">Acesse o cronograma externo</a>.</li>
+                    <li><strong>1.</strong> Utilizar equipamentos de proteção individual.</li>
+                    <li><strong>2.</strong> Ensaios que gerarem resíduos (poeira ou aquecimento de ligante), manter o exaustor ligado durante todo o processo.</li>
+                    <li><strong>3.</strong> Manter o laboratório limpo e organizado durante e após sua utilização.</li>
+                    <li><strong>4.</strong> Pedidos enviados até sexta-feira às 17:00. Uso fora do cronograma depende de disponibilidade e agendamento obrigatório em: <a href="https://grid-lab-04.github.io/reservaton_misturas/" target="_blank">reservaton_misturas</a>.</li>
                 </ul>
             </div>
 
             <div class="card instrucoes" id="container-instrucoes">
                 <h3><span class="icon">📝</span> INSTRUÇÕES DA ATIVIDADE</h3>
-                <p id="texto-instrucoes">Selecione uma opção abaixo para carregar as instruções.</p>
+                <p id="texto-instrucoes">Carregando...</p>
             </div>
         </section>
 
@@ -39,40 +40,53 @@
             <div class="form-grid">
                 <div class="input-group">
                     <label for="nome">Nome Completo</label>
-                    <input type="text" id="nome" placeholder="Ex: João Silva">
+                    <input type="text" id="nome" placeholder="Nome e sobrenome">
                 </div>
                 <div class="input-group">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="email@ufc.br">
+                    <input type="email" id="email" placeholder="E-mail de contato" required>
                 </div>
                 <div class="input-group">
                     <label for="orientador">Orientador</label>
-                    <input type="text" id="orientador" placeholder="Nome do Professor">
+                    <input type="text" id="orientador" placeholder="Nome do orientador">
                 </div>
                 <div class="input-group">
-                    <label for="data">Data do Uso</label>
+                    <label for="data">Data:</label>
                     <input type="date" id="data">
                 </div>
                 <div class="input-group full-width">
-                    <label for="maquina">Atividade / Equipamento</label>
+                    <label for="maquina">Opções:</label>
                     <select id="maquina">
-                        <option value="" disabled selected>Escolha uma opção...</option>
+                        <option value="" disabled selected>Selecione a atividade...</option>
                         <option value="1">Coleta de agregados</option>
                         <option value="2">Homogeneização e quarteamento</option>
                         <option value="3">Granulometria</option>
                         <option value="4">Densidade e absorção</option>
+                        <option value="5">Indice de forma</option>
+                        <option value="6">Abrasão Los Angeles</option>
+                        <option value="7">Adesividade</option>
+                        <option value="8">Sanidade</option>
                         <option value="9">Dosagem Marshall</option>
                         <option value="10">Dosagem Superpave</option>
-                        </select>
+                        <option value="11">Compactação de Corpo de Prova</option>
+                        <option value="12">Extração de ligante</option>
+                        <option value="13">Secagem de material</option>
+                        <option value="14">Fluir ligante</option>
+                    </select>
                 </div>
             </div>
 
             <div class="action-area">
                 <div class="password-box">
-                    <input type="password" id="senha-lab" placeholder="Senha do Laboratório">
-                    <button class="btn-primary" onclick="reservarSelecionados()">Confirmar Reserva</button>
+                    <input type="password" id="senha-lab" placeholder="Senha">
+                    <button class="btn-primary" id="btn-confirmar" onclick="reservarSelecionados()">
+                        Confirmar Reservas Selecionadas
+                    </button>
                 </div>
-                <p class="cancel-notice">Cancelamentos: <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a></p>
+                <p class="cancel-notice">
+                    Solicitação de <strong>CANCELAMENTO</strong> apenas via e-mail: 
+                    <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a>
+                </p>
             </div>
         </section>
 
