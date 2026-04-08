@@ -7,17 +7,17 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* CSS extra para reforçar o destaque nos grupos de opções */
+        /* CSS para forçar o destaque visual dos grupos */
         optgroup {
-            color: #D35400 !important; /* Laranja Escuro */
-            font-weight: 900 !important; /* Negrito Extra */
-            background-color: #fff;
-            font-style: normal;
-            font-size: 14px;
+            color: #FF8C00 !important; /* Laranja Vibrante para contraste */
+            font-weight: 900 !important;
+            background-color: #2A2A2A !important; /* Fundo escuro força o navegador a destacar a cor */
+            text-transform: uppercase;
         }
         option {
-            color: #333 !important; /* Garante que os itens internos voltem ao cinza/preto */
+            color: #333 !important;
             font-weight: normal !important;
+            background-color: #fff !important; /* Opções voltam para o fundo branco padrão */
         }
     </style>
 </head>
@@ -100,7 +100,7 @@
                     <select id="maquina">
                         <option value="" disabled selected>Escolha a atividade ou equipamento...</option>
                         
-                        <optgroup label="➤ ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS" style="color: #D35400; font-weight: 900;">
+                        <optgroup label="➤ ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS">
                             <option value="1">1.1 - Dosagem Marshall: Gmb-Compactação de CPs</option>
                             <option value="2">1.2 - Dosagem Marshall: Gmm-Massa solta ou DMT</option>
                             <option value="3">2.1 - Dosagem Superpave: Gmb-Compactação de CPs</option>
@@ -111,7 +111,7 @@
                             <option value="8">6 - Fluir ligante</option>
                         </optgroup>
 
-                        <optgroup label="➤ EQUIPAMENTOS INDIVIDUAIS" style="color: #D35400; font-weight: 900;">
+                        <optgroup label="➤ EQUIPAMENTOS INDIVIDUAIS">
                             <option value="2">7 - Homogeneização e quarteamento</option>
                             <option value="3">8 - Granulometria</option>
                             <option value="4">9 - Densidade e absorção</option>
@@ -151,10 +151,6 @@
             </table>
         </section>
     </main>
-
-    <script src="script.js"></script>
-</body>
-</html>
 
     <script src="script.js"></script>
 </body>
