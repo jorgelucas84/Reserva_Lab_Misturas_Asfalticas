@@ -1,263 +1,311 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento | Lab Misturas Asfálticas</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* ESTILO PARA OS TÍTULOS DO SELECT - Negrito Ultra Intenso */
-        .select-header {
-            color: #D35400 !important; 
-            font-weight: 900 !important; 
-            background-color: #f4f4f4 !important;
-            font-size: 13px;
-            padding: 5px 0;
-            text-shadow: 0.6px 0 0 currentColor, -0.2px 0 0 currentColor;
-        }
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Agendamento | Lab Misturas Asfálticas</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"> 
+    <style> 
+        /* ESTILO PARA OS TÍTULOS DO SELECT - Negrito Ultra Intenso */ 
+        .select-header { 
+            color: #D35400 !important;  
+            font-weight: 900 !important;  
+            background-color: #f4f4f4 !important; 
+            font-size: 13px; 
+            padding: 5px 0; 
+            text-shadow: 0.6px 0 0 currentColor, -0.2px 0 0 currentColor; 
+        } 
 
-        option:not(.select-header) {
-            color: #333 !important;
-            font-weight: 400 !important;
-            background-color: #fff !important;
-            text-shadow: none;
-        }
+        option:not(.select-header) { 
+            color: #333 !important; 
+            font-weight: 400 !important; 
+            background-color: #fff !important; 
+            text-shadow: none; 
+        } 
 
-        /* ESTILO DA TABELA - Alinhamento Preciso */
-        .table-section {
-            margin-top: 20px;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        #tabela-horarios {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Inter', sans-serif;
-            table-layout: fixed;
-        }
-
-        #tabela-horarios thead th {
-            background-color: #1A4A5A;
-            color: white;
-            padding: 18px 15px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        #tabela-horarios td {
+        /* ESTILO DA CAIXA DE EQUIPAMENTOS */
+        .equipamentos-info {
+            margin-top: 15px;
             padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-            font-size: 0.95rem;
-            vertical-align: middle;
+            background-color: #f8f9fa;
+            border-left: 5px solid #1A4A5A;
+            border-radius: 5px;
+            display: none; /* Escondido por padrão */
+            font-family: 'Inter', sans-serif;
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        .col-horario {
-            font-weight: 500;
-            color: #444;
+        .equipamentos-info h4 {
+            margin: 0 0 8px 0;
+            color: #1A4A5A;
+            font-size: 0.9rem;
+            text-transform: uppercase;
         }
 
-        .status-disponivel {
-            color: #27ae60;
-            font-weight: 700;
+        .equipamentos-info p {
+            margin: 0;
+            color: #555;
+            font-size: 0.85rem;
+            line-height: 1.4;
         }
 
-        .status-bloqueado {
-            color: #e74c3c;
-            font-weight: 700;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Estilo do Checkbox Centralizado */
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #1A4A5A;
-            margin: 0 auto;
-            display: block;
-        }
+        /* ESTILO DA TABELA - Alinhamento Preciso */ 
+        .table-section { 
+            margin-top: 20px; 
+            overflow: hidden; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        } 
 
-        #tabela-horarios tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
+        #tabela-horarios { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-family: 'Inter', sans-serif; 
+            table-layout: fixed; 
+        } 
 
-        #tabela-horarios tbody tr:hover {
-            background-color: #f1f5f7;
-        }
-    </style>
-</head>
-<body>
+        #tabela-horarios thead th { 
+            background-color: #1A4A5A; 
+            color: white; 
+            padding: 18px 15px; 
+            text-transform: uppercase; 
+            font-size: 0.85rem; 
+            letter-spacing: 1px; 
+            text-align: center; 
+        } 
 
-    <header class="main-header" style="background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%); padding: 26px 0; color: white; border-bottom: 4px solid #143a46; position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; right: 0; width: 45%; height: 100%; background: url('img/pavimento.jpg') no-repeat center right; background-size: cover; opacity: 0.15; pointer-events: none; z-index: 0;"></div>
+        #tabela-horarios td { 
+            padding: 15px; 
+            text-align: center; 
+            border-bottom: 1px solid #eee; 
+            font-size: 0.95rem; 
+            vertical-align: middle; 
+        } 
 
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 50px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;">
-            <div style="flex-shrink: 0;">
-                <img src="img/foto.png" alt="Logotipo do Laboratório" style="width: 221px; height: auto; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.25);">
-            </div>
-            
-            <div style="text-align: left;">
-                <h1 style="margin: 0; font-size: 2.5rem; font-weight: 900; line-height: 1.2; color: #ffffff; letter-spacing: -1px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap;">
-                    Sistema de Agendamento
-                </h1>
-                
-                <p style="margin: 10px 0 10px 0; font-size: 1.4rem; font-weight: 500; color: #ffffff; opacity: 0.95; letter-spacing: -0.5px;">
-                    Laboratório de Misturas Asfálticas - LMP | INCT-Infra | UFC
-                </p>
-                
-                <span class="sub-text" style="font-family: 'Calibri Light', 'Segoe UI Light', 'Ubuntu Light', sans-serif; font-size: 0.85rem; font-weight: 300; color: rgba(255, 255, 255, 0.8); background: rgba(0,0,0,0.15); padding: 4px 15px; border-radius: 50px; display: inline-block; border: 1px solid rgba(255,255,255,0.05);">
-                    © 2026 
-                    <img src="img/lmp.jpeg" alt="Logo LMP" style="height: 1.2rem; vertical-align: middle; margin: 0 8px; border-radius: 2px;"> 
-                    | Todos os direitos reservados
-                </span>
-            </div>
-        </div>
-    </header>
+        .col-horario { 
+            font-weight: 500; 
+            color: #444; 
+        } 
 
-    <main class="container" style="margin-top: 30px;">
-        <section class="info-section">
-            <div class="card info-geral">
-                <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>
-                <ul class="info-list">
-                    <li><strong>1.</strong> Utilizar equipamentos de proteção individual.</li>
-                    <li><strong>2.</strong> Ensaios que gerarem resíduos, manter o exaustor ligado durante todo o processo.</li>
-                    <li><strong>3.</strong> Manter o laboratório limpo e organizado durante e após sua utilização.</li>
-                    <li><strong>4.</strong> Pedidos enviados até sexta-feira às 17:00. Link obrigatório: <a href="https://grid-lab-04.github.io/reservaton_misturas/" target="_blank">reservaton_misturas</a>.</li>
-                </ul>
-            </div>
+        .status-disponivel { 
+            color: #27ae60; 
+            font-weight: 700; 
+        } 
 
-            <div class="card instrucoes" id="container-instrucoes">
-                <h3><span class="icon">📝</span> INSTRUÇÕES DA ATIVIDADE</h3>
-                <p id="texto-instrucoes">Carregando informações...</p>
-            </div>
-        </section>
+        .status-bloqueado { 
+            color: #e74c3c; 
+            font-weight: 700; 
+        } 
 
-        <section class="booking-section card">
-            <div class="form-grid">
-                <div class="input-group">
-                    <label for="nome">Nome Completo</label>
-                    <input type="text" id="nome" placeholder="Seu nome">
-                </div>
-                <div class="input-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="seu-email@ufc.br" required>
-                </div>
-                <div class="input-group">
-                    <label for="orientador">Orientador</label>
-                    <input type="text" id="orientador" placeholder="Nome do Professor">
-                </div>
-                <div class="input-group">
-                    <label for="projeto">Nome do Projeto</label>
-                    <input type="text" id="projeto" placeholder="Título da pesquisa">
-                </div>
-                <div class="input-group">
-                    <label for="data">Data do Uso</label>
-                    <input type="date" id="data">
-                </div>
-                
-                <div class="input-group full-width">
-                    <label for="maquina">Opções de Agendamento:</label>
-                    <select id="maquina" onchange="validarAtividade(this)">
-                        <option value="" disabled selected>Escolha a atividade ou equipamento...</option>
-                        
-                        <option class="select-header" value="TITULO">➤ ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS</option>
-                        <option value="DOSAGEM" data-estufas="3">1.1 - Dosagem Marshall: Gmb-Compactação de CPs</option>
-                        <option value="DOSAGEM" data-estufas="3">1.2 - Dosagem Marshall: Gmm-Massa solta ou DMT</option>
-                        <option value="DOSAGEM" data-estufas="3">2.1 - Dosagem Superpave: Gmb-Compactação de CPs</option>
-                        <option value="DOSAGEM" data-estufas="3">2.2 - Dosagem Superpave: Gmm-Massa solta ou DMT</option>
-                        <option value="NORMAL">3 - Extração de ligante [DNER 053/94]</option>
-                        <option value="NORMAL">4 - Abrasão Los Angeles [DNIT 451/2024]</option>
-                        <option value="NORMAL">5 - Adesividade (Tradicional) [DNER 078/94]</option>
-                        <option value="NORMAL">6 - Fluir ligante</option>
+        /* Estilo do Checkbox Centralizado */ 
+        input[type="checkbox"] { 
+            width: 18px; 
+            height: 18px; 
+            cursor: pointer; 
+            accent-color: #1A4A5A; 
+            margin: 0 auto; 
+            display: block; 
+        } 
 
-                        <option disabled>──────────────────────────────</option>
+        #tabela-horarios tbody tr:nth-child(even) { 
+            background-color: #fafafa; 
+        } 
 
-                        <option class="select-header" value="TITULO">➤ EQUIPAMENTOS INDIVIDUAIS</option>
-                        <option value="NORMAL">7 - Homogeneização e quarteamento</option>
-                        <option value="NORMAL">8 - Granulometria</option>
-                        <option value="NORMAL">9 - Densidade e absorção</option>
-                        <option value="NORMAL">10 - Indice de forma</option>
-                        <option value="NORMAL">11 - Abrasão Los Angeles</option>
-                        <option value="NORMAL">12 - Adesividade</option>
-                        <option value="NORMAL">13 - Sanidade</option>
-                        <option value="NORMAL">14 - Secagem de material</option>
-                        <option value="NORMAL">15 - Arrancamento (ABS) [AASTHO TP91]]</option>
+        #tabela-horarios tbody tr:hover { 
+            background-color: #f1f5f7; 
+        } 
+    </style> 
+</head> 
+<body> 
+
+    <header class="main-header" style="background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%); padding: 26px 0; color: white; border-bottom: 4px solid #143a46; position: relative; overflow: hidden;"> 
+        <div style="position: absolute; top: 0; right: 0; width: 45%; height: 100%; background: url('img/pavimento.jpg') no-repeat center right; background-size: cover; opacity: 0.15; pointer-events: none; z-index: 0;"></div> 
+
+        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 50px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;"> 
+            <div style="flex-shrink: 0;"> 
+                <img src="img/foto.png" alt="Logotipo do Laboratório" style="width: 221px; height: auto; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.25);"> 
+            </div> 
+             
+            <div style="text-align: left;"> 
+                <h1 style="margin: 0; font-size: 2.5rem; font-weight: 900; line-height: 1.2; color: #ffffff; letter-spacing: -1px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap;"> 
+                    Sistema de Agendamento 
+                </h1> 
+                 
+                <p style="margin: 10px 0 10px 0; font-size: 1.4rem; font-weight: 500; color: #ffffff; opacity: 0.95; letter-spacing: -0.5px;"> 
+                    Laboratório de Misturas Asfálticas - LMP | INCT-Infra | UFC 
+                </p> 
+                 
+                <span class="sub-text" style="font-family: 'Calibri Light', 'Segoe UI Light', 'Ubuntu Light', sans-serif; font-size: 0.85rem; font-weight: 300; color: rgba(255, 255, 255, 0.8); background: rgba(0,0,0,0.15); padding: 4px 15px; border-radius: 50px; display: inline-block; border: 1px solid rgba(255,255,255,0.05);"> 
+                    © 2026  
+                    <img src="img/lmp.jpeg" alt="Logo LMP" style="height: 1.2rem; vertical-align: middle; margin: 0 8px; border-radius: 2px;">  
+                    | Todos os direitos reservados 
+                </span> 
+            </div> 
+        </div> 
+    </header> 
+
+    <main class="container" style="margin-top: 30px;"> 
+        <section class="info-section"> 
+            <div class="card info-geral"> 
+                <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3> 
+                <ul class="info-list"> 
+                    <li><strong>1.</strong> Utilizar equipamentos de proteção individual.</li> 
+                    <li><strong>2.</strong> Ensaios que gerarem resíduos, manter o exaustor ligado durante todo o processo.</li> 
+                    <li><strong>3.</strong> Manter o laboratório limpo e organizado durante e após sua utilização.</li> 
+                    <li><strong>4.</strong> Pedidos enviados até sexta-feira às 17:00. Link obrigatório: <a href="https://grid-lab-04.github.io/reservaton_misturas/" target="_blank">reservaton_misturas</a>.</li> 
+                </ul> 
+            </div> 
+
+            <div class="card instrucoes" id="container-instrucoes"> 
+                <h3><span class="icon">📝</span> INSTRUÇÕES DA ATIVIDADE</h3> 
+                <p id="texto-instrucoes">Carregando informações...</p> 
+            </div> 
+        </section> 
+
+        <section class="booking-section card"> 
+            <div class="form-grid"> 
+                <div class="input-group"> 
+                    <label for="nome">Nome Completo</label> 
+                    <input type="text" id="nome" placeholder="Seu nome"> 
+                </div> 
+                <div class="input-group"> 
+                    <label for="email">E-mail</label> 
+                    <input type="email" id="email" placeholder="seu-email@ufc.br" required> 
+                </div> 
+                <div class="input-group"> 
+                    <label for="orientador">Orientador</label> 
+                    <input type="text" id="orientador" placeholder="Nome do Professor"> 
+                </div> 
+                <div class="input-group"> 
+                    <label for="projeto">Nome do Projeto</label> 
+                    <input type="text" id="projeto" placeholder="Título da pesquisa"> 
+                </div> 
+                <div class="input-group"> 
+                    <label for="data">Data do Uso</label> 
+                    <input type="date" id="data"> 
+                </div> 
+                 
+                <div class="input-group full-width"> 
+                    <label for="maquina">Opções de Agendamento:</label> 
+                    <select id="maquina" onchange="validarAtividade(this)"> 
+                        <option value="" disabled selected>Escolha a atividade ou equipamento...</option> 
+                         
+                        <option class="select-header" value="TITULO">➤ ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS</option> 
+                        <option value="DOSAGEM" data-equip="Estufa, Misturador, Compactador Marshall, Balanças">1.1 - Dosagem Marshall: Gmb-Compactação de CPs</option> 
+                        <option value="DOSAGEM" data-equip="Estufa, Conjunto Rice Test, Bomba de Vácuo, Balanças">1.2 - Dosagem Marshall: Gmm-Massa solta ou DMT</option> 
+                        <option value="DOSAGEM" data-equip="Estufa, Misturador, Compactador Giratório Superpave, Balanças">2.1 - Dosagem Superpave: Gmb-Compactação de CPs</option> 
+                        <option value="DOSAGEM" data-equip="Estufa, Conjunto Rice Test, Bomba de Vácuo, Balanças">2.2 - Dosagem Superpave: Gmm-Massa solta ou DMT</option> 
+                        <option value="NORMAL" data-equip="Rotarex ou Extrator Soxhlet, Estufa, Balanças">3 - Extração de ligante [DNER 053/94]</option> 
+                        <option value="NORMAL" data-equip="Máquina Los Angeles, Jogo de Peneiras, Balança">4 - Abrasão Los Angeles [DNIT 451/2024]</option> 
+                        <option value="NORMAL" data-equip="Estufa, Recipientes de vidro, Agitador">5 - Adesividade (Tradicional) [DNER 078/94]</option> 
+                        <option value="NORMAL" data-equip="Estufa, Termômetro, Recipiente metálico">6 - Fluir ligante</option> 
+
+                        <option disabled>──────────────────────────────</option> 
+
+                        <option class="select-header" value="TITULO">➤ EQUIPAMENTOS INDIVIDUAIS</option> 
+                        <option value="NORMAL" data-equip="Quarteador de amostras, Bandejas, Espátulas">7 - Homogeneização e quarteamento</option> 
+                        <option value="NORMAL" data-equip="Agitador de peneiras, Jogo de peneiras, Balança">8 - Granulometria</option> 
+                        <option value="NORMAL" data-equip="Picnômetros, Banho-maria, Balança hidrostática">9 - Densidade e absorção</option> 
+                        <option value="NORMAL" data-equip="Paquímetro, Régua, Calibradores de lâminas">10 - Indice de forma</option> 
+                        <option value="NORMAL" data-equip="Máquina Los Angeles, Esferas de aço">11 - Abrasão Los Angeles</option> 
+                        <option value="NORMAL" data-equip="Bandejas, Estufa, Fonte de luz">12 - Adesividade</option> 
+                        <option value="NORMAL" data-equip="Solução de sulfato, Peneiras, Estufa">13 - Sanidade</option> 
+                        <option value="NORMAL" data-equip="Estufa de circulação forçada, Bandejas">14 - Secagem de material</option> 
+                        <option value="NORMAL" data-equip="Equipamento de tração, Pastilhas de aço, Adesivo epóxi">15 - Arrancamento (ABS) [AASTHO TP91]]</option> 
                     </select>
-                </div>
-            </div>
 
-            <div class="action-area">
-                <div class="password-box">
-                    <input type="password" id="senha-lab" placeholder="Senha">
-                    <button class="btn-primary" onclick="reservarSelecionados()" style="background-color: #1A4A5A; border-color: #143a46; font-weight: 600;">Confirmar Reservas Selecionadas</button>
-                </div>
-                <p class="cancel-notice">
-                    Solicitação de <strong>CANCELAMENTO</strong> apenas via e-mail: 
-                    <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a>
-                </p>
-            </div>
-        </section>
+                    <div id="caixa-equipamentos" class="equipamentos-info">
+                        <h4><span class="icon">🛠️</span> Equipamentos Necessários:</h4>
+                        <p id="lista-equipamentos"></p>
+                    </div>
+                </div> 
+            </div> 
 
-        <section class="table-section card">
-            <table id="tabela-horarios">
-                <thead>
-                    <tr>
-                        <th style="width: 40%;">Horário</th>
-                        <th style="width: 30%;">Status</th>
-                        <th style="width: 30%;">Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-agenda">
-                </tbody>
-            </table>
-        </section>
-    </main>
+            <div class="action-area"> 
+                <div class="password-box"> 
+                    <input type="password" id="senha-lab" placeholder="Senha"> 
+                    <button class="btn-primary" onclick="reservarSelecionados()" style="background-color: #1A4A5A; border-color: #143a46; font-weight: 600;">Confirmar Reservas Selecionadas</button> 
+                </div> 
+                <p class="cancel-notice"> 
+                    Solicitação de <strong>CANCELAMENTO</strong> apenas via e-mail:  
+                    <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a> 
+                </p> 
+            </div> 
+        </section> 
 
-    <script>
-        // Função para carregar a tabela com alinhamento corrigido
-        function carregarHorarios() {
-            const corpo = document.getElementById('corpo-agenda');
-            let html = '';
-            for (let h = 7; h <= 17; h++) {
-                const intervalo = `${h}:00 - ${h+1}:00`;
-                html += `
-                    <tr>
-                        <td class="col-horario">${intervalo}</td>
-                        <td class="status-disponivel" id="status-${h}">Disponível</td>
-                        <td><input type="checkbox" name="selecionar-hora" value="${intervalo}"></td>
-                    </tr>
-                `;
+        <section class="table-section card"> 
+            <table id="tabela-horarios"> 
+                <thead> 
+                    <tr> 
+                        <th style="width: 40%;">Horário</th> 
+                        <th style="width: 30%;">Status</th> 
+                        <th style="width: 30%;">Ação</th> 
+                    </tr> 
+                </thead> 
+                <tbody id="corpo-agenda"> 
+                </tbody> 
+            </table> 
+        </section> 
+    </main> 
+
+    <script> 
+        // Função para carregar a tabela com alinhamento corrigido 
+        function carregarHorarios() { 
+            const corpo = document.getElementById('corpo-agenda'); 
+            let html = ''; 
+            for (let h = 7; h <= 17; h++) { 
+                const intervalo = `${h}:00 - ${h+1}:00`; 
+                html += ` 
+                    <tr> 
+                        <td class="col-horario">${intervalo}</td> 
+                        <td class="status-disponivel" id="status-${h}">Disponível</td> 
+                        <td><input type="checkbox" name="selecionar-hora" value="${intervalo}"></td> 
+                    </tr> 
+                `; 
+            } 
+            corpo.innerHTML = html; 
+        } 
+
+        // Lógica de Bloqueio de Estufas e Exibição de Equipamentos
+        function validarAtividade(select) { 
+            const opcao = select.options[select.selectedIndex]; 
+            const caixaEquipamentos = document.getElementById('caixa-equipamentos');
+            const listaEquipamentos = document.getElementById('lista-equipamentos');
+             
+            if (select.value === "TITULO" || select.value === "") { 
+                if (select.value === "TITULO") alert("Por favor, selecione uma atividade válida."); 
+                select.selectedIndex = 0; 
+                caixaEquipamentos.style.display = "none";
+                return; 
+            } 
+
+            // Exibir a caixa de equipamentos
+            const equipamentos = opcao.getAttribute('data-equip');
+            if (equipamentos) {
+                listaEquipamentos.innerText = equipamentos;
+                caixaEquipamentos.style.display = "block";
+            } else {
+                caixaEquipamentos.style.display = "none";
             }
-            corpo.innerHTML = html;
-        }
 
-        // Lógica de Bloqueio de Estufas
-        function validarAtividade(select) {
-            const opcao = select.options[select.selectedIndex];
-            
-            if (select.value === "TITULO") {
-                alert("Por favor, selecione uma atividade válida.");
-                select.selectedIndex = 0;
-                return;
-            }
+            // Alerta de Dosagem
+            if (select.value === "DOSAGEM") { 
+                const confirmacao = confirm("Atenção: Os procedimentos de DOSAGEM utilizam as 3 estufas simultaneamente. Isso impedirá que outros usuários realizem ensaios que dependam de estufa. Confirmar uso exclusivo?"); 
+                if (!confirmacao) { 
+                    select.selectedIndex = 0; 
+                    caixaEquipamentos.style.display = "none";
+                } 
+            } 
+        } 
 
-            if (select.value === "DOSAGEM") {
-                const confirmacao = confirm("Atenção: Os procedimentos de DOSAGEM utilizam as 3 estufas simultaneamente. Isso impedirá que outros usuários realizem ensaios que dependam de estufa. Confirmar uso exclusivo?");
-                if (!confirmacao) {
-                    select.selectedIndex = 0;
-                } else {
-                    console.log("Modo: Uso total das estufas ativado.");
-                }
-            }
-        }
-
-        window.onload = carregarHorarios;
-    </script>
-    <script src="script.js"></script>
-</body>
+        window.onload = carregarHorarios; 
+    </script> 
+    <script src="script.js"></script> 
+</body> 
 </html>
