@@ -39,13 +39,12 @@
             box-shadow: 0 0 0 4px rgba(26, 74, 90, 0.1);
         }
 
-        /* AJUSTE NA IMAGEM PARA NÃO CORTAR */
+        /* AJUSTE NA IMAGEM PARA PREENCHER TODA A CAIXINHA */
         .ensaio-card img {
             width: 100%;
             height: 140px; 
-            object-fit: contain; 
-            background-color: #f9f9f9; 
-            padding: 5px;
+            object-fit: cover; 
+            display: block;
         }
 
         .ensaio-card .info {
