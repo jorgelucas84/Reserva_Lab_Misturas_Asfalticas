@@ -292,7 +292,13 @@
             equipamentosTemp = equipamentos;
             elementoTemp = elemento;
             
-            document.getElementById('caixa-equipamentos').style.display = "none";
+            // Exibe a lista de equipamentos IMEDIATAMENTE
+            const caixa = document.getElementById('caixa-equipamentos');
+            const lista = document.getElementById('lista-equipamentos');
+            lista.innerText = equipamentos;
+            caixa.style.display = "block";
+
+            // Exibe a nova caixinha de escolha
             document.getElementById('container-escolha-marshall').style.display = "block";
         }
 
@@ -302,15 +308,11 @@
             if (confirmacao) {
                 const hiddenInput = document.getElementById('maquina');
                 hiddenInput.value = "DOSAGEM - " + subtipo;
-
-                const caixa = document.getElementById('caixa-equipamentos');
-                const lista = document.getElementById('lista-equipamentos');
-                lista.innerText = equipamentosTemp;
-                caixa.style.display = "block";
                 document.getElementById('container-escolha-marshall').style.display = "none";
             } else {
                 elementoTemp.classList.remove('selected');
                 document.getElementById('container-escolha-marshall').style.display = "none";
+                document.getElementById('caixa-equipamentos').style.display = "none";
                 document.getElementById('maquina').value = "";
             }
         }
