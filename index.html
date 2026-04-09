@@ -93,11 +93,17 @@
             cursor: pointer;
             font-weight: 600;
             margin: 0 5px;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .btn-opcao:hover {
             background-color: #2a6f84;
+        }
+
+        /* Classe para destacar o botão selecionado */
+        .btn-opcao.active {
+            background-color: #D35400 !important;
+            box-shadow: 0 0 8px rgba(211, 84, 0, 0.5);
         }
 
         .input-amostras {
@@ -221,8 +227,8 @@
             <div id="container-escolha-marshall" class="sub-opcoes">
                 <p style="font-weight: 700; color: #1A4A5A; margin-bottom: 15px;">Selecione o estado da mistura e a quantidade:</p>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Massa Solta')">Massa Solta</button>
-                    <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Mistura Compactada')">Mistura Compactada</button>
+                    <button class="btn-opcao" id="btn-massa-solta" onclick="finalizarSelecaoMarshall('Massa Solta', this)">Massa Solta</button>
+                    <button class="btn-opcao" id="btn-mistura-compactada" onclick="finalizarSelecaoMarshall('Mistura Compactada', this)">Mistura Compactada</button>
                     <span style="font-size: 0.9rem; font-weight: 600; color: #555;">| Qtd. Amostras:</span>
                     <input type="number" id="qtd-amostras" class="input-amostras" value="1" min="1">
                 </div>
@@ -285,8 +291,11 @@
         } 
 
         function selecionarCard(elemento, tipo, equipamentos) {
+            // Remove seleção de todos os botões e caixas
             document.getElementById('container-escolha-marshall').style.display = "none";
             document.querySelectorAll('.ensaio-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.btn-opcao').forEach(btn => btn.classList.remove('active'));
+            
             elemento.classList.add('selected');
 
             const hiddenInput = document.getElementById('maquina');
@@ -300,6 +309,8 @@
 
         function iniciarSelecaoMarshall(elemento, equipamentos) {
             document.querySelectorAll('.ensaio-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.btn-opcao').forEach(btn => btn.classList.remove('active'));
+            
             elemento.classList.add('selected');
             
             equipamentosTemp = equipamentos;
@@ -313,13 +324,20 @@
             document.getElementById('container-escolha-marshall').style.display = "block";
         }
 
-        function finalizarSelecaoMarshall(subtipo) {
+        function finalizarSelecaoMarshall(subtipo, botao) {
+            // Remove a cor ativa do outro botão e coloca neste
+            document.querySelectorAll('.btn-opcao').forEach(btn => btn.classList.remove('active'));
+            botao.classList.add('active');
+
             const qtd = document.getElementById('qtd-amostras').value;
             const hiddenInput = document.getElementById('maquina');
             
-            // Salva o tipo e a quantidade diretamente, sem o alerta de confirmação.
+            // Salva a escolha no campo oculto
             hiddenInput.value = "DOSAGEM - " + subtipo + " (" + qtd + " amostras)";
-            document.getElementById('container-escolha-marshall').style.display = "none";
+            
+            // Opcional: Você pode manter a caixa aberta para o usuário ver o que clicou
+            // Se quiser que feche, descomente a linha abaixo:
+            // document.getElementById('container-escolha-marshall').style.display = "none";
         }
 
         window.onload = carregarHorarios; 
