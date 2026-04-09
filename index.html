@@ -72,6 +72,34 @@
             padding-bottom: 5px;
         }
 
+        /* ESTILO PARA ESCOLHA MARSHALL */
+        .sub-opcoes {
+            display: none;
+            background: #f0f7f9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px dashed #1A4A5A;
+            margin-bottom: 25px;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .btn-opcao {
+            background-color: #1A4A5A;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-opcao:hover {
+            background-color: #2a6f84;
+        }
+
         /* ESTILOS ORIGINAIS MANTIDOS */
         .equipamentos-info {
             margin-top: 15px;
@@ -163,11 +191,11 @@
 
             <h4 class="section-title-cards">➤ ENSAIOS QUE DEMANDAM MÚLTIPLOS EQUIPAMENTOS</h4>
             <div class="cards-container">
-                <div class="ensaio-card" onclick="selecionarCard(this, 'DOSAGEM', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1')">
+                <div class="ensaio-card" onclick="iniciarSelecaoMarshall(this, 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1')">
                     <img src="img/ensaio1.jpg" alt="Marshall">
                     <div class="info"><h5>1.1 - Dosagem Marshall: Gmb</h5></div>
                 </div>
-                <div class="ensaio-card" onclick="selecionarCard(this, 'DOSAGEM', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1')">
+                <div class="ensaio-card" onclick="iniciarSelecaoMarshall(this, 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1')">
                     <img src="img/ensaio2.jpg" alt="Marshall Gmm">
                     <div class="info"><h5>1.2 - Dosagem Marshall: Gmm</h5></div>
                 </div>
@@ -179,6 +207,12 @@
                     <img src="img/ensaio4.jpg" alt="Los Angeles">
                     <div class="info"><h5>4 - Abrasão Los Angeles</h5></div>
                 </div>
+            </div>
+
+            <div id="container-escolha-marshall" class="sub-opcoes">
+                <p style="font-weight: 700; color: #1A4A5A; margin-bottom: 15px;">Para este ensaio, selecione o estado da mistura:</p>
+                <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Massa Solta')">Massa Solta</button>
+                <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Mistura Compactada')">Mistura Compactada</button>
             </div>
 
             <h4 class="section-title-cards">➤ EQUIPAMENTOS INDIVIDUAIS</h4>
@@ -224,6 +258,9 @@
     </main> 
 
     <script> 
+        let equipamentosTemp = "";
+        let elementoTemp = null;
+
         function carregarHorarios() { 
             const corpo = document.getElementById('corpo-agenda'); 
             let html = ''; 
@@ -235,6 +272,7 @@
         } 
 
         function selecionarCard(elemento, tipo, equipamentos) {
+            document.getElementById('container-escolha-marshall').style.display = "none";
             document.querySelectorAll('.ensaio-card').forEach(card => card.classList.remove('selected'));
             elemento.classList.add('selected');
 
@@ -245,15 +283,36 @@
             const lista = document.getElementById('lista-equipamentos');
             lista.innerText = equipamentos;
             caixa.style.display = "block";
+        }
 
-            if (tipo === "DOSAGEM") { 
-                const confirmacao = confirm("Atenção: Os procedimentos de DOSAGEM utilizam as 3 estufas simultaneamente. Confirmar uso exclusivo?"); 
-                if (!confirmacao) { 
-                    elemento.classList.remove('selected');
-                    caixa.style.display = "none";
-                    hiddenInput.value = "";
-                } 
-            } 
+        function iniciarSelecaoMarshall(elemento, equipamentos) {
+            document.querySelectorAll('.ensaio-card').forEach(card => card.classList.remove('selected'));
+            elemento.classList.add('selected');
+            
+            equipamentosTemp = equipamentos;
+            elementoTemp = elemento;
+            
+            document.getElementById('caixa-equipamentos').style.display = "none";
+            document.getElementById('container-escolha-marshall').style.display = "block";
+        }
+
+        function finalizarSelecaoMarshall(subtipo) {
+            const confirmacao = confirm("Atenção: Os procedimentos de DOSAGEM utilizam as 3 estufas simultaneamente. Confirmar uso exclusivo?"); 
+            
+            if (confirmacao) {
+                const hiddenInput = document.getElementById('maquina');
+                hiddenInput.value = "DOSAGEM - " + subtipo;
+
+                const caixa = document.getElementById('caixa-equipamentos');
+                const lista = document.getElementById('lista-equipamentos');
+                lista.innerText = equipamentosTemp;
+                caixa.style.display = "block";
+                document.getElementById('container-escolha-marshall').style.display = "none";
+            } else {
+                elementoTemp.classList.remove('selected');
+                document.getElementById('container-escolha-marshall').style.display = "none";
+                document.getElementById('maquina').value = "";
+            }
         }
 
         window.onload = carregarHorarios; 
