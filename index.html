@@ -39,11 +39,13 @@
             box-shadow: 0 0 0 4px rgba(26, 74, 90, 0.1);
         }
 
+        /* AJUSTE NA IMAGEM PARA NÃO CORTAR */
         .ensaio-card img {
             width: 100%;
-            height: 120px;
-            object-fit: cover;
-            background-color: #f4f4f4;
+            height: 150px; /* Aumentei um pouco a altura */
+            object-fit: contain; /* GARANTE QUE A IMAGEM APAREÇA INTEIRA */
+            background-color: #f9f9f9; /* Fundo cinza claro para preencher espaços vazios */
+            padding: 5px; /* Espaço para a imagem não encostar na borda */
         }
 
         .ensaio-card .info {
@@ -52,6 +54,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            border-top: 1px solid #eee;
         }
 
         .ensaio-card h5 {
@@ -113,6 +116,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
+            margin-right: 5px;
         }
 
         .btn-opcao.active {
@@ -126,7 +130,7 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* ESTILOS ORIGINAIS MANTIDOS */
+        /* EQUIPAMENTOS */
         .equipamentos-info {
             margin-top: 15px;
             padding: 15px;
@@ -178,11 +182,11 @@
             <h4 class="section-title-cards">➤ SELECIONE O ENSAIO</h4>
             <div class="cards-container">
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall Gmb', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true)">
-                    <img src="img/Marshall.jpeg" alt="Marshall">
+                    <img src="img/ensaio1.jpg" alt="Dosagem Marshall Gmb">
                     <div class="info"><h5>1.1 - Dosagem Marshall: Gmb</h5></div>
                 </div>
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall Gmm', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true)">
-                    <img src="img/ensaio2.jpg" alt="Marshall Gmm">
+                    <img src="img/ensaio2.jpg" alt="Dosagem Marshall Gmm">
                     <div class="info"><h5>1.2 - Dosagem Marshall: Gmm</h5></div>
                 </div>
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex ou Extrator Soxhlet, Balança 1', false)">
@@ -216,7 +220,7 @@
 
                     <div class="detalhes-item" style="flex-grow: 1;">
                         <label>Observações / Comentários:</label>
-                        <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Ex: Usarei peneiras específicas..." oninput="atualizarDadosFinais()">
+                        <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Ex: Informações adicionais aqui..." oninput="atualizarDadosFinais()">
                     </div>
                 </div>
             </div>
@@ -259,21 +263,16 @@
         } 
 
         function selecionarEnsaio(elemento, nomeEnsaio, equipamentos, ehMarshall) {
-            // Reset visual
             document.querySelectorAll('.ensaio-card').forEach(card => card.classList.remove('selected'));
             document.querySelectorAll('.btn-opcao').forEach(btn => btn.classList.remove('active'));
             
             elemento.classList.add('selected');
             ensaioSelecionado = nomeEnsaio;
-            subtipoSelecionado = ""; // Reset subtipo
+            subtipoSelecionado = "";
 
-            // Exibe a caixa de detalhes
             document.getElementById('container-detalhes').style.display = "block";
-            
-            // Mostra/Esconde botões Marshall
             document.getElementById('opcoes-marshall').style.display = ehMarshall ? "block" : "none";
 
-            // Atualiza Equipamentos
             const caixaEquip = document.getElementById('caixa-equipamentos');
             document.getElementById('lista-equipamentos').innerText = equipamentos;
             caixaEquip.style.display = "block";
@@ -293,7 +292,6 @@
             const obs = document.getElementById('obs-ensaio').value;
             const hiddenInput = document.getElementById('maquina');
             
-            // Formata a string final: "Ensaio - Subtipo (X amostras) [OBS: ...]"
             let textoFinal = `${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)`;
             if(obs) textoFinal += ` [OBS: ${obs}]`;
             
