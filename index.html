@@ -315,19 +315,11 @@
 
         function finalizarSelecaoMarshall(subtipo) {
             const qtd = document.getElementById('qtd-amostras').value;
-            const confirmacao = confirm("Atenção: Os procedimentos de DOSAGEM utilizam as 3 estufas simultaneamente. Confirmar uso exclusivo?"); 
+            const hiddenInput = document.getElementById('maquina');
             
-            if (confirmacao) {
-                const hiddenInput = document.getElementById('maquina');
-                // Salva o tipo e a quantidade no campo hidden
-                hiddenInput.value = "DOSAGEM - " + subtipo + " (" + qtd + " amostras)";
-                document.getElementById('container-escolha-marshall').style.display = "none";
-            } else {
-                elementoTemp.classList.remove('selected');
-                document.getElementById('container-escolha-marshall').style.display = "none";
-                document.getElementById('caixa-equipamentos').style.display = "none";
-                document.getElementById('maquina').value = "";
-            }
+            // Salva o tipo e a quantidade diretamente, sem o alerta de confirmação.
+            hiddenInput.value = "DOSAGEM - " + subtipo + " (" + qtd + " amostras)";
+            document.getElementById('container-escolha-marshall').style.display = "none";
         }
 
         window.onload = carregarHorarios; 
