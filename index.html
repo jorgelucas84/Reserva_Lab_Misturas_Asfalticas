@@ -92,12 +92,21 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: 600;
-            margin: 0 10px;
+            margin: 0 5px;
             transition: background 0.2s;
         }
 
         .btn-opcao:hover {
             background-color: #2a6f84;
+        }
+
+        .input-amostras {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80px;
+            margin: 0 10px;
+            text-align: center;
         }
 
         /* ESTILOS ORIGINAIS MANTIDOS */
@@ -210,9 +219,13 @@
             </div>
 
             <div id="container-escolha-marshall" class="sub-opcoes">
-                <p style="font-weight: 700; color: #1A4A5A; margin-bottom: 15px;">Para este ensaio, selecione o estado da mistura:</p>
-                <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Massa Solta')">Massa Solta</button>
-                <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Mistura Compactada')">Mistura Compactada</button>
+                <p style="font-weight: 700; color: #1A4A5A; margin-bottom: 15px;">Selecione o estado da mistura e a quantidade:</p>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Massa Solta')">Massa Solta</button>
+                    <button class="btn-opcao" onclick="finalizarSelecaoMarshall('Mistura Compactada')">Mistura Compactada</button>
+                    <span style="font-size: 0.9rem; font-weight: 600; color: #555;">| Qtd. Amostras:</span>
+                    <input type="number" id="qtd-amostras" class="input-amostras" value="1" min="1">
+                </div>
             </div>
 
             <h4 class="section-title-cards">➤ EQUIPAMENTOS INDIVIDUAIS</h4>
@@ -292,22 +305,22 @@
             equipamentosTemp = equipamentos;
             elementoTemp = elemento;
             
-            // Exibe a lista de equipamentos IMEDIATAMENTE
             const caixa = document.getElementById('caixa-equipamentos');
             const lista = document.getElementById('lista-equipamentos');
             lista.innerText = equipamentos;
             caixa.style.display = "block";
 
-            // Exibe a nova caixinha de escolha
             document.getElementById('container-escolha-marshall').style.display = "block";
         }
 
         function finalizarSelecaoMarshall(subtipo) {
+            const qtd = document.getElementById('qtd-amostras').value;
             const confirmacao = confirm("Atenção: Os procedimentos de DOSAGEM utilizam as 3 estufas simultaneamente. Confirmar uso exclusivo?"); 
             
             if (confirmacao) {
                 const hiddenInput = document.getElementById('maquina');
-                hiddenInput.value = "DOSAGEM - " + subtipo;
+                // Salva o tipo e a quantidade no campo hidden
+                hiddenInput.value = "DOSAGEM - " + subtipo + " (" + qtd + " amostras)";
                 document.getElementById('container-escolha-marshall').style.display = "none";
             } else {
                 elementoTemp.classList.remove('selected');
