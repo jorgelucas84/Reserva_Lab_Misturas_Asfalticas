@@ -88,9 +88,8 @@
         .detalhes-grid { 
             display: flex; 
             flex-wrap: wrap; 
-            align-items: flex-end; 
-            gap: 15px; 
-            justify-content: center; 
+            align-items: flex-start; 
+            gap: 20px; 
         } 
 
         .detalhes-item { 
@@ -98,6 +97,12 @@
             flex-direction: column; 
             align-items: flex-start; 
         } 
+
+        /* Força a observação a ocupar a linha de baixo */
+        .detalhes-item.full-width {
+            width: 100%;
+            margin-top: 10px;
+        }
 
         .detalhes-item label { 
             font-size: 0.85rem; 
@@ -129,23 +134,23 @@
             font-family: 'Inter', sans-serif; 
         } 
 
-        /* NOVA SEÇÃO DE NORMAS */
+        /* AJUSTE DAS NORMAS PARA FICAR À DIREITA */
         .normas-info {
-            margin-top: 15px;
-            padding: 15px;
+            flex-grow: 1;
+            text-align: right;
+            padding: 10px;
             background-color: #fffbe6;
             border: 1px solid #ffe58f;
             border-radius: 8px;
             display: none;
-            animation: fadeIn 0.3s ease-in-out;
         }
 
-        .normas-info h4 { margin: 0 0 8px 0; color: #856404; font-size: 0.9rem; }
+        .normas-info h4 { margin: 0 0 5px 0; color: #856404; font-size: 0.85rem; }
         .normas-info a { 
             color: #1A4A5A; 
             font-weight: 700; 
             text-decoration: underline; 
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .equipamentos-info { 
@@ -307,16 +312,17 @@
                         <label>Qtd. Amostras:</label> 
                         <input type="number" id="qtd-amostras" class="input-detalhe" style="width: 80px;" value="1" min="1" onchange="atualizarDadosFinais()"> 
                     </div> 
-                    <div class="detalhes-item" style="flex-grow: 1;"> 
+                    
+                    <div id="caixa-normas" class="normas-info">
+                        <h4><span class="icon">📜</span> Norma Técnica</h4>
+                        <p id="link-container"></p>
+                    </div>
+
+                    <div class="detalhes-item full-width"> 
                         <label>Observações / Comentários:</label> 
-                        <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Observações adicionais..." oninput="atualizarDadosFinais()"> 
+                        <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Escreva aqui observações adicionais para este ensaio..." oninput="atualizarDadosFinais()"> 
                     </div> 
                 </div> 
-
-                <div id="caixa-normas" class="normas-info">
-                    <h4><span class="icon">📜</span> Norma Técnica:</h4>
-                    <p id="link-container"></p>
-                </div>
             </div> 
 
             <input type="hidden" id="maquina" value=""> 
@@ -387,9 +393,8 @@
             const linkContainer = document.getElementById('link-container');
             
             if(linkNorma && linkNorma !== '#') {
-                // Aqui criamos dois links: um para visualizar e outro para baixar
                 linkContainer.innerHTML = `
-                    <a href="${linkNorma}" target="_blank">📄 Visualizar Norma</a> | 
+                    <a href="${linkNorma}" target="_blank">📄 Visualizar</a> | 
                     <a href="${linkNorma}" download>💾 Baixar PDF</a>
                 `;
                 caixaNormas.style.display = "block";
