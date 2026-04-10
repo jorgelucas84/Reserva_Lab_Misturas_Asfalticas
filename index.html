@@ -26,7 +26,7 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            min-height: 190px;
+            min-height: 210px; /* Aumentado levemente para caber o link */
         }
 
         .ensaio-card:hover {
@@ -53,8 +53,10 @@
             padding: 8px;
             flex-grow: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 5px;
         }
 
         .ensaio-card h5 {
@@ -63,6 +65,26 @@
             color: #333;
             font-weight: 700;
             line-height: 1.2;
+        }
+
+        /* Estilo do link da Norma */
+        .link-norma {
+            font-size: 0.7rem;
+            color: #D35400;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            background: rgba(211, 84, 0, 0.1);
+            transition: 0.2s;
+        }
+
+        .link-norma:hover {
+            background: #D35400;
+            color: #fff;
         }
 
         .section-title-cards {
@@ -223,55 +245,106 @@
             <div class="cards-container">
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true)">
                     <img src="img/Marshall.jpeg" alt="Dosagem Marshall">
-                    <div class="info"><h5>1 - Dosagem Marshall</h5></div>
+                    <div class="info">
+                        <h5>1 - Dosagem Marshall</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Superpave', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true)">
                     <img src="img/superpave.jpeg" alt="Dosagem Superpave">
-                    <div class="info"><h5>2 - Dosagem Superpave</h5></div>
+                    <div class="info">
+                        <h5>2 - Dosagem Superpave</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex ou Extrator Soxhlet, Balança 1', false)">
                     <img src="img/rotarex.jpeg" alt="Extração">
-                    <div class="info"><h5>3 - Extração de ligante</h5></div>
+                    <div class="info">
+                        <h5>3 - Extração de ligante</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Fluir ligante', 'Bucha de fluidez, Estufa, Cronômetro', false)">
                     <img src="img/fluir.jpeg" alt="Fluir ligante">
-                    <div class="info"><h5>4 - Fluir ligante</h5></div>
+                    <div class="info">
+                        <h5>4 - Fluir ligante</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Homogeneização e quarteamento', 'Quarteador de solo, Bandejas, Espátulas', false)">
                     <img src="img/quarte.jpeg" alt="Homogeneização">
-                    <div class="info"><h5>5 - Homogeneização e quarteamento</h5></div>
+                    <div class="info">
+                        <h5>5 - Homogeneização e quarteamento</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Abrasão Los Angeles', 'Máquina Los Angeles, Jogo de Peneiras, Balança 1', false)">
                     <img src="img/la.jpeg" alt="Los Angeles">
-                    <div class="info"><h5>6 - Abrasão Los Angeles</h5></div>
+                    <div class="info">
+                        <h5>6 - Abrasão Los Angeles</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Banho-maria, Balança hidrostática', false)">
                     <img src="img/dens.jpeg" alt="Densidade">
-                    <div class="info"><h5>7 - Densidade e absorção</h5></div>
+                    <div class="info">
+                        <h5>7 - Densidade e absorção</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Tradicional)', 'Estufa, Placas de vidro, Agregados', false)">
                     <img src="img/adesiv.jpeg" alt="Adesividade Tradicional">
-                    <div class="info"><h5>8 - Adesividade (Tradicional)</h5></div>
+                    <div class="info">
+                        <h5>8 - Adesividade (Tradicional)</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Asphalt Bond Strength)', 'Pneumatic Adhesion Tester (PAT), Pastilhas, Estufa', false)">
                     <img src="img/abs.jpeg" alt="Adesividade ABS">
-                    <div class="info"><h5>9 - Adesividade (Asphalt Bond Strength)</h5></div>
+                    <div class="info">
+                        <h5>9 - Adesividade (Asphalt Bond Strength)</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Granulometria', 'Agitador de peneiras, Jogo de peneiras, Balança', false)">
                     <img src="img/granu.jpeg" alt="Granulometria">
-                    <div class="info"><h5>10 - Granulometria</h5></div>
+                    <div class="info">
+                        <h5>10 - Granulometria</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Indice de forma', 'Paquímetro, Agulha de forma, Bandejas', false)">
                     <img src="img/if.jpeg" alt="Indice de forma">
-                    <div class="info"><h5>11 - Indice de forma</h5></div>
+                    <div class="info">
+                        <h5>11 - Indice de forma</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Sanidade', 'Solução de sulfato, Estufa, Peneiras', false)">
                     <img src="img/sani.jpeg" alt="Sanidade">
-                    <div class="info"><h5>12 - Sanidade</h5></div>
+                    <div class="info">
+                        <h5>12 - Sanidade</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
+
                 <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Secagem de material/Estufa', 'Estufa de circulação forçada, Bandejas', false)">
                     <img src="img/estufa.jpeg" alt="Secagem">
-                    <div class="info"><h5>13 - Secagem de material/Estufa</h5></div>
+                    <div class="info">
+                        <h5>13 - Secagem de material/Estufa</h5>
+                        <a href="#" class="link-norma" onclick="event.stopPropagation()">📄 Norma PDF</a>
+                    </div>
                 </div>
             </div>
 
@@ -325,7 +398,6 @@
         let ensaioSelecionado = "";
         let subtipoSelecionado = "";
 
-        // Função para gerar a tabela de horários
         function carregarHorarios() { 
             const corpo = document.getElementById('corpo-agenda'); 
             if (!corpo) return;
@@ -383,15 +455,10 @@
             hiddenInput.value = textoFinal;
         }
 
-        // TÉCNICA PARA EVITAR QUE O SCRIPT EXTERNO APAGUE OS HORÁRIOS:
-        // Executa uma vez no carregamento e outra após 1 segundo como garantia.
         window.addEventListener('load', () => {
             carregarHorarios();
             setTimeout(carregarHorarios, 1000); 
         });
-
-        // Caso o seu script.js tenha alguma função que precise ser chamada, 
-        // ele continuará funcionando normalmente através da tag script abaixo.
     </script> 
     <script src="script.js"></script>
 </body> 
