@@ -129,6 +129,25 @@
             font-family: 'Inter', sans-serif; 
         } 
 
+        /* NOVA SEÇÃO DE NORMAS */
+        .normas-info {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fffbe6;
+            border: 1px solid #ffe58f;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .normas-info h4 { margin: 0 0 8px 0; color: #856404; font-size: 0.9rem; }
+        .normas-info a { 
+            color: #1A4A5A; 
+            font-weight: 700; 
+            text-decoration: underline; 
+            font-size: 0.85rem;
+        }
+
         .equipamentos-info { 
             margin-top: 15px; 
             padding: 15px; 
@@ -221,55 +240,55 @@
 
             <h4 class="section-title-cards">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4> 
             <div class="cards-container"> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-043_2004-me.pdf')"> 
                     <img src="img/Marshall.jpeg" alt="Dosagem Marshall"> 
                     <div class="info"><h5>1 - Dosagem Marshall</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Superpave', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Superpave', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true, 'https://www.normas.com.br/visualizar/asphalt-institute-superpave-mix-design')"> 
                     <img src="img/superpave.jpeg" alt="Dosagem Superpave"> 
                     <div class="info"><h5>2 - Dosagem Superpave</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex ou Extrator Soxhlet, Balança 1', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex ou Extrator Soxhlet, Balança 1', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-144_2014-me.pdf')"> 
                     <img src="img/rotarex.jpeg" alt="Extração"> 
                     <div class="info"><h5>3 - Extração de ligante</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Fluir ligante', 'Bucha de fluidez, Estufa, Cronômetro', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Fluir ligante', 'Bucha de fluidez, Estufa, Cronômetro', false, '#')"> 
                     <img src="img/fluir.jpeg" alt="Fluir ligante"> 
                     <div class="info"><h5>4 - Fluir ligante</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Homogeneização e quarteamento', 'Quarteador de solo, Bandejas, Espátulas', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Homogeneização e quarteamento', 'Quarteador de solo, Bandejas, Espátulas', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-147_2014-me.pdf')"> 
                     <img src="img/quarte.jpeg" alt="Homogeneização"> 
                     <div class="info"><h5>5 - Homogeneização e quarteamento</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Abrasão Los Angeles', 'Máquina Los Angeles, Jogo de Peneiras, Balança 1', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Abrasão Los Angeles', 'Máquina Los Angeles, Jogo de Peneiras, Balança 1', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-164_2013-me.pdf')"> 
                     <img src="img/la.jpeg" alt="Los Angeles"> 
                     <div class="info"><h5>6 - Abrasão Los Angeles</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Banho-maria, Balança hidrostática', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Banho-maria, Balança hidrostática', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-117_2010-me.pdf')"> 
                     <img src="img/dens.jpeg" alt="Densidade"> 
                     <div class="info"><h5>7 - Densidade e absorção</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Tradicional)', 'Estufa, Placas de vidro, Agregados', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Tradicional)', 'Estufa, Placas de vidro, Agregados', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-078_2006-me.pdf')"> 
                     <img src="img/adesiv.jpeg" alt="Adesividade Tradicional"> 
                     <div class="info"><h5>8 - Adesividade (Tradicional)</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Asphalt Bond Strength)', 'Pneumatic Adhesion Tester (PAT), Pastilhas, Estufa', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Asphalt Bond Strength)', 'Pneumatic Adhesion Tester (PAT), Pastilhas, Estufa', false, '#')"> 
                     <img src="img/abs.jpeg" alt="Adesividade ABS"> 
                     <div class="info"><h5>9 - Adesividade (Asphalt Bond Strength)</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Granulometria', 'Agitador de peneiras, Jogo de peneiras, Balança', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Granulometria', 'Agitador de peneiras, Jogo de peneiras, Balança', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-011_2004-me.pdf')"> 
                     <img src="img/granu.jpeg" alt="Granulometria"> 
                     <div class="info"><h5>10 - Granulometria</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Indice de forma', 'Paquímetro, Agulha de forma, Bandejas', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Indice de forma', 'Paquímetro, Agulha de forma, Bandejas', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-014_2004-me.pdf')"> 
                     <img src="img/if.jpeg" alt="Indice de forma"> 
                     <div class="info"><h5>11 - Indice de forma</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Sanidade', 'Solução de sulfato, Estufa, Peneiras', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Sanidade', 'Solução de sulfato, Estufa, Peneiras', false, 'https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/ipr/coletanea-de-normas/normas-de-ensaio-me/dnit-089_2006-me.pdf')"> 
                     <img src="img/sani.jpeg" alt="Sanidade"> 
                     <div class="info"><h5>12 - Sanidade</h5></div> 
                 </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Secagem de material/Estufa', 'Estufa de circulação forçada, Bandejas', false)"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Secagem de material/Estufa', 'Estufa de circulação forçada, Bandejas', false, '#')"> 
                     <img src="img/estufa.jpeg" alt="Secagem"> 
                     <div class="info"><h5>13 - Secagem de material/Estufa</h5></div> 
                 </div> 
@@ -293,6 +312,11 @@
                         <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Observações adicionais..." oninput="atualizarDadosFinais()"> 
                     </div> 
                 </div> 
+
+                <div id="caixa-normas" class="normas-info">
+                    <h4><span class="icon">📜</span> Norma Técnica:</h4>
+                    <p>Clique para visualizar a norma do ensaio: <a id="link-norma" href="#" target="_blank">Ver Norma (PDF/Web)</a></p>
+                </div>
             </div> 
 
             <input type="hidden" id="maquina" value=""> 
@@ -344,7 +368,7 @@
             corpo.innerHTML = html;  
         }  
 
-        function selecionarEnsaio(elemento, nomeEnsaio, equipamentos, ehMarshall) { 
+        function selecionarEnsaio(elemento, nomeEnsaio, equipamentos, ehMarshall, linkNorma) { 
             document.querySelectorAll('.ensaio-card').forEach(card => card.classList.remove('selected')); 
             document.querySelectorAll('.btn-opcao').forEach(btn => btn.classList.remove('active')); 
             
@@ -355,9 +379,20 @@
             document.getElementById('container-detalhes').style.display = "block"; 
             document.getElementById('opcoes-marshall').style.display = ehMarshall ? "block" : "none"; 
 
+            // Atualiza Equipamentos
             const caixaEquip = document.getElementById('caixa-equipamentos'); 
             document.getElementById('lista-equipamentos').innerText = equipamentos; 
             caixaEquip.style.display = "block"; 
+
+            // Atualiza Normas
+            const caixaNormas = document.getElementById('caixa-normas');
+            const anchorNorma = document.getElementById('link-norma');
+            if(linkNorma && linkNorma !== '#') {
+                anchorNorma.href = linkNorma;
+                caixaNormas.style.display = "block";
+            } else {
+                caixaNormas.style.display = "none";
+            }
             
             document.getElementById('texto-instrucoes').innerText = `Você selecionou: ${nomeEnsaio}. Certifique-se de reservar os horários necessários para este ensaio na tabela abaixo.`; 
 
