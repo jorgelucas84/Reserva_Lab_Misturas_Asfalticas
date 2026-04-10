@@ -329,9 +329,10 @@
 
         function carregarHorarios() { 
             const corpo = document.getElementById('corpo-agenda'); 
+            if (!corpo) return;
             let html = ''; 
-            for (let h = 7; h <= 17; h++) { 
-                const intervalo = `${h}:00 - ${h+1}:00`; 
+            for (let h = 7; h <= 16; h++) { 
+                const intervalo = `${h.toString().padStart(2, '0')}:00 - ${(h+1).toString().padStart(2, '0')}:00`; 
                 html += `<tr>
                             <td class="col-horario">${intervalo}</td>
                             <td class="status-disponivel" id="status-${h}">Disponível</td>
@@ -379,7 +380,8 @@
             hiddenInput.value = textoFinal;
         }
 
-        window.onload = carregarHorarios; 
+        // Garante que os horários carreguem após o DOM estar pronto
+        window.addEventListener('DOMContentLoaded', carregarHorarios);
     </script> 
     <script src="script.js"></script>
 </body> 
