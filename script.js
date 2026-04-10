@@ -70,7 +70,6 @@ async function carregarReservas() {
     }
 }
 
-// ESTA É A FUNÇÃO QUE FOI ALTERADA:
 function atualizarAgenda() {
     if (!corpoAgenda) return;
     corpoAgenda.innerHTML = '';
@@ -79,7 +78,6 @@ function atualizarAgenda() {
 
     mostrarInstrucoes();
 
-    // Loop alterado para começar às 07:00 e terminar às 17:00
     for (let hora = 7; hora <= 16; hora++) {
         const inicio = hora.toString().padStart(2, '0') + ":00";
         const fim = (hora + 1).toString().padStart(2, '0') + ":00";
@@ -154,6 +152,7 @@ async function reservarSelecionados() {
     try {
         const response = await fetch(URL_API, {
             method: 'POST',
+            // Removido mode: 'no-cors' para permitir leitura da resposta do Google
             body: JSON.stringify({ 
                 action: 'reservar_lote', 
                 senha: senhaInformada,
@@ -166,15 +165,16 @@ async function reservarSelecionados() {
         
         if (resultado.includes("Erro: Senha Incorreta")) {
             alert("Senha incorreta!");
+            btn.disabled = false;
+            btn.innerText = "Confirmar Reservas Selecionadas";
         } else {
-            alert("Reservas confirmadas com sucesso!");
+            alert("Solicitação enviada com sucesso! O Rômulo receberá a notificação no WhatsApp para aprovação.");
             selecoesTemporarias.clear();
             document.getElementById('senha-lab').value = "";
             carregarReservas();
         }
     } catch (e) {
-        alert("Erro na conexão.");
-    } finally {
+        alert("Erro na conexão ou no envio da solicitação.");
         btn.disabled = false;
         btn.innerText = "Confirmar Reservas Selecionadas";
     }
