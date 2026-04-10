@@ -77,10 +77,11 @@
 
         .detalhes-ensaio { 
             display: none; 
-            background: #f0f7f9; 
+            background: #f8fafb; 
             padding: 20px; 
-            border-radius: 12px; 
-            border: 2px dashed #1A4A5A; 
+            border-radius: 16px; 
+            border: 1px solid #e1e8ed; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 25px; 
             animation: fadeIn 0.3s ease-in-out; 
         } 
@@ -88,7 +89,7 @@
         .detalhes-grid { 
             display: flex; 
             flex-wrap: wrap; 
-            align-items: flex-start; 
+            align-items: flex-end; 
             gap: 20px; 
         } 
 
@@ -98,59 +99,86 @@
             align-items: flex-start; 
         } 
 
-        /* Força a observação a ocupar a linha de baixo */
         .detalhes-item.full-width {
             width: 100%;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .detalhes-item label { 
-            font-size: 0.85rem; 
+            font-size: 0.8rem; 
             font-weight: 700; 
             color: #1A4A5A; 
-            margin-bottom: 5px; 
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         } 
 
         .btn-opcao { 
-            background-color: #1A4A5A; 
+            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);
             color: white; 
-            padding: 10px 15px; 
+            padding: 10px 18px; 
             border: none; 
-            border-radius: 5px; 
+            border-radius: 8px; 
             cursor: pointer; 
             font-weight: 600; 
-            transition: all 0.2s; 
-            margin-right: 5px; 
+            transition: all 0.3s ease; 
+            margin-right: 8px; 
+            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         } 
 
+        .btn-opcao:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
         .btn-opcao.active { 
-            background-color: #D35400 !important; 
+            background: linear-gradient(135deg, #D35400 0%, #E67E22 100%) !important; 
         } 
 
         .input-detalhe { 
             padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
+            border: 1px solid #d1d9e0; 
+            border-radius: 8px; 
             font-family: 'Inter', sans-serif; 
+            background: white;
         } 
 
-        /* AJUSTE DAS NORMAS PARA FICAR À DIREITA */
+        /* CAIXA DE NORMAS MODERNA */
         .normas-info {
-            flex-grow: 1;
-            text-align: right;
-            padding: 10px;
-            background-color: #fffbe6;
-            border: 1px solid #ffe58f;
-            border-radius: 8px;
+            margin-left: auto;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #f0f7f9 0%, #e6f0f3 100%);
+            border: 1px solid #1A4A5A;
+            border-radius: 12px;
             display: none;
+            min-width: 220px;
+            text-align: center;
         }
 
-        .normas-info h4 { margin: 0 0 5px 0; color: #856404; font-size: 0.85rem; }
+        .normas-info h4 { 
+            margin: 0 0 8px 0; 
+            color: #1A4A5A; 
+            font-size: 0.75rem; 
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+        
+        .normas-info p { margin: 0; }
+
         .normas-info a { 
             color: #1A4A5A; 
             font-weight: 700; 
-            text-decoration: underline; 
+            text-decoration: none; 
             font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .normas-info a:hover {
+            background: rgba(26, 74, 90, 0.1);
+            text-decoration: underline;
         }
 
         .equipamentos-info { 
@@ -314,7 +342,7 @@
                     </div> 
                     
                     <div id="caixa-normas" class="normas-info">
-                        <h4><span class="icon">📜</span> Norma Técnica</h4>
+                        <h4>📜 Norma Técnica</h4>
                         <p id="link-container"></p>
                     </div>
 
@@ -394,8 +422,8 @@
             
             if(linkNorma && linkNorma !== '#') {
                 linkContainer.innerHTML = `
-                    <a href="${linkNorma}" target="_blank">📄 Visualizar</a> | 
-                    <a href="${linkNorma}" download>💾 Baixar PDF</a>
+                    <a href="${linkNorma}" target="_blank">Visualizar</a> | 
+                    <a href="${linkNorma}" download>Baixar PDF</a>
                 `;
                 caixaNormas.style.display = "block";
             } else {
