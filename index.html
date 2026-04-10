@@ -129,23 +129,33 @@
             font-family: 'Inter', sans-serif; 
         } 
 
-        /* NOVA SEÇÃO DE NORMAS */
-        .normas-info {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #fffbe6;
-            border: 1px solid #ffe58f;
+        /* ESTILO DO BOTÃO DE NORMA SUTIL */
+        .btn-norma-sutil {
+            display: none; /* Inicia oculto */
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #1A4A5A;
+            transition: all 0.2s;
+            padding: 5px 10px;
             border-radius: 8px;
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
+            border: 1px solid transparent;
         }
 
-        .normas-info h4 { margin: 0 0 8px 0; color: #856404; font-size: 0.9rem; }
-        .normas-info a { 
-            color: #1A4A5A; 
-            font-weight: 700; 
-            text-decoration: underline; 
-            font-size: 0.85rem;
+        .btn-norma-sutil:hover {
+            background: rgba(26, 74, 90, 0.1);
+            border-color: #1A4A5A;
+        }
+
+        .btn-norma-sutil span {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .btn-norma-sutil .icon-pdf {
+            font-size: 1.5rem;
         }
 
         .equipamentos-info { 
@@ -310,13 +320,13 @@
                     <div class="detalhes-item" style="flex-grow: 1;"> 
                         <label>Observações / Comentários:</label> 
                         <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Observações adicionais..." oninput="atualizarDadosFinais()"> 
-                    </div> 
+                    </div>
+                    
+                    <a id="btn-link-norma" href="#" target="_blank" class="btn-norma-sutil">
+                        <span>Norma Técnica</span>
+                        <div class="icon-pdf">📄</div>
+                    </a>
                 </div> 
-
-                <div id="caixa-normas" class="normas-info">
-                    <h4><span class="icon">📜</span> Norma Técnica:</h4>
-                    <p>Clique para visualizar a norma do ensaio: <a id="link-norma" href="#" target="_blank">Ver Norma (PDF/Web)</a></p>
-                </div>
             </div> 
 
             <input type="hidden" id="maquina" value=""> 
@@ -384,14 +394,13 @@
             document.getElementById('lista-equipamentos').innerText = equipamentos; 
             caixaEquip.style.display = "block"; 
 
-            // Atualiza Normas
-            const caixaNormas = document.getElementById('caixa-normas');
-            const anchorNorma = document.getElementById('link-norma');
+            // Atualiza Botão Sutil de Norma
+            const btnNorma = document.getElementById('btn-link-norma');
             if(linkNorma && linkNorma !== '#') {
-                anchorNorma.href = linkNorma;
-                caixaNormas.style.display = "block";
+                btnNorma.href = linkNorma;
+                btnNorma.style.display = "flex";
             } else {
-                caixaNormas.style.display = "none";
+                btnNorma.style.display = "none";
             }
             
             document.getElementById('texto-instrucoes').innerText = `Você selecionou: ${nomeEnsaio}. Certifique-se de reservar os horários necessários para este ensaio na tabela abaixo.`; 
