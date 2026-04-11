@@ -1,4 +1,4 @@
-const URL_API = "https://script.google.com/macros/s/AKfycbwsrMhOXBzFDepqd50ipswFA-NDr6jdQBnqtJ5t86a3wFjGO4NeozqmsbB5rIwlcP8Q/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbx2i7ZcdLE4qyU9RDtIeWZj0bpNIf5Ol2ULlnpy2V3xZfdAVe4kmlApmCbW0DxLQw/exec";
 
 const corpoAgenda = document.getElementById('corpo-agenda');
 const seletorData = document.getElementById('data');
