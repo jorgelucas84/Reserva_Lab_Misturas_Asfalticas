@@ -6,13 +6,21 @@ const seletorMaquina = document.getElementById('maquina');
 let reservasGlobais = {};
 let selecoesTemporarias = new Set();
 
-// --- CONFIGURAÇÕES DE CONFLITO (IDs DO PRINT) ---
-// 1: Marshall / 2: Superpave / 4: Fluir / 8: Adesividade / 9: Asphalt Bond / 13: Secagem
+// --- CONFIGURAÇÕES DE CONFLITO (IDs DO SEU PRINT) ---
 const maquinasEstufa = ["1", "2", "4", "8", "9", "13"]; 
 const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave fecham a estufa
 
+// --- LIMITAÇÃO DE DATA (2 SEMANAS) ---
 if (seletorData) {
-    seletorData.min = new Date().toISOString().split("T")[0];
+    const hoje = new Date();
+    const dataMinima = hoje.toISOString().split("T")[0];
+    
+    const duasSemanasDepois = new Date();
+    duasSemanasDepois.setDate(hoje.getDate() + 14);
+    const dataMaxima = duasSemanasDepois.toISOString().split("T")[0];
+    
+    seletorData.min = dataMinima;
+    seletorData.max = dataMaxima;
 }
 
 const instrucoesMaquinas = {
@@ -48,7 +56,6 @@ function mostrarInstrucoes() {
 async function carregarReservas() {
     if (!corpoAgenda) return;
     corpoAgenda.innerHTML = '<tr><td colspan="3">Carregando horários...</td></tr>';
-    
     try {
         const response = await fetch(URL_API);
         const texto = await response.text();
@@ -62,6 +69,15 @@ async function carregarReservas() {
 
 function atualizarAgenda() {
     if (!corpoAgenda) return;
+    
+    // --- BLOQUEIO DE FIM DE SEMANA ---
+    const dataObj = new Date(seletorData.value + 'T00:00:00');
+    const diaSemana = dataObj.getDay(); // 0 = Domingo, 6 = Sábado
+    if (diaSemana === 0 || diaSemana === 6) {
+        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:orange; text-align:center; font-weight:bold; padding: 20px;">⚠️ O laboratório não funciona aos sábados e domingos. Por favor, selecione um dia útil.</td></tr>';
+        return;
+    }
+
     corpoAgenda.innerHTML = '';
     const dataSelecionada = seletorData.value;
     const maquinaSelecionadaTexto = seletorMaquina.value || "LMP";
@@ -76,17 +92,14 @@ function atualizarAgenda() {
         let motivoBloqueio = "";
         const nomeReserva = reservasGlobais[chaveAtual];
 
-        // Lógica de Detecção de Conflito de Estufa
         let temDosagemNoHorario = false;
         let temOutraEstufaNoHorario = false;
 
         Object.keys(reservasGlobais).forEach(chaveExistente => {
-            // Filtra reservas da mesma DATA e mesmo HORÁRIO
             if (chaveExistente.startsWith(dataSelecionada) && chaveExistente.endsWith(`-${hora}`)) {
                 const partes = chaveExistente.split('-');
                 if (partes.length >= 4) {
-                    const idExistente = partes[3].split(' ')[0]; // Pega o ID (1, 2, 4...)
-                    
+                    const idExistente = partes[3].split(' ')[0];
                     if (maquinasPrioritarias.includes(idExistente)) temDosagemNoHorario = true;
                     if (maquinasEstufa.includes(idExistente) && !maquinasPrioritarias.includes(idExistente)) {
                         temOutraEstufaNoHorario = true;
@@ -95,7 +108,6 @@ function atualizarAgenda() {
             }
         });
 
-        // Aplicação das Regras
         if (nomeReserva) {
             motivoBloqueio = `Reservado por: ${nomeReserva}`;
         } else if (maquinasPrioritarias.includes(idMaquinaSelecionada) && temOutraEstufaNoHorario) {
