@@ -6,25 +6,29 @@ const seletorMaquina = document.getElementById('maquina');
 let reservasGlobais = {};
 let selecoesTemporarias = new Set();
 
+// --- CONFIGURAÇÕES DE CONFLITO (IDs DO PRINT) ---
+// 1: Marshall / 2: Superpave / 4: Fluir / 8: Adesividade / 9: Asphalt Bond / 13: Secagem
+const maquinasEstufa = ["1", "2", "4", "8", "9", "13"]; 
+const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave fecham a estufa
+
 if (seletorData) {
     seletorData.min = new Date().toISOString().split("T")[0];
 }
 
 const instrucoesMaquinas = {
-    "1": "O(a) solicitante pela coleta deverá enviar e-mail para Jorge Lucas (jorgelucas@det.ufc.br)... \n\nEquipamentos: Pá e Sacos.",
-    "2": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Quarteador.",
-    "3": "Manter fechada a porta onde o peneirador está localizado. \n\nEquipamentos: Balança, Peneirador e Peneiras.",
+    "1": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Compactador Marshall, Estufa, Misturador e Peneira.",
+    "2": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Bomba de vácuo, Compactador Giratório, Estufa, Misturador e Peneira.",
+    "3": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Extrator Centrifugo (Rotarex).",
     "4": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança e Estufa.",
-    "5": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Crivos circulares e Crivos redutores.",
-    "6": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa, Balança e Peneiras.",
-    "7": "Iniciar o ensaio sexta-feira para finalizar na segunda-feira. \n\nEquipamentos: Bequer, Estufa e Peneira.",
-    "8": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Agitador, Balança, Bequer, Estufa e Peneira.",
-    "9": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Compactador Marshall, Estufa, Misturador e Peneira.",
-    "10": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Bomba de vácuo, Compactador Giratório, Estufa, Misturador e Peneira.",
-    "11": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Cilindro, Compactador e Estufa.",
-    "12": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Estufa Peneira e Rotarex.",
-    "13": "Preferencialmente, colocar o material na estufa ao final do dia e retirar no começo da manhã do dia seguinte. \n\nEquipamentos: Estufa.",
-    "14": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa."
+    "5": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Quarteador.",
+    "6": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Maquina Los Angeles e Peneiras.",
+    "7": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança e recipientes.",
+    "8": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa e vidrarias.",
+    "9": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa e equipamento de tração.",
+    "10": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Peneiras e agitador.",
+    "11": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Paquímetro ou gabarito.",
+    "12": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Solução de Sulfato e recipientes.",
+    "13": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa."
 };
 
 function configurarDataAtual() {
@@ -46,24 +50,13 @@ async function carregarReservas() {
     corpoAgenda.innerHTML = '<tr><td colspan="3">Carregando horários...</td></tr>';
     
     try {
-        console.log("Tentando buscar dados de:", URL_API);
         const response = await fetch(URL_API);
-        
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        
         const texto = await response.text();
-        console.log("Resposta bruta do servidor:", texto);
-
-        try {
-            reservasGlobais = JSON.parse(texto);
-            atualizarAgenda();
-        } catch (jsonError) {
-            console.error("Erro ao processar JSON:", jsonError);
-            corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">O servidor não enviou um formato válido. Verifique a publicação do Script.</td></tr>';
-        }
+        reservasGlobais = JSON.parse(texto);
+        atualizarAgenda();
     } catch (e) {
         console.error("Erro na requisição:", e);
-        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">Erro ao carregar dados. Verifique a conexão ou o console (F12).</td></tr>';
+        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">Erro ao carregar dados.</td></tr>';
     }
 }
 
@@ -71,24 +64,56 @@ function atualizarAgenda() {
     if (!corpoAgenda) return;
     corpoAgenda.innerHTML = '';
     const dataSelecionada = seletorData.value;
-    const maquinaSelecionada = seletorMaquina.value || "LMP";
+    const maquinaSelecionadaTexto = seletorMaquina.value || "LMP";
+    const idMaquinaSelecionada = maquinaSelecionadaTexto.split(' ')[0];
 
     mostrarInstrucoes();
 
     for (let hora = 7; hora <= 16; hora++) {
         const horarioFormatado = `${hora.toString().padStart(2, '0')}:00 - ${(hora + 1).toString().padStart(2, '0')}:00`;
-        const chaveReserva = `${dataSelecionada}-${maquinaSelecionada}-${hora}`;
-        const nomeReserva = reservasGlobais[chaveReserva];
-        const estaMarcado = selecoesTemporarias.has(chaveReserva) ? 'checked' : '';
+        const chaveAtual = `${dataSelecionada}-${maquinaSelecionadaTexto}-${hora}`;
+        
+        let motivoBloqueio = "";
+        const nomeReserva = reservasGlobais[chaveAtual];
+
+        // Lógica de Detecção de Conflito de Estufa
+        let temDosagemNoHorario = false;
+        let temOutraEstufaNoHorario = false;
+
+        Object.keys(reservasGlobais).forEach(chaveExistente => {
+            // Filtra reservas da mesma DATA e mesmo HORÁRIO
+            if (chaveExistente.startsWith(dataSelecionada) && chaveExistente.endsWith(`-${hora}`)) {
+                const partes = chaveExistente.split('-');
+                if (partes.length >= 4) {
+                    const idExistente = partes[3].split(' ')[0]; // Pega o ID (1, 2, 4...)
+                    
+                    if (maquinasPrioritarias.includes(idExistente)) temDosagemNoHorario = true;
+                    if (maquinasEstufa.includes(idExistente) && !maquinasPrioritarias.includes(idExistente)) {
+                        temOutraEstufaNoHorario = true;
+                    }
+                }
+            }
+        });
+
+        // Aplicação das Regras
+        if (nomeReserva) {
+            motivoBloqueio = `Reservado por: ${nomeReserva}`;
+        } else if (maquinasPrioritarias.includes(idMaquinaSelecionada) && temOutraEstufaNoHorario) {
+            motivoBloqueio = "Indisponível (Estufa em uso)";
+        } else if (["4", "8", "9", "13"].includes(idMaquinaSelecionada) && temDosagemNoHorario) {
+            motivoBloqueio = "Indisponível (Prioridade Dosagem)";
+        }
+
+        const estaMarcado = selecoesTemporarias.has(chaveAtual) ? 'checked' : '';
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${horarioFormatado}</td>
-            <td class="${nomeReserva ? 'ocupado' : 'status-disponivel'}">
-                ${nomeReserva ? `Reservado por: ${nomeReserva}` : 'Disponível'}
+            <td class="${motivoBloqueio ? 'ocupado' : 'status-disponivel'}">
+                ${motivoBloqueio ? motivoBloqueio : 'Disponível'}
             </td>
             <td>
-                ${nomeReserva ? '---' : `<input type="checkbox" class="chk-reserva" value="${chaveReserva}" ${estaMarcado} onchange="gerenciarSelecao(this)">`}
+                ${motivoBloqueio ? '---' : `<input type="checkbox" class="chk-reserva" value="${chaveAtual}" ${estaMarcado} onchange="gerenciarSelecao(this)">`}
             </td>
         `;
         corpoAgenda.appendChild(tr);
@@ -132,30 +157,20 @@ async function reservarSelecionados() {
         
         if (resultado.includes("Erro: Senha Incorreta")) {
             alert("Senha incorreta!");
-            btn.disabled = false;
-            btn.innerText = "Confirmar Reservas Selecionadas";
         } else if (resultado.startsWith("http")) { 
-            // O servidor devolveu o link do WhatsApp, vamos abri-lo!
-            alert("Solicitação enviada! Você será redirecionado ao WhatsApp para enviar a aprovação.");
-            window.location.href = resultado; // Redireciona na mesma aba para evitar bloqueio de pop-up
-            
-            // Limpa os campos e recarrega a tabela
+            alert("Solicitação enviada! Redirecionando ao WhatsApp...");
+            window.location.href = resultado;
             selecoesTemporarias.clear();
             document.getElementById('senha-lab').value = "";
             carregarReservas();
-            
-            btn.disabled = false;
-            btn.innerText = "Confirmar Reservas Selecionadas";
         } else {
             alert("Solicitação processada.");
             selecoesTemporarias.clear();
-            document.getElementById('senha-lab').value = "";
             carregarReservas();
-            btn.disabled = false;
-            btn.innerText = "Confirmar Reservas Selecionadas";
         }
     } catch (e) {
         alert("Erro no envio.");
+    } finally {
         btn.disabled = false;
         btn.innerText = "Confirmar Reservas Selecionadas";
     }
