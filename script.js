@@ -137,7 +137,7 @@ async function reservarSelecionados() {
         } else if (resultado.startsWith("http")) { 
             // O servidor devolveu o link do WhatsApp, vamos abri-lo!
             alert("Solicitação enviada! Você será redirecionado ao WhatsApp para enviar a aprovação.");
-            window.open(resultado, '_blank'); // Abre a aba do WhatsApp
+            window.location.href = resultado; // Redireciona na mesma aba para evitar bloqueio de pop-up
             
             // Limpa os campos e recarrega a tabela
             selecoesTemporarias.clear();
