@@ -129,18 +129,35 @@ async function reservarSelecionados() {
         });
 
         const resultado = await response.text();
+        
         if (resultado.includes("Erro: Senha Incorreta")) {
             alert("Senha incorreta!");
             btn.disabled = false;
-        } else {
-            alert("Solicitação enviada com sucesso!");
+            btn.innerText = "Confirmar Reservas Selecionadas";
+        } else if (resultado.startsWith("http")) { 
+            // O servidor devolveu o link do WhatsApp, vamos abri-lo!
+            alert("Solicitação enviada! Você será redirecionado ao WhatsApp para enviar a aprovação.");
+            window.open(resultado, '_blank'); // Abre a aba do WhatsApp
+            
+            // Limpa os campos e recarrega a tabela
             selecoesTemporarias.clear();
             document.getElementById('senha-lab').value = "";
             carregarReservas();
+            
+            btn.disabled = false;
+            btn.innerText = "Confirmar Reservas Selecionadas";
+        } else {
+            alert("Solicitação processada.");
+            selecoesTemporarias.clear();
+            document.getElementById('senha-lab').value = "";
+            carregarReservas();
+            btn.disabled = false;
+            btn.innerText = "Confirmar Reservas Selecionadas";
         }
     } catch (e) {
         alert("Erro no envio.");
         btn.disabled = false;
+        btn.innerText = "Confirmar Reservas Selecionadas";
     }
 }
 
