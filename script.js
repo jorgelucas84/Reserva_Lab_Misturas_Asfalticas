@@ -1,4 +1,5 @@
-https://script.google.com/macros/s/AKfycbwsrMhOXBzFDepqd50ipswFA-NDr6jdQBnqtJ5t86a3wFjGO4NeozqmsbB5rIwlcP8Q/exec;
+// URL do Web App do Google Apps Script
+const URL_API = "https://script.google.com/macros/s/AKfycbwsrMhOXBzFDepqd50ipswFA-NDr6jdQBnqtJ5t86a3wFjGO4NeozqmsbB5rIwlcP8Q/exec";
 
 const corpoAgenda = document.getElementById('corpo-agenda');
 const seletorData = document.getElementById('data');
@@ -6,10 +7,12 @@ const seletorMaquina = document.getElementById('maquina');
 let reservasGlobais = {};
 let selecoesTemporarias = new Set();
 
+// Configura a data mínima como hoje
 if (seletorData) {
     seletorData.min = new Date().toISOString().split("T")[0];
 }
 
+// Formatação visual das instruções de ensaio
 function formatarInstrucao(texto) {
     if (!texto) return "Selecione um ensaio para ver as instruções.";
     return texto.replace(
@@ -18,6 +21,7 @@ function formatarInstrucao(texto) {
     ).replace(/\n/g, "<br>");
 }
 
+// Dicionário de instruções técnicas por equipamento
 const instrucoesMaquinas = {
     "1": "O(a) solicitante pela coleta deverá enviar e-mail para Jorge Lucas (jorgelucas@det.ufc.br)... \n\nEquipamentos: Pá e Sacos.",
     "2": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Quarteador.",
@@ -31,7 +35,7 @@ const instrucoesMaquinas = {
     "10": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Bomba de vácuo, Compactador Giratório, Estufa, Misturador e Peneira.",
     "11": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Cilindro, Compactador e Estufa.",
     "12": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Estufa Peneira e Rotarex.",
-    "13": "Preferencialmente, colocar o material na estufa ao final do dia e retirar no começo da minha do dia seguinte. \n\nEquipamentos: Estufa.",
+    "13": "Preferencialmente, colocar o material na estufa ao final do dia e retirar no começo da manhã do dia seguinte. \n\nEquipamentos: Estufa.",
     "14": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa."
 };
 
@@ -48,15 +52,17 @@ function mostrarInstrucoes() {
     if (!textoInstrucoes) return;
 
     const maquinaValor = seletorMaquina.value;
+    if (!maquinaValor) return;
+
     const maquinaId = maquinaValor.split(' ')[0]; 
     
     const instrucao = instrucoesMaquinas[maquinaId];
     if (instrucao) {
         textoInstrucoes.innerHTML = formatarInstrucao(instrucao);
+    } else {
+        textoInstrucoes.innerHTML = "Instruções gerais do laboratório aplicáveis.";
     }
 }
-
-configurarDataAtual();
 
 async function carregarReservas() {
     if (!corpoAgenda) return;
@@ -66,7 +72,7 @@ async function carregarReservas() {
         reservasGlobais = await response.json();
         atualizarAgenda();
     } catch (e) {
-        corpoAgenda.innerHTML = '<tr><td colspan="3">Erro ao carregar dados.</td></tr>';
+        corpoAgenda.innerHTML = '<tr><td colspan="3">Erro ao carregar dados. Verifique a conexão.</td></tr>';
     }
 }
 
@@ -85,7 +91,6 @@ function atualizarAgenda() {
         
         const chaveReserva = `${dataSelecionada}-${maquinaSelecionada}-${hora}`;
         const nomeReserva = reservasGlobais[chaveReserva];
-
         const estaMarcado = selecoesTemporarias.has(chaveReserva) ? 'checked' : '';
 
         const tr = document.createElement('tr');
@@ -96,7 +101,7 @@ function atualizarAgenda() {
             </td>
             <td>
                 ${nomeReserva 
-                    ? '---' 
+                    ? '<span class="bloqueado">---</span>' 
                     : `<input type="checkbox" class="chk-reserva" value="${chaveReserva}" ${estaMarcado} onchange="gerenciarSelecao(this)">`
                 }
             </td>
@@ -132,8 +137,8 @@ async function reservarSelecionados() {
     const senhaInformada = document.getElementById('senha-lab').value;
 
     if (!senhaInformada) return alert("Digite a senha do laboratório!");
-    if (!nome || !email || !orientador) return alert("Preencha todos os dados!");
-    if (selecoesTemporarias.size === 0) return alert("Selecione pelo menos um horário!");
+    if (!nome || !email || !orientador) return alert("Preencha todos os campos cadastrais!");
+    if (selecoesTemporarias.size === 0) return alert("Selecione pelo menos um horário na tabela!");
     if (!validarEmail(email)) return alert("Insira um e-mail válido.");
 
     const btn = document.querySelector('button[onclick="reservarSelecionados()"]');
@@ -152,7 +157,6 @@ async function reservarSelecionados() {
     try {
         const response = await fetch(URL_API, {
             method: 'POST',
-            // Removido mode: 'no-cors' para permitir leitura da resposta do Google
             body: JSON.stringify({ 
                 action: 'reservar_lote', 
                 senha: senhaInformada,
@@ -168,20 +172,21 @@ async function reservarSelecionados() {
             btn.disabled = false;
             btn.innerText = "Confirmar Reservas Selecionadas";
         } else {
-            alert("Solicitação enviada com sucesso! O Rômulo receberá a notificação no WhatsApp para aprovação.");
+            alert("Solicitação enviada! O Rômulo (LMP) foi notificado para aprovação.");
             selecoesTemporarias.clear();
             document.getElementById('senha-lab').value = "";
-            carregarReservas();
+            await carregarReservas(); // Recarrega os dados após sucesso
         }
     } catch (e) {
-        alert("Erro na conexão ou no envio da solicitação.");
+        alert("Erro na conexão. O servidor do Google pode estar instável.");
         btn.disabled = false;
         btn.innerText = "Confirmar Reservas Selecionadas";
     }
 }
 
+// Listeners de inicialização
 if (seletorData) seletorData.addEventListener('change', atualizarAgenda);
+if (seletorMaquina) seletorMaquina.addEventListener('change', atualizarAgenda);
 
-window.atualizarAgendaExterno = atualizarAgenda;
-
+configurarDataAtual();
 carregarReservas();
