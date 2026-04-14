@@ -75,32 +75,42 @@
             width: 100%; 
         } 
 
-        /* Modo Lista para Professores (Aulas) */
+        /* Modo Lista para Professores (Aulas) - AJUSTADO PARA ALINHAR À ESQUERDA */
         .modo-lista-aulas {
             display: none;
             flex-direction: column;
-            gap: 10px;
+            gap: 0px;
             background: #fff;
             padding: 20px;
             border-radius: 12px;
             border: 1px solid #eee;
+            text-align: left; /* Alinhamento do texto */
         }
 
         .item-aula-checkbox {
             display: flex;
             align-items: center;
+            justify-content: flex-start; /* Força o conteúdo para o início */
             padding: 10px;
             border-bottom: 1px solid #f5f5f5;
             cursor: pointer;
             transition: background 0.2s;
+            width: 100%;
         }
 
         .item-aula-checkbox:hover { background: #f9f9f9; }
 
         .item-aula-checkbox input {
-            margin-right: 15px;
+            margin: 0 15px 0 0; /* Margem apenas à direita da caixa */
             width: 20px;
             height: 20px;
+            cursor: pointer;
+        }
+
+        .item-aula-checkbox span {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #333;
         }
 
         .ensaio-card { 
@@ -160,6 +170,7 @@
             text-transform: uppercase; 
             border-bottom: 2px solid #eee; 
             padding-bottom: 5px; 
+            text-align: left;
         } 
 
         .detalhes-ensaio { 
@@ -437,8 +448,7 @@
                     </div> 
                 </div> 
 
-                <div id="container-lista-aulas" class="modo-lista-aulas">
-                    </div>
+                <div id="container-lista-aulas" class="modo-lista-aulas"></div>
 
                 <div id="container-detalhes" class="detalhes-ensaio"> 
                     <div class="detalhes-grid"> 
@@ -498,7 +508,6 @@
         let subtipoSelecionado = ""; 
         let categoriaAtiva = "";
 
-        // --- FUNÇÕES DA NOVA ABA INICIAL ---
         function escolherCategoria(nome) {
             categoriaAtiva = nome;
             document.getElementById('categoria-display').value = nome;
@@ -512,13 +521,12 @@
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
                 containerCards.style.display = 'none';
                 containerLista.style.display = 'flex';
-                containerDetalhes.style.display = 'none'; // Esconde detalhes individuais para aulas
+                containerDetalhes.style.display = 'none';
                 gerarListaAulas();
             } else {
                 containerCards.style.display = 'grid';
                 containerLista.style.display = 'none';
             }
-            
             window.scrollTo(0, 0);
         }
 
@@ -527,7 +535,7 @@
             const cards = document.querySelectorAll('#container-cards-padrao .ensaio-card');
             let html = '';
 
-            cards.forEach((card, index) => {
+            cards.forEach((card) => {
                 const nomeEnsaio = card.querySelector('h5').innerText;
                 html += `
                     <label class="item-aula-checkbox">
@@ -544,7 +552,6 @@
             document.getElementById('conteudo-principal').style.display = 'none';
         }
 
-        // --- SUAS FUNÇÕES ORIGINAIS ---
         function carregarHorarios() {  
             const corpo = document.getElementById('corpo-agenda');  
             if (!corpo) return; 
