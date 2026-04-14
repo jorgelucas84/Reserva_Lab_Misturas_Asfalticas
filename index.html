@@ -64,7 +64,10 @@
             margin-bottom: 20px;
             font-weight: 600;
             color: #666;
+            transition: background 0.2s;
         }
+
+        .btn-voltar:hover { background: #ddd; }
 
         /* --- ESTILOS DE CARDS E LISTA --- */
         .cards-container { 
@@ -84,13 +87,14 @@
             border-radius: 12px;
             border: 1px solid #eee;
             text-align: left;
+            margin-bottom: 25px;
         }
 
         .item-aula-checkbox {
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            padding: 10px;
+            padding: 12px;
             border-bottom: 1px solid #f5f5f5;
             cursor: pointer;
             transition: background 0.2s;
@@ -104,12 +108,6 @@
             width: 20px;
             height: 20px;
             cursor: pointer;
-        }
-
-        .item-aula-checkbox span {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #333;
         }
 
         .ensaio-card { 
@@ -260,8 +258,6 @@
             font-weight: 900; 
         }
         
-        .normas-info p { margin: 0; }
-
         .normas-info a { 
             color: #1A4A5A; 
             font-weight: 700; 
@@ -358,7 +354,7 @@
                 </div> 
                 <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);"> 
                     <h3><span class="icon">📝</span> INSTRUÇÕES DA ATIVIDADE</h3> 
-                    <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">Por favor, selecione um ensaio abaixo para ver as instruções específicas.</p> 
+                    <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">Por favor, selecione os procedimentos abaixo para continuar.</p> 
                 </div> 
             </section> 
 
@@ -516,16 +512,27 @@
             const containerCards = document.getElementById('container-cards-padrao');
             const containerLista = document.getElementById('container-lista-aulas');
             const containerDetalhes = document.getElementById('container-detalhes');
+            const caixaEquip = document.getElementById('caixa-equipamentos');
+
+            // Reset de seleções anteriores
+            ensaioSelecionado = "";
+            subtipoSelecionado = "";
+            document.querySelectorAll('.ensaio-card').forEach(card => card.classList.remove('selected'));
+            caixaEquip.style.display = 'none';
 
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
                 containerCards.style.display = 'none';
                 containerLista.style.display = 'flex';
                 containerDetalhes.style.display = 'none';
+                document.getElementById('texto-instrucoes').innerText = "Marque os ensaios que serão realizados durante a aula e selecione os horários na agenda.";
                 gerarListaAulas();
             } else {
                 containerCards.style.display = 'grid';
                 containerLista.style.display = 'none';
+                containerDetalhes.style.display = 'none';
+                document.getElementById('texto-instrucoes').innerText = "Selecione um ensaio abaixo para ver as instruções e equipamentos.";
             }
+            atualizarDadosFinais();
             window.scrollTo(0, 0);
         }
 
@@ -616,11 +623,11 @@
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
                 const selecionados = Array.from(document.querySelectorAll('.check-ensaio-aula:checked'))
                                           .map(cb => cb.value);
-                hiddenInput.value = `[AULAS] Ensaios: ${selecionados.join(', ')}`;
+                hiddenInput.value = `[AULAS] Ensaios: ${selecionados.length > 0 ? selecionados.join(', ') : 'Nenhum selecionado'}`;
             } else {
                 const qtd = document.getElementById('qtd-amostras').value; 
                 const obs = document.getElementById('obs-ensaio').value; 
-                let textoFinal = `[${categoriaAtiva}] ${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)`; 
+                let textoFinal = `[${categoriaAtiva}] ${ensaioSelecionado || 'Nenhum ensaio'}${subtipoSelecionado} (${qtd} amostras)`; 
                 if(obs) textoFinal += ` [OBS: ${obs}]`; 
                 hiddenInput.value = textoFinal; 
             }
