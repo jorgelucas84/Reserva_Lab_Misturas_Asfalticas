@@ -93,26 +93,26 @@
         .item-aula-checkbox {
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* Alinhamento à esquerda */
+            justify-content: flex-start;
             padding: 12px;
             border-bottom: 1px solid #f5f5f5;
             cursor: pointer;
             transition: background 0.2s;
             width: 100%;
-            text-align: left; /* Garante que o texto dentro siga à esquerda */
+            text-align: left;
         }
 
         .item-aula-checkbox:hover { background: #f9f9f9; }
+        .item-aula-checkbox:active { background: #eef2f3; } /* Feedback visual ao clicar */
 
         .item-aula-checkbox input {
-            margin: 0 15px 0 0; /* Espaçamento fixo à direita do checkbox */
+            margin: 0 15px 0 0;
             width: 20px;
             height: 20px;
             cursor: pointer;
-            flex-shrink: 0; /* Impede que o checkbox diminua */
+            flex-shrink: 0;
         }
 
-        /* Alinhamento à esquerda para o texto de cada ensaio na lista de aulas */
         .item-aula-checkbox span {
             text-align: left;
             flex-grow: 1;
@@ -616,6 +616,8 @@
             document.getElementById('texto-instrucoes').innerText = `Você selecionou: ${nomeEnsaio}. Certifique-se de reservar os horários necessários para este ensaio na tabela abaixo.`; 
 
             atualizarDadosFinais(); 
+            // Scroll suave até a agenda
+            document.getElementById('tabela-horarios').scrollIntoView({ behavior: 'smooth' });
         } 
 
         function definirSubtipo(tipo, botao) { 
@@ -640,6 +642,29 @@
                 hiddenInput.value = textoFinal; 
             }
         } 
+
+        // Função de validação antes de confirmar reserva
+        function reservarSelecionados() {
+            const nome = document.getElementById('nome').value;
+            const data = document.getElementById('data').value;
+            const categoria = document.getElementById('categoria-display').value;
+            const checkboxes = document.querySelectorAll('input[name="selecionar-hora"]:checked');
+
+            if (!nome) { alert("Por favor, preencha seu nome."); return; }
+            if (!data) { alert("Por favor, selecione uma data."); return; }
+            if (checkboxes.length === 0) { alert("Selecione pelo menos um horário na agenda."); return; }
+            
+            if (categoria !== 'USO DO LABORATÓRIO PARA AULAS' && !ensaioSelecionado) {
+                alert("Por favor, selecione um procedimento nos cards acima.");
+                return;
+            }
+
+            if (typeof window.reservarNoScript === "function") {
+                window.reservarNoScript();
+            } else {
+                console.log("Chamando função de envio no script.js...");
+            }
+        }
 
         window.addEventListener('load', () => { 
             carregarHorarios(); 
