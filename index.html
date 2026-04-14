@@ -66,7 +66,7 @@
             color: #666;
         }
 
-        /* --- SEUS ESTILOS ORIGINAIS MANTIDOS --- */
+        /* --- ESTILOS DE CARDS E LISTA --- */
         .cards-container { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr);  
@@ -74,6 +74,34 @@
             margin-bottom: 25px;  
             width: 100%; 
         } 
+
+        /* Modo Lista para Professores (Aulas) */
+        .modo-lista-aulas {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .item-aula-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .item-aula-checkbox:hover { background: #f9f9f9; }
+
+        .item-aula-checkbox input {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+        }
 
         .ensaio-card { 
             background: #fff; 
@@ -140,7 +168,7 @@
             padding: 20px; 
             border-radius: 16px; 
             border: 1px solid #e1e8ed; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
             margin-bottom: 25px; 
             animation: fadeIn 0.3s ease-in-out; 
         } 
@@ -167,13 +195,13 @@
             font-size: 0.8rem; 
             font-weight: 700; 
             color: #1A4A5A; 
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 6px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
         } 
 
         .btn-opcao { 
-            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);
+            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%); 
             color: white; 
             padding: 10px 18px; 
             border: none; 
@@ -182,8 +210,8 @@
             font-weight: 600; 
             transition: all 0.3s ease; 
             margin-right: 8px; 
-            font-size: 0.85rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.85rem; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
         } 
 
         .btn-opcao:hover {
@@ -192,7 +220,7 @@
         }
 
         .btn-opcao.active { 
-            background: linear-gradient(135deg, #D35400 0%, #E67E22 100%) !important; 
+            background: linear-gradient(135deg, #D35400 0%, #E67E22 100%) !important;  
         } 
 
         .input-detalhe { 
@@ -200,7 +228,7 @@
             border: 1px solid #d1d9e0; 
             border-radius: 8px; 
             font-family: 'Inter', sans-serif; 
-            background: white;
+            background: white; 
         } 
 
         .normas-info {
@@ -218,8 +246,8 @@
             margin: 0 0 8px 0; 
             color: #1A4A5A; 
             font-size: 0.75rem; 
-            text-transform: uppercase;
-            font-weight: 900;
+            text-transform: uppercase; 
+            font-weight: 900; 
         }
         
         .normas-info p { margin: 0; }
@@ -228,10 +256,10 @@
             color: #1A4A5A; 
             font-weight: 700; 
             text-decoration: none; 
-            font-size: 0.8rem;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background 0.2s;
+            font-size: 0.8rem; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            transition: background 0.2s; 
         }
 
         .normas-info a:hover {
@@ -353,7 +381,8 @@
                 </div> 
 
                 <h4 class="section-title-cards">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4> 
-                <div class="cards-container"> 
+                
+                <div id="container-cards-padrao" class="cards-container"> 
                     <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true, 'img/dnit-043_2004-me.pdf')"> 
                         <img src="img/Marshall.jpeg" alt="Dosagem Marshall"> 
                         <div class="info"><h5>1 - Dosagem Marshall</h5></div> 
@@ -407,6 +436,9 @@
                         <div class="info"><h5>13 - Secagem de material/Estufa</h5></div> 
                     </div> 
                 </div> 
+
+                <div id="container-lista-aulas" class="modo-lista-aulas">
+                    </div>
 
                 <div id="container-detalhes" class="detalhes-ensaio"> 
                     <div class="detalhes-grid"> 
@@ -472,7 +504,39 @@
             document.getElementById('categoria-display').value = nome;
             document.getElementById('selecao-inicial').style.display = 'none';
             document.getElementById('conteudo-principal').style.display = 'block';
+            
+            const containerCards = document.getElementById('container-cards-padrao');
+            const containerLista = document.getElementById('container-lista-aulas');
+            const containerDetalhes = document.getElementById('container-detalhes');
+
+            if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
+                containerCards.style.display = 'none';
+                containerLista.style.display = 'flex';
+                containerDetalhes.style.display = 'none'; // Esconde detalhes individuais para aulas
+                gerarListaAulas();
+            } else {
+                containerCards.style.display = 'grid';
+                containerLista.style.display = 'none';
+            }
+            
             window.scrollTo(0, 0);
+        }
+
+        function gerarListaAulas() {
+            const containerLista = document.getElementById('container-lista-aulas');
+            const cards = document.querySelectorAll('#container-cards-padrao .ensaio-card');
+            let html = '';
+
+            cards.forEach((card, index) => {
+                const nomeEnsaio = card.querySelector('h5').innerText;
+                html += `
+                    <label class="item-aula-checkbox">
+                        <input type="checkbox" class="check-ensaio-aula" value="${nomeEnsaio}" onchange="atualizarDadosFinais()">
+                        <span>${nomeEnsaio}</span>
+                    </label>
+                `;
+            });
+            containerLista.innerHTML = html;
         }
 
         function voltarInicio() {
@@ -541,14 +605,19 @@
         } 
 
         function atualizarDadosFinais() { 
-            const qtd = document.getElementById('qtd-amostras').value; 
-            const obs = document.getElementById('obs-ensaio').value; 
             const hiddenInput = document.getElementById('maquina'); 
-             
-            let textoFinal = `[${categoriaAtiva}] ${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)`; 
-            if(obs) textoFinal += ` [OBS: ${obs}]`; 
-             
-            hiddenInput.value = textoFinal; 
+            
+            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+                const selecionados = Array.from(document.querySelectorAll('.check-ensaio-aula:checked'))
+                                          .map(cb => cb.value);
+                hiddenInput.value = `[AULAS] Ensaios: ${selecionados.join(', ')}`;
+            } else {
+                const qtd = document.getElementById('qtd-amostras').value; 
+                const obs = document.getElementById('obs-ensaio').value; 
+                let textoFinal = `[${categoriaAtiva}] ${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)`; 
+                if(obs) textoFinal += ` [OBS: ${obs}]`; 
+                hiddenInput.value = textoFinal; 
+            }
         } 
 
         window.addEventListener('load', () => { 
