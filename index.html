@@ -7,66 +7,7 @@
     <link rel="stylesheet" href="style.css">  
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">  
     <style>  
-        /* --- NOVOS ESTILOS PARA A ABA INICIAL --- */
-        #selecao-inicial {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 50px 20px;
-            flex-wrap: wrap;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .categoria-card {
-            background: #fff;
-            border: 3px solid #eee;
-            border-radius: 20px;
-            width: 300px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .categoria-card:hover {
-            transform: translateY(-10px);
-            border-color: #D35400;
-            box-shadow: 0 15px 30px rgba(211, 84, 0, 0.2);
-        }
-
-        .categoria-card .icon-grande {
-            font-size: 50px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .categoria-card h3 {
-            color: #1A4A5A;
-            font-weight: 900;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            margin: 0;
-        }
-
-        #conteudo-principal {
-            display: none; /* Escondido inicialmente */
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .btn-voltar {
-            background: #eee;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-weight: 600;
-            color: #666;
-        }
-
-        /* --- SEUS ESTILOS ORIGINAIS MANTIDOS --- */
+        /* ESTILOS DOS CARDS DE ENSAIOS - AJUSTADO PARA 5 POR LINHA */ 
         .cards-container { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr);  
@@ -203,6 +144,7 @@
             background: white;
         } 
 
+        /* CAIXA DE NORMAS MODERNA */
         .normas-info {
             margin-left: auto;
             padding: 12px 20px;
@@ -253,7 +195,7 @@
         .equipamentos-info p { margin: 0; color: #555; font-size: 0.85rem; line-height: 1.4; } 
 
         @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(-10px); } 
+            from { opacity: 0; transform: translateY(-5px); } 
             to { opacity: 1; transform: translateY(0); } 
         } 
 
@@ -288,199 +230,159 @@
         </div>  
     </header>  
 
-    <section id="selecao-inicial">
-        <div class="categoria-card" onclick="escolherCategoria('CARACTERIZAÇÃO DE MATERIAIS')">
-            <span class="icon-grande">🔬</span>
-            <h3>Caracterização de Materiais</h3>
-        </div>
-        <div class="categoria-card" onclick="escolherCategoria('ENSAIOS MECÂNICOS')">
-            <span class="icon-grande">🏗️</span>
-            <h3>Ensaios Mecânicos</h3>
-        </div>
-        <div class="categoria-card" onclick="escolherCategoria('USO DO LABORATÓRIO PARA AULAS')">
-            <span class="icon-grande">🎓</span>
-            <h3>Uso para Aulas</h3>
-        </div>
-    </section>
+    <main class="container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">  
+        <section class="info-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">  
+            <div class="card info-geral" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">  
+                <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>  
+                <ul style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;">  
+                    <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar equipamentos de proteção individual.</li>  
+                    <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o exaustor ligado em ensaios com resíduos.</li>  
+                    <li style="margin-bottom: 8px;"><strong>3.</strong> Manter o laboratório limpo e organizado.</li>  
+                    <li style="margin-bottom: 8px;"><strong>4.</strong> Pedidos realizados até sexta 12:00 terão prioridade para a semana seguinte. <a href="https://grid-lab-04.github.io/reservaton_misturas/" target="_blank">Link Obrigatório</a>.</li>  
+                </ul>  
+            </div>  
+            <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">  
+                <h3><span class="icon">📝</span> INSTRUÇÕES DA ATIVIDADE</h3>  
+                <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">Por favor, selecione um ensaio abaixo para ver as instruções específicas.</p>  
+            </div>  
+        </section> 
 
-    <div id="conteudo-principal">
-        <main class="container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">  
-            
-            <button class="btn-voltar" onclick="voltarInicio()">← Voltar ao início</button>
-
-            <section class="info-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">  
-                <div class="card info-geral" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">  
-                    <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>  
-                    <ul style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;">  
-                        <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar equipamentos de proteção individual.</li>  
-                        <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o exaustor ligado em ensaios com resíduos.</li>  
-                        <li style="margin-bottom: 8px;"><strong>3.</strong> Manter o laboratório limpo e organizado.</li>  
-                        <li style="margin-bottom: 8px;"><strong>4.</strong> Pedidos realizados até sexta 12:00 terão prioridade para a semana seguinte. <a href="https://grid-lab-04.github.io/reservaton_misturas/" target="_blank">Link Obrigatório</a>.</li>  
-                    </ul>  
+        <section class="booking-section card" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);"> 
+            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">  
+                <div class="input-group">  
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Nome Completo</label>  
+                    <input type="text" id="nome" placeholder="Seu nome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
                 </div>  
-                <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">  
-                    <h3><span class="icon">📝</span> INSTRUÇÕES DA ATIVIDADE</h3>  
-                    <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">Por favor, selecione um ensaio abaixo para ver as instruções específicas.</p>  
+                <div class="input-group">  
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">E-mail</label>  
+                    <input type="email" id="email" placeholder="seu-email@ufc.br" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
                 </div>  
-            </section> 
+                <div class="input-group">  
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Orientador</label>  
+                    <input type="text" id="orientador" placeholder="Nome do Professor" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
+                </div>  
+                <div class="input-group">  
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Nome do Projeto</label>  
+                    <input type="text" id="projeto" placeholder="Título da pesquisa" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
+                </div>  
+                <div class="input-group">  
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px;">Data do Uso</label>  
+                    <input type="date" id="data" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
+                </div>  
+            </div> 
 
-            <section class="booking-section card" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);"> 
-                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">  
-                    <div class="input-group">  
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">Nome Completo</label>  
-                        <input type="text" id="nome" placeholder="Seu nome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
-                    </div>  
-                    <div class="input-group">  
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">E-mail</label>  
-                        <input type="email" id="email" placeholder="seu-email@ufc.br" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
-                    </div>  
-                    <div class="input-group">  
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">Orientador</label>  
-                        <input type="text" id="orientador" placeholder="Nome do Professor" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
-                    </div>  
-                    <div class="input-group">  
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">Nome do Projeto</label>  
-                        <input type="text" id="projeto" placeholder="Título da pesquisa" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
-                    </div>  
-                    <div class="input-group">  
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">Data do Uso</label>  
-                        <input type="date" id="data" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">  
-                    </div> 
-                    <div class="input-group">  
-                        <label style="display: block; font-weight: 600; margin-bottom: 5px;">Categoria Selecionada</label>  
-                        <input type="text" id="categoria-display" readonly style="width: 100%; padding: 10px; border: 1px solid #eee; background: #f9f9f9; border-radius: 5px; font-weight: bold; color: #1A4A5A;">  
-                    </div> 
+            <h4 class="section-title-cards">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4> 
+            <div class="cards-container"> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true, 'img/dnit-043_2004-me.pdf')"> 
+                    <img src="img/Marshall.jpeg" alt="Dosagem Marshall"> 
+                    <div class="info"><h5>1 - Dosagem Marshall</h5></div> 
                 </div> 
-
-                <h4 class="section-title-cards">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4> 
-                <div class="cards-container"> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true, 'img/dnit-043_2004-me.pdf')"> 
-                        <img src="img/Marshall.jpeg" alt="Dosagem Marshall"> 
-                        <div class="info"><h5>1 - Dosagem Marshall</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Superpave', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true, 'img/superpave.pdf')"> 
-                        <img src="img/superpave.jpeg" alt="Dosagem Superpave"> 
-                        <div class="info"><h5>2 - Dosagem Superpave</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex or Extrator Soxhlet, Balança 1', false, 'img/dnit-144_2014-me.pdf')"> 
-                        <img src="img/rotarex.jpeg" alt="Extração"> 
-                        <div class="info"><h5>3 - Extração de ligante</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Fluir ligante', 'Bucha de fluidez, Estufa, Cronômetro', false, '#')"> 
-                        <img src="img/fluir.jpeg" alt="Fluir ligante"> 
-                        <div class="info"><h5>4 - Fluir ligante</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Homogeneização e quarteamento', 'Quarteador de solo, Bandejas, Espátulas', false, 'img/dnit-147_2014-me.pdf')"> 
-                        <img src="img/quarte.jpeg" alt="Homogeneização"> 
-                        <div class="info"><h5>5 - Homogeneização e quarteamento</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Abrasão Los Angeles', 'Máquina Los Angeles, Jogo de Peneiras, Balança 1', false, 'img/dnit-164_2013-me.pdf')"> 
-                        <img src="img/la.jpeg" alt="Los Angeles"> 
-                        <div class="info"><h5>6 - Abrasão Los Angeles</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Banho-maria, Balança hidrostática', false, 'img/dnit-117_2010-me.pdf')"> 
-                        <img src="img/dens.jpeg" alt="Densidade"> 
-                        <div class="info"><h5>7 - Densidade e absorção</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Tradicional)', 'Estufa, Placas de vidro, Agregados', false, 'img/dnit-078_2006-me.pdf')"> 
-                        <img src="img/adesiv.jpeg" alt="Adesividade Tradicional"> 
-                        <div class="info"><h5>8 - Adesividade (Tradicional)</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Asphalt Bond Strength)', 'Pneumatic Adhesion Tester (PAT), Pastilhas, Estufa', false, '#')"> 
-                        <img src="img/abs.jpeg" alt="Adesividade ABS"> 
-                        <div class="info"><h5>9 - Adesividade (Asphalt Bond Strength)</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Granulometria', 'Agitador de peneiras, Jogo de peneiras, Balança', false, 'img/dnit-011_2004-me.pdf')"> 
-                        <img src="img/granu.jpeg" alt="Granulometria"> 
-                        <div class="info"><h5>10 - Granulometria</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Indice de forma', 'Paquímetro, Agulha de forma, Bandejas', false, 'img/dnit-014_2004-me.pdf')"> 
-                        <img src="img/if.jpeg" alt="Indice de forma"> 
-                        <div class="info"><h5>11 - Indice de forma</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Sanidade', 'Solução de sulfato, Estufa, Peneiras', false, 'img/dnit-089_2006-me.pdf')"> 
-                        <img src="img/sani.jpeg" alt="Sanidade"> 
-                        <div class="info"><h5>12 - Sanidade</h5></div> 
-                    </div> 
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Secagem de material/Estufa', 'Estufa de circulação forçada, Bandejas', false, '#')"> 
-                        <img src="img/estufa.jpeg" alt="Secagem"> 
-                        <div class="info"><h5>13 - Secagem de material/Estufa</h5></div> 
-                    </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Superpave', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true, 'img/superpave.pdf')"> 
+                    <img src="img/superpave.jpeg" alt="Dosagem Superpave"> 
+                    <div class="info"><h5>2 - Dosagem Superpave</h5></div> 
                 </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex or Extrator Soxhlet, Balança 1', false, 'img/dnit-144_2014-me.pdf')"> 
+                    <img src="img/rotarex.jpeg" alt="Extração"> 
+                    <div class="info"><h5>3 - Extração de ligante</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Fluir ligante', 'Bucha de fluidez, Estufa, Cronômetro', false, '#')"> 
+                    <img src="img/fluir.jpeg" alt="Fluir ligante"> 
+                    <div class="info"><h5>4 - Fluir ligante</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Homogeneização e quarteamento', 'Quarteador de solo, Bandejas, Espátulas', false, 'img/dnit-147_2014-me.pdf')"> 
+                    <img src="img/quarte.jpeg" alt="Homogeneização"> 
+                    <div class="info"><h5>5 - Homogeneização e quarteamento</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Abrasão Los Angeles', 'Máquina Los Angeles, Jogo de Peneiras, Balança 1', false, 'img/dnit-164_2013-me.pdf')"> 
+                    <img src="img/la.jpeg" alt="Los Angeles"> 
+                    <div class="info"><h5>6 - Abrasão Los Angeles</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Banho-maria, Balança hidrostática', false, 'img/dnit-117_2010-me.pdf')"> 
+                    <img src="img/dens.jpeg" alt="Densidade"> 
+                    <div class="info"><h5>7 - Densidade e absorção</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Tradicional)', 'Estufa, Placas de vidro, Agregados', false, 'img/dnit-078_2006-me.pdf')"> 
+                    <img src="img/adesiv.jpeg" alt="Adesividade Tradicional"> 
+                    <div class="info"><h5>8 - Adesividade (Tradicional)</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Asphalt Bond Strength)', 'Pneumatic Adhesion Tester (PAT), Pastilhas, Estufa', false, '#')"> 
+                    <img src="img/abs.jpeg" alt="Adesividade ABS"> 
+                    <div class="info"><h5>9 - Adesividade (Asphalt Bond Strength)</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Granulometria', 'Agitador de peneiras, Jogo de peneiras, Balança', false, 'img/dnit-011_2004-me.pdf')"> 
+                    <img src="img/granu.jpeg" alt="Granulometria"> 
+                    <div class="info"><h5>10 - Granulometria</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Indice de forma', 'Paquímetro, Agulha de forma, Bandejas', false, 'img/dnit-014_2004-me.pdf')"> 
+                    <img src="img/if.jpeg" alt="Indice de forma"> 
+                    <div class="info"><h5>11 - Indice de forma</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Sanidade', 'Solução de sulfato, Estufa, Peneiras', false, 'img/dnit-089_2006-me.pdf')"> 
+                    <img src="img/sani.jpeg" alt="Sanidade"> 
+                    <div class="info"><h5>12 - Sanidade</h5></div> 
+                </div> 
+                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Secagem de material/Estufa', 'Estufa de circulação forçada, Bandejas', false, '#')"> 
+                    <img src="img/estufa.jpeg" alt="Secagem"> 
+                    <div class="info"><h5>13 - Secagem de material/Estufa</h5></div> 
+                </div> 
+            </div> 
 
-                <div id="container-detalhes" class="detalhes-ensaio"> 
-                    <div class="detalhes-grid"> 
-                        <div id="opcoes-marshall" style="display:none;" class="detalhes-item"> 
-                            <label>Estado da Mistura:</label> 
-                            <div> 
-                                <button class="btn-opcao" id="btn-massa" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button> 
-                                <button class="btn-opcao" id="btn-compacta" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button> 
-                            </div> 
-                        </div> 
-                        <div class="detalhes-item"> 
-                            <label>Qtd. Amostras:</label> 
-                            <input type="number" id="qtd-amostras" class="input-detalhe" style="width: 80px;" value="1" min="1" onchange="atualizarDadosFinais()"> 
-                        </div> 
-                         
-                        <div id="caixa-normas" class="normas-info">
-                            <h4>📜 Norma Técnica</h4>
-                            <p id="link-container"></p>
-                        </div>
-
-                        <div class="detalhes-item full-width"> 
-                            <label>Observações / Comentários:</label> 
-                            <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Escreva aqui observações adicionais para este ensaio..." oninput="atualizarDadosFinais()"> 
+            <div id="container-detalhes" class="detalhes-ensaio"> 
+                <div class="detalhes-grid"> 
+                    <div id="opcoes-marshall" style="display:none;" class="detalhes-item"> 
+                        <label>Estado da Mistura:</label> 
+                        <div> 
+                            <button class="btn-opcao" id="btn-massa" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button> 
+                            <button class="btn-opcao" id="btn-compacta" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button> 
                         </div> 
                     </div> 
+                    <div class="detalhes-item"> 
+                        <label>Qtd. Amostras:</label> 
+                        <input type="number" id="qtd-amostras" class="input-detalhe" style="width: 80px;" value="1" min="1" onchange="atualizarDadosFinais()"> 
+                    </div> 
+                     
+                    <div id="caixa-normas" class="normas-info">
+                        <h4>📜 Norma Técnica</h4>
+                        <p id="link-container"></p>
+                    </div>
+
+                    <div class="detalhes-item full-width"> 
+                        <label>Observações / Comentários:</label> 
+                        <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Escreva aqui observações adicionais para este ensaio..." oninput="atualizarDadosFinais()"> 
+                    </div> 
                 </div> 
+            </div> 
 
-                <input type="hidden" id="maquina" value=""> 
-                <div id="caixa-equipamentos" class="equipamentos-info"> 
-                    <h4><span class="icon">🛠️</span> Equipamentos Necessários:</h4> 
-                    <p id="lista-equipamentos"></p> 
-                </div> 
-            </section> 
+            <input type="hidden" id="maquina" value=""> 
+            <div id="caixa-equipamentos" class="equipamentos-info"> 
+                <h4><span class="icon">🛠️</span> Equipamentos Necessários:</h4> 
+                <p id="lista-equipamentos"></p> 
+            </div> 
+        </section> 
 
-            <section class="action-area" style="text-align: center; margin: 30px 0;">  
-                <input type="password" id="senha-lab" placeholder="Senha" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-right: 10px;">  
-                <button onclick="reservarSelecionados()" style="background-color: #1A4A5A; color: white; padding: 11px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Confirmar Reservas Selecionadas</button>  
-                <p style="margin-top: 15px; font-size: 0.85rem; color: #666;"> 
-                    Cancelamentos via: <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a> 
-                </p> 
-            </section>  
+        <section class="action-area" style="text-align: center; margin: 30px 0;">  
+            <input type="password" id="senha-lab" placeholder="Senha" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-right: 10px;">  
+            <button onclick="reservarSelecionados()" style="background-color: #1A4A5A; color: white; padding: 11px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Confirmar Reservas Selecionadas</button>  
+            <p style="margin-top: 15px; font-size: 0.85rem; color: #666;"> 
+                Cancelamentos via: <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a> 
+            </p> 
+        </section>  
 
-            <section class="table-section">  
-                <table id="tabela-horarios">  
-                    <thead>  
-                        <tr><th style="width: 40%;">Horário</th><th style="width: 30%;">Status</th><th style="width: 30%;">Ação</th></tr>  
-                    </thead>  
-                    <tbody id="corpo-agenda"> 
+        <section class="table-section">  
+            <table id="tabela-horarios">  
+                <thead>  
+                    <tr><th style="width: 40%;">Horário</th><th style="width: 30%;">Status</th><th style="width: 30%;">Ação</th></tr>  
+                </thead>  
+                <tbody id="corpo-agenda"> 
                     </tbody>  
-                </table>  
-            </section>  
-        </main> 
-    </div>
+            </table>  
+        </section>  
+    </main>  
 
     <script>  
         let ensaioSelecionado = ""; 
         let subtipoSelecionado = ""; 
-        let categoriaAtiva = "";
 
-        // --- FUNÇÕES DA NOVA ABA INICIAL ---
-        function escolherCategoria(nome) {
-            categoriaAtiva = nome;
-            document.getElementById('categoria-display').value = nome;
-            document.getElementById('selecao-inicial').style.display = 'none';
-            document.getElementById('conteudo-principal').style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        function voltarInicio() {
-            document.getElementById('selecao-inicial').style.display = 'flex';
-            document.getElementById('conteudo-principal').style.display = 'none';
-        }
-
-        // --- SUAS FUNÇÕES ORIGINAIS ---
         function carregarHorarios() {  
             const corpo = document.getElementById('corpo-agenda');  
             if (!corpo) return; 
@@ -545,7 +447,7 @@
             const obs = document.getElementById('obs-ensaio').value; 
             const hiddenInput = document.getElementById('maquina'); 
              
-            let textoFinal = `[${categoriaAtiva}] ${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)`; 
+            let textoFinal = `${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)`; 
             if(obs) textoFinal += ` [OBS: ${obs}]`; 
              
             hiddenInput.value = textoFinal; 
