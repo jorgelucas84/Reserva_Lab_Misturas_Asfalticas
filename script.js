@@ -1,195 +1,104 @@
 const URL_API = "https://script.google.com/macros/s/AKfycbx2i7ZcdLE4qyU9RDtIeWZj0bpNIf5Ol2ULlnpy2V3xZfdAVe4kmlApmCbW0DxLQw/exec";
+const $ = id => document.getElementById(id); // Seletor curto
+const corpoAgenda = $('corpo-agenda'), selData = $('data'), selMaq = $('maquina');
+let reservasGlobais = {}, selecoesTemporarias = new Set();
 
-const corpoAgenda = document.getElementById('corpo-agenda');
-const seletorData = document.getElementById('data');
-const seletorMaquina = document.getElementById('maquina'); 
-let reservasGlobais = {};
-let selecoesTemporarias = new Set();
-
-// --- CONFIGURAÇÕES DE CONFLITO (IDs DO SEU PRINT) ---
-const maquinasEstufa = ["1", "2", "4", "8", "9", "13"]; 
-const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave fecham a estufa
-
-// --- LIMITAÇÃO DE DATA (2 SEMANAS) ---
-if (seletorData) {
-    const hoje = new Date();
-    const dataMinima = hoje.toISOString().split("T")[0];
-    
-    const duasSemanasDepois = new Date();
-    duasSemanasDepois.setDate(hoje.getDate() + 14);
-    const dataMaxima = duasSemanasDepois.toISOString().split("T")[0];
-    
-    seletorData.min = dataMinima;
-    seletorData.max = dataMaxima;
-}
+const maqEstufa = ["1", "2", "4", "8", "9", "13"], maqPriv = ["1", "2"];
 
 const instrucoesMaquinas = {
-    "1": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Compactador Marshall, Estufa, Misturador e Peneira.",
-    "2": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança, Bomba de vácuo, Compactador Giratório, Estufa, Misturador e Peneira.",
-    "3": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Extrator Centrifugo (Rotarex).",
-    "4": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança e Estufa.",
-    "5": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Quarteador.",
-    "6": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Maquina Los Angeles e Peneiras.",
-    "7": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Balança e recipientes.",
-    "8": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa e vidrarias.",
-    "9": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa e equipamento de tração.",
-    "10": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Peneiras e agitador.",
-    "11": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Paquímetro ou gabarito.",
-    "12": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Solução de Sulfato e recipientes.",
-    "13": "Seguir as instruções gerais apresentadas. \n\nEquipamentos: Estufa."
+    "1": "Balança, Compactador Marshall, Estufa, Misturador e Peneira.",
+    "2": "Balança, Bomba de vácuo, Compactador Giratório, Estufa, Misturador e Peneira.",
+    "3": "Extrator Centrifugo (Rotarex).", "4": "Balança e Estufa.", "5": "Quarteador.",
+    "6": "Maquina Los Angeles e Peneiras.", "7": "Balança e recipientes.", "8": "Estufa e vidrarias.",
+    "9": "Estufa e equipamento de tração.", "10": "Peneiras e agitador.", "11": "Paquímetro ou gabarito.",
+    "12": "Solução de Sulfato e recipientes.", "13": "Estufa."
 };
 
-function configurarDataAtual() {
-    if (seletorData && !seletorData.value) {
-        seletorData.value = new Date().toISOString().split('T')[0];
-    }
+// Configuração inicial de datas
+if (selData) {
+    const hoje = new Date(), max = new Date();
+    max.setDate(hoje.getDate() + 14);
+    selData.min = hoje.toISOString().split("T")[0];
+    selData.max = max.toISOString().split("T")[0];
+    selData.value = selData.min;
 }
 
-function mostrarInstrucoes() {
-    const textoInstrucoes = document.getElementById('texto-instrucoes');
-    if (!textoInstrucoes || !seletorMaquina.value) return;
-    const maquinaId = seletorMaquina.value.split(' ')[0]; 
-    const instrucao = instrucoesMaquinas[maquinaId];
-    textoInstrucoes.innerHTML = instrucao ? instrucao.replace("Equipamentos:", "<strong>Equipamentos:</strong>").replace(/\n/g, "<br>") : "Selecione um ensaio.";
-}
+const mostrarInstrucoes = () => {
+    const txt = $('texto-instrucoes'), id = selMaq.value.split(' ')[0];
+    if (txt && id) txt.innerHTML = instrucoesMaquinas[id] ? `<strong>Equipamentos:</strong> ${instrucoesMaquinas[id]}` : "Selecione um ensaio.";
+};
 
 async function carregarReservas() {
     if (!corpoAgenda) return;
-    corpoAgenda.innerHTML = '<tr><td colspan="3">Carregando horários...</td></tr>';
+    corpoAgenda.innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
     try {
-        const response = await fetch(URL_API);
-        const texto = await response.text();
-        reservasGlobais = JSON.parse(texto);
+        const resp = await fetch(URL_API);
+        reservasGlobais = await resp.json();
         atualizarAgenda();
-    } catch (e) {
-        console.error("Erro na requisição:", e);
-        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">Erro ao carregar dados.</td></tr>';
-    }
+    } catch (e) { corpoAgenda.innerHTML = '<tr><td colspan="3">Erro ao carregar.</td></tr>'; }
 }
 
 function atualizarAgenda() {
     if (!corpoAgenda) return;
-    
-    // --- BLOQUEIO DE FIM DE SEMANA ---
-    const dataObj = new Date(seletorData.value + 'T00:00:00');
-    const diaSemana = dataObj.getDay(); // 0 = Domingo, 6 = Sábado
-    if (diaSemana === 0 || diaSemana === 6) {
-        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:orange; text-align:center; font-weight:bold; padding: 20px;">⚠️ O laboratório não funciona aos sábados e domingos. Por favor, selecione um dia útil.</td></tr>';
+    const dataVal = selData.value, dataObj = new Date(dataVal + 'T00:00:00');
+    if ([0, 6].includes(dataObj.getDay())) {
+        corpoAgenda.innerHTML = '<tr><td colspan="3" style="text-align:center">⚠️ Selecione um dia útil.</td></tr>';
         return;
     }
 
     corpoAgenda.innerHTML = '';
-    const dataSelecionada = seletorData.value;
-    const maquinaSelecionadaTexto = seletorMaquina.value || "LMP";
-    const idMaquinaSelecionada = maquinaSelecionadaTexto.split(' ')[0];
-
+    const maqTxt = selMaq.value || "LMP", idMaq = maqTxt.split(' ')[0];
     mostrarInstrucoes();
 
-    for (let hora = 7; hora <= 16; hora++) {
-        const horarioFormatado = `${hora.toString().padStart(2, '0')}:00 - ${(hora + 1).toString().padStart(2, '0')}:00`;
-        const chaveAtual = `${dataSelecionada}-${maquinaSelecionadaTexto}-${hora}`;
-        
-        let motivoBloqueio = "";
-        const nomeReserva = reservasGlobais[chaveAtual];
+    for (let h = 7; h <= 16; h++) {
+        const chave = `${dataVal}-${maqTxt}-${h}`, nomeRes = reservasGlobais[chave];
+        let bloqueio = nomeRes ? `Reservado: ${nomeRes}` : "";
 
-        let temDosagemNoHorario = false;
-        let temOutraEstufaNoHorario = false;
+        if (!bloqueio) {
+            const conflitos = Object.keys(reservasGlobais).filter(k => k.startsWith(dataVal) && k.endsWith(`-${h}`));
+            const temDosagem = conflitos.some(k => maqPriv.includes(k.split('-')[3].split(' ')[0]));
+            const temEstufa = conflitos.some(k => maqEstufa.includes(k.split('-')[3].split(' ')[0]) && !maqPriv.includes(k.split('-')[3].split(' ')[0]));
 
-        Object.keys(reservasGlobais).forEach(chaveExistente => {
-            if (chaveExistente.startsWith(dataSelecionada) && chaveExistente.endsWith(`-${hora}`)) {
-                const partes = chaveExistente.split('-');
-                if (partes.length >= 4) {
-                    const idExistente = partes[3].split(' ')[0];
-                    if (maquinasPrioritarias.includes(idExistente)) temDosagemNoHorario = true;
-                    if (maquinasEstufa.includes(idExistente) && !maquinasPrioritarias.includes(idExistente)) {
-                        temOutraEstufaNoHorario = true;
-                    }
-                }
-            }
-        });
-
-        if (nomeReserva) {
-            motivoBloqueio = `Reservado por: ${nomeReserva}`;
-        } else if (maquinasPrioritarias.includes(idMaquinaSelecionada) && temOutraEstufaNoHorario) {
-            motivoBloqueio = "Indisponível (Estufa em uso)";
-        } else if (["4", "8", "9", "13"].includes(idMaquinaSelecionada) && temDosagemNoHorario) {
-            motivoBloqueio = "Indisponível (Prioridade Dosagem)";
+            if (maqPriv.includes(idMaq) && temEstufa) bloqueio = "Indisponível (Estufa em uso)";
+            else if (["4", "8", "9", "13"].includes(idMaq) && temDosagem) bloqueio = "Indisponível (Prioridade Dosagem)";
         }
 
-        const estaMarcado = selecoesTemporarias.has(chaveAtual) ? 'checked' : '';
-
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${horarioFormatado}</td>
-            <td class="${motivoBloqueio ? 'ocupado' : 'status-disponivel'}">
-                ${motivoBloqueio ? motivoBloqueio : 'Disponível'}
-            </td>
-            <td>
-                ${motivoBloqueio ? '---' : `<input type="checkbox" class="chk-reserva" value="${chaveAtual}" ${estaMarcado} onchange="gerenciarSelecao(this)">`}
-            </td>
-        `;
+        tr.innerHTML = `<td>${h}:00 - ${h+1}:00</td><td class="${bloqueio ? 'ocupado' : 'status-disponivel'}">${bloqueio || 'Disponível'}</td>
+                        <td>${bloqueio ? '---' : `<input type="checkbox" value="${chave}" ${selecoesTemporarias.has(chave)?'checked':''} onchange="gerenciar(this)">`}</td>`;
         corpoAgenda.appendChild(tr);
     }
 }
 
-function gerenciarSelecao(checkbox) {
-    checkbox.checked ? selecoesTemporarias.add(checkbox.value) : selecoesTemporarias.delete(checkbox.value);
+function gerenciar(cb) {
+    cb.checked ? selecoesTemporarias.add(cb.value) : selecoesTemporarias.delete(cb.value);
     const btn = document.querySelector('button[onclick="reservarSelecionados()"]');
-    if (btn) btn.innerText = selecoesTemporarias.size > 0 ? `Confirmar ${selecoesTemporarias.size} reserva(s)` : "Confirmar Reservas Selecionadas";
+    if (btn) btn.innerText = selecoesTemporarias.size > 0 ? `Confirmar ${selecoesTemporarias.size} reserva(s)` : "Confirmar Reservas";
 }
 
 async function reservarSelecionados() {
-    const campos = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        orientador: document.getElementById('orientador').value,
-        senha: document.getElementById('senha-lab').value
-    };
-
-    if (!campos.senha) return alert("Digite a senha do laboratório!");
-    if (!campos.nome || !campos.email || !campos.orientador) return alert("Preencha todos os dados!");
-    if (selecoesTemporarias.size === 0) return alert("Selecione pelo menos um horário!");
+    const inputs = { nome: $('nome').value, email: $('email').value, ori: $('orientador').value, s: $('senha-lab').value };
+    if (!inputs.s || !inputs.nome || selecoesTemporarias.size === 0) return alert("Preencha os dados e selecione horários!");
 
     const btn = document.querySelector('button[onclick="reservarSelecionados()"]');
-    btn.disabled = true;
-    btn.innerText = "Processando...";
+    btn.disabled = true; btn.innerText = "Processando...";
 
     try {
-        const response = await fetch(URL_API, {
+        const resp = await fetch(URL_API, {
             method: 'POST',
-            body: JSON.stringify({ 
-                action: 'reservar_lote', 
-                senha: campos.senha,
-                usuario: { nome: campos.nome, email: campos.email, orientador: campos.orientador },
-                reservas: Array.from(selecoesTemporarias).map(chave => ({ chave, maquina: seletorMaquina.value }))
-            })
+            body: JSON.stringify({ action: 'reservar_lote', senha: inputs.s, usuario: { nome: inputs.nome, email: inputs.email, orientador: inputs.ori }, 
+            reservas: Array.from(selecoesTemporarias).map(chave => ({ chave, maquina: selMaq.value })) })
         });
-
-        const resultado = await response.text();
-        
-        if (resultado.includes("Erro: Senha Incorreta")) {
-            alert("Senha incorreta!");
-        } else if (resultado.startsWith("http")) { 
-            alert("Solicitação enviada! Redirecionando ao WhatsApp...");
-            window.location.href = resultado;
-            selecoesTemporarias.clear();
-            document.getElementById('senha-lab').value = "";
-            carregarReservas();
-        } else {
-            alert("Solicitação processada.");
-            selecoesTemporarias.clear();
-            carregarReservas();
+        const res = await resp.text();
+        if (res.includes("Erro")) alert("Senha incorreta!");
+        else {
+            if (res.startsWith("http")) window.location.href = res;
+            else alert("Sucesso!");
+            selecoesTemporarias.clear(); carregarReservas();
         }
-    } catch (e) {
-        alert("Erro no envio.");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Confirmar Reservas Selecionadas";
-    }
+    } catch (e) { alert("Erro no envio."); }
+    finally { btn.disabled = false; btn.innerText = "Confirmar Reservas"; }
 }
 
-if (seletorData) seletorData.addEventListener('change', atualizarAgenda);
-if (seletorMaquina) seletorMaquina.addEventListener('change', atualizarAgenda);
-
-configurarDataAtual();
+[selData, selMaq].forEach(s => s?.addEventListener('change', atualizarAgenda));
 carregarReservas();
