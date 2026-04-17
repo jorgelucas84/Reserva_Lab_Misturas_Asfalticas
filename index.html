@@ -13,8 +13,28 @@
         .categoria-card .icon-grande {font-size: 50px;margin-bottom: 20px;display: block;}
         .categoria-card h3 {color: #1A4A5A;font-weight: 900;font-size: 1.2rem;text-transform: uppercase;margin: 0;}
         #conteudo-principal {display: none;animation: fadeIn 0.6s ease-out;}
-        .btn-voltar {background: #eee;border: none;padding: 8px 15px;border-radius: 5px;cursor: pointer;margin-bottom: 20px;font-weight: 600;color: #666;transition: background 0.2s;}
-        .btn-voltar:hover { background: #ddd; }
+        
+        /* 1 - DESTAQUE NO BOTÃO VOLTAR */
+        .btn-voltar {
+            background: linear-gradient(135deg, #f5f7f8 0%, #dce4e7 100%);
+            border: 2px solid #1A4A5A;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: #1A4A5A;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-voltar:hover { 
+            background: linear-gradient(135deg, #dce4e7 0%, #c8d2d6 100%);
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
         .cards-container {display: grid;grid-template-columns: repeat(5, 1fr);gap: 12px;margin-bottom: 25px;width: 100%;}
         .modo-lista-aulas {display: none;flex-direction: column;gap: 0px;background: #fff;padding: 20px;border-radius: 12px;border: 1px solid #eee;text-align: left;margin-bottom: 25px;}
         .item-aula-checkbox {display: flex;align-items: center;justify-content: flex-start;padding: 12px;border-bottom: 1px solid #f5f5f5;cursor: pointer;transition: background 0.2s;width: 100%;text-align: left;}
@@ -137,7 +157,7 @@
                 </div>
 
                 <h4 class="section-title-cards">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4>
-                
+                 
                 <div id="container-cards-padrao" class="cards-container">
                     <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true, 'img/dnit-043_2004-me.pdf')">
                         <img src="img/Marshall.jpeg" alt="Dosagem Marshall">
@@ -326,7 +346,8 @@
             }
             document.getElementById('texto-instrucoes').innerText = `Você selecionou: ${nomeEnsaio}. Certifique-se de reservar os horários necessários para este ensaio na tabela abaixo.`;
             atualizarDadosFinais();
-            document.getElementById('tabela-horarios').scrollIntoView({ behavior: 'smooth' });
+            
+            /* 2 - ROLAGEM AUTOMÁTICA REMOVIDA DAQUI */
         }
 
         function definirSubtipo(tipo, botao) {
