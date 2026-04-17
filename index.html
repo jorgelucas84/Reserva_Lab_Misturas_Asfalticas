@@ -77,7 +77,6 @@
         .ensaio-card:hover {transform: translateY(-5px);box-shadow: 0 10px 20px rgba(0,0,0,0.1);border-color: #D35400;}
         .ensaio-card.selected {border-color: #1A4A5A;background-color: #f0f7f9;box-shadow: 0 0 0 4px rgba(26, 74, 90, 0.1);}
         
-        /* Estilo para cards bloqueados */
         .ensaio-card.blocked {
             opacity: 0.4;
             cursor: not-allowed;
@@ -249,6 +248,13 @@
         let subtipoSelecionado = "";
         let categoriaAtiva = "";
 
+        // CONTATOS DOS RESPONSÁVEIS
+        const contatosResponsaveis = {
+            "CARACTERIZAÇÃO DE MATERIAIS": "5585988179510", // Romulo (usando seu numero p/ teste)
+            "USO DO LABORATÓRIO PARA AULAS": "5585988179510", // Romulo (usando seu numero p/ teste)
+            "ENSAIOS MECÂNICOS": "5585988179510" // Hermano (usando seu numero p/ teste)
+        };
+
         const cardsCaracterizacao = [
             {n: "Dosagem Marshall", img: "Marshall.jpeg", eq: "Prensa Marshall, Estufas, Compactador"},
             {n: "Dosagem Superpave", img: "superpave.jpeg", eq: "Giratório, Rice Test, Estufas"},
@@ -320,7 +326,7 @@
                 listaUsar.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'ensaio-card';
-                    card.setAttribute('data-nome', item.n); // Atributo para facilitar a busca no bloqueio
+                    card.setAttribute('data-nome', item.n); 
                     card.onclick = () => selecionarEnsaio(card, item.n, item.eq, item.n.includes("Marshall"));
                     card.innerHTML = `
                         <img src="img/${item.img}" alt="${item.n}">
@@ -333,7 +339,6 @@
         }
 
         function selecionarEnsaio(elemento, nome, eq, ehMarshall) {
-            // Remove seleções e bloqueios visuais prévios para resetar o estado
             document.querySelectorAll('.ensaio-card').forEach(c => {
                 c.classList.remove('selected');
                 c.classList.remove('blocked');
@@ -342,8 +347,6 @@
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
 
-            // --- LÓGICA DE PRIORIDADE ---
-            // Se for Dosagem, bloqueia o card de Estufa
             if (nome.toLowerCase().includes("dosagem")) {
                 const cardEstufa = document.querySelector('.ensaio-card[data-nome="Secagem / Estufa"]');
                 if (cardEstufa) {
@@ -411,9 +414,28 @@
 
         function reservarSelecionados() {
             const nome = document.getElementById('nome').value;
+            const dataUso = document.getElementById('data').value;
+            const detalhes = document.getElementById('maquina').value;
             const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
-            if (!nome || check.length === 0) { alert("Preencha seu nome e escolha os horários."); return; }
-            alert("Solicitação enviada para processamento!");
+
+            if (!nome || !dataUso || check.length === 0) { 
+                alert("Por favor, preencha seu nome, a data e escolha os horários."); 
+                return; 
+            }
+
+            const horarios = Array.from(check).map(c => c.value).join(", ");
+            const numeroDestino = contatosResponsaveis[categoriaAtiva];
+
+            let mensagem = `*Solicitação de Agendamento - LMP*%0A%0A`;
+            mensagem += `*Solicitante:* ${nome}%0A`;
+            mensagem += `*Categoria:* ${categoriaAtiva}%0A`;
+            mensagem += `*Data:* ${dataUso}%0A`;
+            mensagem += `*Horários:* ${horarios}%0A`;
+            mensagem += `*Detalhes:* ${detalhes}%0A`;
+            mensagem += `%0A_Enviado via Sistema de Agendamento_`;
+
+            const urlZap = `https://wa.me/${numeroDestino}?text=${mensagem}`;
+            window.open(urlZap, '_blank');
         }
 
         window.onload = carregarHorarios;
