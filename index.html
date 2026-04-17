@@ -1,12 +1,45 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento | Lab Misturas Asfálticas</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Agendamento | Lab Misturas Asfálticas</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"> 
+    <style> 
+        /* --- ESTILOS DO CABEÇALHO (DO CÓDIGO ANTIGO) --- */
+        .header-main {
+            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);
+            padding: 16px 0; color: white; border-bottom: 4px solid #143a46;
+            position: relative; overflow: hidden;
+        }
+        .header-bg-overlay {
+            position: absolute; top: 0; right: 0; width: 45%; height: 100%;
+            background: url('img/pavimento.jpg') no-repeat center right;
+            background-size: cover; opacity: 0.15; pointer-events: none; z-index: 0;
+        }
+        .header-container {
+            display: flex; align-items: center; justify-content: center; gap: 50px;
+            max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;
+        }
+        .header-logo { width: 221px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.25); }
+        .header-title { margin: 0; font-size: 2.7rem; font-weight: 900; line-height: 1.2; text-shadow: 0 4px 12px rgba(0,0,0,0.3); letter-spacing: -1px; }
+        .header-subtitle { margin: 5px 0 10px; font-size: 1.5rem; font-weight: 600; color: #FFD27D; }
+        
+        .coord-info {
+            font-size: 0.85rem; font-family: 'Inter', sans-serif; font-weight: 300;
+            margin-bottom: 15px; line-height: 1.4; border-left: 3px solid #D35400;
+            padding: 5px 15px; background: rgba(0,0,0,0.1);
+        }
+        .coord-info a { color: #fff; text-decoration: underline; }
+        
+        .footer-tag {
+            font-size: 0.8rem; font-weight: 300; color: rgba(255, 255, 255, 0.8);
+            background: rgba(0,0,0,0.25); padding: 4px 15px; border-radius: 50px;
+            display: inline-block; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- ESTILOS DO CONTEÚDO (DO CÓDIGO NOVO) --- */
         #selecao-inicial {display: flex;justify-content: center;gap: 30px;padding: 50px 20px;flex-wrap: wrap;max-width: 1100px;margin: 0 auto;}
         .categoria-card {background: #fff;border: 3px solid #eee;border-radius: 20px;width: 300px;padding: 40px 20px;text-align: center;cursor: pointer;transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
         .categoria-card:hover {transform: translateY(-10px);border-color: #D35400;box-shadow: 0 15px 30px rgba(211, 84, 0, 0.2);}
@@ -71,29 +104,24 @@
     </style>
 </head>
 <body>
-    <header class="main-header" style="background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%); padding: 20px 0; color: white; border-bottom: 4px solid #143a46;">
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-            <img src="img/foto.png" alt="Logotipo" style="width: 180px; border-radius: 12px;">
-            <div style="text-align: left;">
-                <h1 style="margin: 0; font-size: 2.2rem; font-weight: 900;">Sistema de Agendamento</h1>
-                <p style="margin: 5px 0; font-size: 1.2rem; color: #FFD27D; font-weight: 700;">Laboratório de Misturas Asfálticas - LMP | INCT infra |  UFC</p>
-                
-                <div style="margin-top: 25px; font-size: 0.75rem; opacity: 0.9; line-height: 1.6; display: flex; gap: 25px;">
-                    <div>
-                        <span style="display: block; font-weight: 900; color: #FFD27D; text-transform: uppercase; font-size: 0.65rem;">COORDENAÇÃO</span>
-                        <strong>Jorge Lucas:</strong> jorgelucas@alu.ufc.br
-                    </div>
-                    <div style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 25px;">
-                        <span style="display: block; font-weight: 900; color: #FFD27D; text-transform: uppercase; font-size: 0.65rem;">TÉCNICO DE LABORATÓRIO</span>
-                        <strong>Rômulo Jacome:</strong> romulooliveira@ufc.br
-                    </div>
-                    <div style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 25px;">
-                        <span style="display: block; font-weight: 900; color: #FFD27D; text-transform: uppercase; font-size: 0.65rem;">TÉCNICO DE ENSAIOS</span>
-                        <strong>Hermano Barreto:</strong> hermano.ufc@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
+
+    <header class="header-main">  
+        <div class="header-bg-overlay"></div>  
+        <div class="header-container">  
+            <img src="img/foto.png" alt="Logotipo" class="header-logo">  
+            <div style="text-align: left;">  
+                <h1 class="header-title">Sistema de Agendamento</h1>  
+                <p class="header-subtitle">Laboratório de Misturas Asfálticas - LMP | INCT-Infra | UFC</p>  
+                <div class="coord-info">  
+                    <strong>Coordenação:</strong> Jorge Lucas (<a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a>)<br>
+                    <strong>Técnico de Laboratório:</strong> Rômulo Jacome (<a href="mailto:romulojacome@yahoo.com.br">romulojacome@yahoo.com.br</a>)<br>
+                    <strong>Técnico de Equipamentos:</strong> Hermano Barreto (<a href="mailto:hermano@det.ufc.br">hermano@det.ufc.br</a>)  
+                </div>  
+                <span class="footer-tag">  
+                    © 2026 | <img src="img/lmp.jpeg" alt="LMP" style="height: 1rem; vertical-align: middle; mix-blend-mode: multiply;"> | Todos os direitos reservados  
+                </span>  
+            </div>  
+        </div>  
     </header>
 
     <section id="selecao-inicial">
