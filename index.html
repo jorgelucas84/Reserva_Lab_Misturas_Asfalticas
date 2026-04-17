@@ -202,7 +202,7 @@
 
                 <div id="container-detalhes" class="detalhes-ensaio">
                     <div class="detalhes-grid">
-                        <div id="opcoes-marshall" style="display:none;" class="detalhes-item">
+                        <div id="opcoes-estado-mistura" style="display:none;" class="detalhes-item">
                             <label>Estado da Mistura:</label>
                             <div>
                                 <button class="btn-opcao" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button>
@@ -326,7 +326,7 @@
                     const card = document.createElement('div');
                     card.className = 'ensaio-card';
                     card.setAttribute('data-nome', item.n); 
-                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq, item.n.includes("Marshall"));
+                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq);
                     card.innerHTML = `
                         <img src="img/${item.img}" alt="${item.n}">
                         <div class="info"><h5>${index + 1} - ${item.n}</h5></div>
@@ -337,17 +337,25 @@
             window.scrollTo(0, 0);
         }
 
-        function selecionarEnsaio(elemento, nome, eq, ehMarshall) {
+        function selecionarEnsaio(elemento, nome, eq) {
             document.querySelectorAll('.ensaio-card').forEach(c => {
                 c.classList.remove('selected');
                 c.classList.remove('blocked');
             });
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
+            
+            // Verifica se é Marshall ou Superpave para mostrar as opções extras
+            const precisaOpcoesDosagem = nome.toLowerCase().includes("marshall") || nome.toLowerCase().includes("superpave");
+            
             document.getElementById('container-detalhes').style.display = "block";
-            document.getElementById('opcoes-marshall').style.display = ehMarshall ? "block" : "none";
+            document.getElementById('opcoes-estado-mistura').style.display = precisaOpcoesDosagem ? "block" : "none";
             document.getElementById('caixa-equipamentos').style.display = "block";
             document.getElementById('lista-equipamentos').innerText = eq;
+            
+            // Limpa subtipo se mudar de um ensaio de dosagem para um comum
+            if(!precisaOpcoesDosagem) subtipoSelecionado = "";
+            
             atualizarDadosFinais();
         }
 
