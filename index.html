@@ -3,62 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Agendamento - Lab de Solos</title>
+    <title>Agendamento Lab de Solos</title>
     <style>
-        :root {
-            --primary-color: #1A4A5A;
-            --bg-light: #f9f9f9;
-            --shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eee; margin: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eee; margin: 0; padding: 0; }
         
-        #selecao-inicial { 
-            display: flex; justify-content: center; gap: 20px; padding: 50px 20px; flex-wrap: wrap; 
+        /* Seção Inicial */
+        #selecao-inicial { display: flex; justify-content: center; gap: 20px; padding: 50px 20px; flex-wrap: wrap; }
+        .categoria-card { 
+            background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            text-align: center; cursor: pointer; transition: 0.3s; width: 250px; 
         }
+        .categoria-card:hover { transform: translateY(-10px); border: 2px solid #1A4A5A; }
+        .icon-grande { font-size: 3.5rem; display: block; margin-bottom: 15px; }
 
-        .categoria-card {
-            background: white; padding: 30px; border-radius: 15px; box-shadow: var(--shadow);
-            text-align: center; cursor: pointer; transition: transform 0.2s; width: 250px;
-        }
-        .categoria-card:hover { transform: translateY(-5px); border: 2px solid var(--primary-color); }
-        .icon-grande { font-size: 3rem; display: block; margin-bottom: 10px; }
-
+        /* Conteúdo Principal */
         #conteudo-principal { display: none; }
         .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
         
-        .card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px; }
+        .btn-voltar { background: none; border: none; color: #1A4A5A; cursor: pointer; font-weight: bold; margin-bottom: 20px; font-size: 1rem; }
         
-        .info-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
+        /* Grid de Formulário */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .input-group label { display: block; font-weight: 600; margin-bottom: 5px; color: #333; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 5px; }
         .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
 
-        .cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
+        /* Container de Cards de Ensaio */
+        .cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
         .ensaio-card { 
-            border: 1px solid #ddd; border-radius: 8px; overflow: hidden; cursor: pointer; 
-            transition: 0.3s; background: white; text-align: center;
+            border: 1px solid #ddd; border-radius: 10px; overflow: hidden; cursor: pointer; 
+            transition: 0.3s; background: white; position: relative;
         }
-        .ensaio-card img { width: 100%; height: 120px; object-fit: cover; }
-        .ensaio-card.selected { border: 3px solid var(--primary-color); background: #eef6f8; }
-        .ensaio-card .info { padding: 10px; }
-        .ensaio-card h5 { margin: 5px 0; font-size: 0.9rem; }
+        .ensaio-card img { width: 100%; height: 140px; object-fit: cover; }
+        .ensaio-card .info { padding: 12px; text-align: center; }
+        .ensaio-card h5 { margin: 0; font-size: 0.95rem; color: #333; }
+        .ensaio-card.selected { border: 3px solid #1A4A5A; background: #eef6f8; }
 
-        .btn-voltar { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: bold; margin-bottom: 15px; }
-        .btn-opcao { padding: 8px 15px; border: 1px solid var(--primary-color); background: white; border-radius: 5px; cursor: pointer; }
-        .btn-opcao.active { background: var(--primary-color); color: white; }
+        /* Detalhes e Equipamentos */
+        .detalhes-ensaio { display: none; margin-top: 25px; padding: 20px; border-top: 2px solid #eee; }
+        .btn-opcao { padding: 10px 15px; border: 1px solid #1A4A5A; background: white; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+        .btn-opcao.active { background: #1A4A5A; color: white; }
+        .equipamentos-info, .normas-info { display: none; margin-top: 15px; padding: 15px; border-radius: 8px; }
+        .equipamentos-info { background: #f0f4f5; border-left: 5px solid #1A4A5A; }
+        .normas-info { background: #fffde7; border-left: 5px solid #fbc02d; }
 
-        .modo-lista-aulas { display: none; flex-direction: column; gap: 10px; background: #f0f4f5; padding: 20px; border-radius: 10px; }
-        .item-aula-checkbox { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; }
+        /* Modo Aulas */
+        .modo-lista-aulas { display: none; flex-direction: column; gap: 12px; background: #f9f9f9; padding: 20px; border-radius: 10px; }
 
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background-color: var(--primary-color); color: white; }
+        /* Tabela */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #1A4A5A; color: white; }
         .status-disponivel { color: #27ae60; font-weight: bold; }
-
-        .detalhes-ensaio { display: none; border-top: 2px solid #eee; padding-top: 20px; margin-top: 20px; }
-        .normas-info { display: none; background: #fffde7; padding: 10px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #fbc02d; }
     </style>
 </head>
 <body>
@@ -82,19 +78,19 @@
         <main class="container">
             <button class="btn-voltar" onclick="voltarInicio()">← Voltar ao início</button>
 
-            <section class="info-section">
+            <section class="info-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
                 <div class="card">
                     <h3>ℹ️ INFORMAÇÕES GERAIS</h3>
                     <ul style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;">
-                        <li><strong>1.</strong> Utilizar EPIs obrigatoriamente.</li>
-                        <li><strong>2.</strong> Manter o exaustor ligado em ensaios com solventes/resíduos.</li>
-                        <li><strong>3.</strong> Limpeza do posto após o uso é responsabilidade do usuário.</li>
-                        <li><strong>4.</strong> Prioridade para pedidos até sexta 12:00. <a href="https://grid-lab-04.github.io/reservaton_misturas/" target="_blank">Agendamento de Misturas</a>.</li>
+                        <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar equipamentos de proteção individual.</li>
+                        <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o exaustor ligado em ensaios com resíduos.</li>
+                        <li style="margin-bottom: 8px;"><strong>3.</strong> Manter o laboratório limpo e organizado.</li>
+                        <li style="margin-bottom: 8px;"><strong>4.</strong> Pedidos até sexta 12:00 têm prioridade. <a href="https://grid-lab-04.github.io/reservaton_misturas/" target="_blank">Link Obrigatório</a>.</li>
                     </ul>
                 </div>
-                <div class="card" id="container-instrucoes">
-                    <h3>📝 INSTRUÇÕES</h3>
-                    <p id="texto-instrucoes">Selecione uma categoria para começar.</p>
+                <div class="card">
+                    <h3>📝 INSTRUÇÕES DA ATIVIDADE</h3>
+                    <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">Por favor, selecione os procedimentos abaixo para continuar.</p>
                 </div>
             </section>
 
@@ -122,43 +118,79 @@
                     </div>
                     <div class="input-group">
                         <label>Categoria Selecionada</label>
-                        <input type="text" id="categoria-display" readonly style="background: #f0f0f0; color: #1A4A5A; font-weight: bold;">
+                        <input type="text" id="categoria-display" readonly>
                     </div>
                 </div>
 
-                <h4 id="titulo-procedimentos">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4>
-                
+                <h4 style="margin: 25px 0 15px 0;">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4>
+
                 <div id="container-cards-padrao" class="cards-container">
                     <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true, 'img/dnit-043_2004-me.pdf')">
-                        <img src="img/Marshall.jpeg" alt="Marshall">
+                        <img src="img/Marshall.jpeg" alt="Dosagem Marshall">
                         <div class="info"><h5>1 - Dosagem Marshall</h5></div>
                     </div>
                     <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Superpave', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true, 'img/superpave.pdf')">
-                        <img src="img/superpave.jpeg" alt="Superpave">
+                        <img src="img/superpave.jpeg" alt="Dosagem Superpave">
                         <div class="info"><h5>2 - Dosagem Superpave</h5></div>
                     </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex, Balança 1', false, 'img/dnit-144_2014-me.pdf')">
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex or Extrator Soxhlet, Balança 1', false, 'img/dnit-144_2014-me.pdf')">
                         <img src="img/rotarex.jpeg" alt="Extração">
                         <div class="info"><h5>3 - Extração de ligante</h5></div>
+                    </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Fluir ligante', 'Bucha de fluidez, Estufa, Cronômetro', false, '#')">
+                        <img src="img/fluir.jpeg" alt="Fluir ligante">
+                        <div class="info"><h5>4 - Fluir ligante</h5></div>
+                    </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Homogeneização e quarteamento', 'Quarteador de solo, Bandejas, Espátulas', false, 'img/dnit-147_2014-me.pdf')">
+                        <img src="img/quarte.jpeg" alt="Homogeneização">
+                        <div class="info"><h5>5 - Homogeneização e quarteamento</h5></div>
+                    </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Abrasão Los Angeles', 'Máquina Los Angeles, Jogo de Peneiras, Balança 1', false, 'img/dnit-164_2013-me.pdf')">
+                        <img src="img/la.jpeg" alt="Los Angeles">
+                        <div class="info"><h5>6 - Abrasão Los Angeles</h5></div>
+                    </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Banho-maria, Balança hidrostática', false, 'img/dnit-117_2010-me.pdf')">
+                        <img src="img/dens.jpeg" alt="Densidade">
+                        <div class="info"><h5>7 - Densidade e absorção</h5></div>
+                    </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Tradicional)', 'Estufa, Placas de vidro, Agregados', false, 'img/dnit-078_2006-me.pdf')">
+                        <img src="img/adesiv.jpeg" alt="Adesividade Tradicional">
+                        <div class="info"><h5>8 - Adesividade (Tradicional)</h5></div>
+                    </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (ABS)', 'Pneumatic Adhesion Tester (PAT), Pastilhas, Estufa', false, '#')">
+                        <img src="img/abs.jpeg" alt="Adesividade ABS">
+                        <div class="info"><h5>9 - Adesividade (ABS)</h5></div>
                     </div>
                     <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Granulometria', 'Agitador de peneiras, Jogo de peneiras, Balança', false, 'img/dnit-011_2004-me.pdf')">
                         <img src="img/granu.jpeg" alt="Granulometria">
                         <div class="info"><h5>10 - Granulometria</h5></div>
                     </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Indice de forma', 'Paquímetro, Agulha de forma, Bandejas', false, 'img/dnit-014_2004-me.pdf')">
+                        <img src="img/if.jpeg" alt="Indice de forma">
+                        <div class="info"><h5>11 - Indice de forma</h5></div>
                     </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Sanidade', 'Solução de sulfato, Estufa, Peneiras', false, 'img/dnit-089_2006-me.pdf')">
+                        <img src="img/sani.jpeg" alt="Sanidade">
+                        <div class="info"><h5>12 - Sanidade</h5></div>
+                    </div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Secagem de material/Estufa', 'Estufa de circulação forçada, Bandejas', false, '#')">
+                        <img src="img/estufa.jpeg" alt="Secagem">
+                        <div class="info"><h5>13 - Secagem de material/Estufa</h5></div>
+                    </div>
+                </div>
 
                 <div id="container-lista-aulas" class="modo-lista-aulas"></div>
 
                 <div id="container-detalhes" class="detalhes-ensaio">
-                    <div class="form-grid">
+                    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
                         <div id="opcoes-marshall" style="display:none;">
-                            <label>Estado da Mistura:</label><br>
-                            <button class="btn-opcao" id="btn-massa" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button>
-                            <button class="btn-opcao" id="btn-compacta" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button>
+                            <label style="display:block; font-weight:bold; margin-bottom:10px;">Estado da Mistura:</label>
+                            <button class="btn-opcao" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button>
+                            <button class="btn-opcao" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button>
                         </div>
                         <div>
-                            <label>Qtd. Amostras:</label>
-                            <input type="number" id="qtd-amostras" style="width: 80px; padding: 8px;" value="1" min="1" onchange="atualizarDadosFinais()">
+                            <label style="display:block; font-weight:bold; margin-bottom:10px;">Qtd. Amostras:</label>
+                            <input type="number" id="qtd-amostras" value="1" min="1" style="padding:8px; width:60px;" onchange="atualizarDadosFinais()">
                         </div>
                     </div>
                     
@@ -167,31 +199,27 @@
                         <p id="link-container"></p>
                     </div>
 
-                    <div style="margin-top: 15px;">
-                        <label>Observações / Comentários:</label>
-                        <input type="text" id="obs-ensaio" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc;" placeholder="Ex: Necessário usar peneira específica..." oninput="atualizarDadosFinais()">
+                    <div style="margin-top:20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">Observações:</label>
+                        <input type="text" id="obs-ensaio" style="width:100%; padding:10px;" placeholder="Observações adicionais..." oninput="atualizarDadosFinais()">
                     </div>
                 </div>
 
-                <div id="caixa-equipamentos" class="card" style="display:none; margin-top:20px; background: #fefefe; border-left: 5px solid var(--primary-color);">
+                <div id="caixa-equipamentos" class="equipamentos-info">
                     <h4>🛠️ Equipamentos Necessários:</h4>
                     <p id="lista-equipamentos"></p>
                 </div>
             </section>
 
             <section style="text-align: center; margin: 30px 0;">
-                <input type="password" id="senha-lab" placeholder="Senha do Laboratório" style="padding: 11px; border-radius: 5px; border: 1px solid #ccc;">
-                <button onclick="reservarSelecionados()" style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Confirmar Agendamento</button>
+                <input type="password" id="senha-lab" placeholder="Senha" style="padding:10px; margin-right:10px;">
+                <button onclick="reservarSelecionados()" style="background:#1A4A5A; color:white; padding:12px 25px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Confirmar Reserva</button>
             </section>
 
-            <section class="card">
-                <table id="tabela-horarios">
-                    <thead>
-                        <tr><th>Horário</th><th>Status</th><th>Selecionar</th></tr>
-                    </thead>
-                    <tbody id="corpo-agenda"></tbody>
-                </table>
-            </section>
+            <table id="tabela-horarios">
+                <thead><tr><th>Horário</th><th>Status</th><th>Ação</th></tr></thead>
+                <tbody id="corpo-agenda"></tbody>
+            </table>
 
             <input type="hidden" id="maquina" value="">
         </main>
@@ -211,40 +239,34 @@
             const containerCards = document.getElementById('container-cards-padrao');
             const containerLista = document.getElementById('container-lista-aulas');
             const containerDetalhes = document.getElementById('container-detalhes');
-            const tituloProc = document.getElementById('titulo-procedimentos');
 
-            // Reset
             ensaioSelecionado = "";
             subtipoSelecionado = "";
             document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('caixa-equipamentos').style.display = 'none';
 
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
                 containerCards.style.display = 'none';
                 containerLista.style.display = 'flex';
                 containerDetalhes.style.display = 'none';
-                tituloProc.innerText = "➤ MARQUE OS ENSAIOS QUE SERÃO ABORDADOS NA AULA";
-                document.getElementById('texto-instrucoes').innerText = "Selecione os ensaios e os horários na agenda.";
+                document.getElementById('texto-instrucoes').innerText = "Marque os ensaios da aula e selecione os horários.";
                 gerarListaAulas();
             } else {
                 containerCards.style.display = 'grid';
                 containerLista.style.display = 'none';
                 containerDetalhes.style.display = 'none';
-                tituloProc.innerText = "➤ SELECIONE O PROCEDIMENTO DESEJADO";
-                document.getElementById('texto-instrucoes').innerText = "Selecione um card para ver detalhes e equipamentos.";
+                document.getElementById('texto-instrucoes').innerText = "Selecione um ensaio nos cards para continuar.";
             }
             atualizarDadosFinais();
         }
 
         function gerarListaAulas() {
             const container = document.getElementById('container-lista-aulas');
-            const cardsPadrao = document.querySelectorAll('#container-cards-padrao .ensaio-card h5');
-            let html = '';
-            cardsPadrao.forEach(h5 => {
-                const nome = h5.innerText.replace(/^\d+\s-\s/, '');
-                html += `<label class="item-aula-checkbox"><input type="checkbox" class="check-ensaio-aula" value="${nome}" onchange="atualizarDadosFinais()"> ${nome}</label>`;
-            });
-            container.innerHTML = html;
+            const nomes = Array.from(document.querySelectorAll('#container-cards-padrao h5')).map(h => h.innerText);
+            container.innerHTML = nomes.map(n => `
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                    <input type="checkbox" class="check-ensaio-aula" value="${n}" onchange="atualizarDadosFinais()"> ${n}
+                </label>
+            `).join('');
         }
 
         function selecionarEnsaio(elemento, nome, equipamentos, ehMarshall, linkNorma) {
@@ -259,56 +281,47 @@
 
             const linkContainer = document.getElementById('link-container');
             if(linkNorma && linkNorma !== '#') {
-                linkContainer.innerHTML = `<a href="${linkNorma}" target="_blank">📄 Visualizar Norma</a>`;
+                linkContainer.innerHTML = `<a href="${linkNorma}" target="_blank">Ver Norma</a> | <a href="${linkNorma}" download>Baixar</a>`;
                 document.getElementById('caixa-normas').style.display = "block";
             } else {
                 document.getElementById('caixa-normas').style.display = "none";
             }
-
             atualizarDadosFinais();
-            document.getElementById('tabela-horarios').scrollIntoView({ behavior: 'smooth' });
         }
 
         function definirSubtipo(tipo, btn) {
             document.querySelectorAll('.btn-opcao').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            subtipoSelecionado = " (" + tipo + ")";
+            subtipoSelecionado = " - " + tipo;
             atualizarDadosFinais();
         }
 
         function atualizarDadosFinais() {
-            const hidden = document.getElementById('maquina');
+            const hiddenInput = document.getElementById('maquina');
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
                 const sel = Array.from(document.querySelectorAll('.check-ensaio-aula:checked')).map(c => c.value);
-                hidden.value = `[AULAS] Ensaios: ${sel.join(', ') || 'Nenhum'}`;
+                hiddenInput.value = `[AULA] Ensaios: ${sel.join(', ') || 'Nenhum'}`;
             } else {
                 const qtd = document.getElementById('qtd-amostras').value;
                 const obs = document.getElementById('obs-ensaio').value;
-                hidden.value = `[${categoriaAtiva}] ${ensaioSelecionado}${subtipoSelecionado} - Qtd: ${qtd}${obs ? ' | Obs: '+obs : ''}`;
+                hiddenInput.value = `[${categoriaAtiva}] ${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)${obs ? ' [OBS: '+obs+']' : ''}`;
             }
         }
 
         function carregarHorarios() {
             const corpo = document.getElementById('corpo-agenda');
             let html = '';
-            for (let h = 7; h <= 17; h++) {
-                const horario = `${h.toString().padStart(2,'0')}:00 - ${(h+1).toString().padStart(2,'0')}:00`;
-                html += `<tr><td>${horario}</td><td class="status-disponivel">Disponível</td><td><input type="checkbox" name="selecionar-hora" value="${horario}"></td></tr>`;
+            for (let h = 7; h <= 16; h++) {
+                const intervalo = `${h.toString().padStart(2, '0')}:00 - ${(h+1).toString().padStart(2, '0')}:00`;
+                html += `<tr><td>${intervalo}</td><td class="status-disponivel">Disponível</td><td><input type="checkbox" name="selecionar-hora" value="${intervalo}"></td></tr>`;
             }
             corpo.innerHTML = html;
         }
 
         function reservarSelecionados() {
-            const checks = document.querySelectorAll('input[name="selecionar-hora"]:checked');
             if (!document.getElementById('nome').value) return alert("Preencha o nome!");
-            if (checks.length === 0) return alert("Selecione um horário!");
-            
-            // Aqui chama a função que deve estar no seu script.js (integração Google Sheets)
-            if (typeof window.reservarNoScript === "function") {
-                window.reservarNoScript();
-            } else {
-                alert("Reserva registrada localmente. (Verifique se o script.js está carregado)");
-            }
+            if (document.querySelectorAll('input[name="selecionar-hora"]:checked').length === 0) return alert("Selecione um horário!");
+            if (typeof window.reservarNoScript === "function") window.reservarNoScript();
         }
 
         function voltarInicio() {
@@ -318,5 +331,6 @@
 
         window.onload = carregarHorarios;
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
