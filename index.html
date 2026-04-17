@@ -199,7 +199,7 @@
         const cardsCaracterizacao = [
             {n: "Dosagem Marshall", img: "Marshall.jpeg", eq: "Prensa Marshall, Estufas, Compactador"},
             {n: "Dosagem Superpave", img: "superpave.jpeg", eq: "Giratório, Rice Test, Estufas"},
-            {n: "Extração de ligante", img: "rotarex.jpeg", eq: "Rotarex ou Soxhlet"},
+            {n: "Extração de ligante", img: "rotarex.jpeg", eq: "Rotarex or Soxhlet"},
             {n: "Fluir ligante", img: "fluir.jpeg", eq: "Bucha de fluidez, Estufa"},
             {n: "Homogeneização", img: "quarte.jpeg", eq: "Quarteador, Bandejas"},
             {n: "Abrasão Los Angeles", img: "la.jpeg", eq: "Máquina Los Angeles"},
@@ -237,9 +237,11 @@
             document.getElementById('caixa-equipamentos').style.display = 'none';
             document.getElementById('container-detalhes').style.display = 'none';
 
-            // Lógica para mudar o título apenas no card ENSAIOS MECÂNICOS
+            // Lógica para mudar os títulos conforme a categoria selecionada
             if (nome === 'ENSAIOS MECÂNICOS') {
                 tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO";
+            } else if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
+                tituloCards.innerText = "➤ SELECIONE O ENSAIO QUE SERÁ APRESENTADO EM AULA";
             } else {
                 tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
             }
@@ -282,8 +284,9 @@
 
         function gerarListaAulas() {
             const container = document.getElementById('container-lista-aulas');
+            const cardsParaAulas = (typeof cardsCaracterizacao !== 'undefined') ? cardsCaracterizacao : [];
             let html = '<h4>Marque os ensaios da aula:</h4>';
-            cardsCaracterizacao.forEach(item => {
+            cardsParaAulas.forEach(item => {
                 html += `<label class="item-aula-checkbox"><input type="checkbox" class="check-ensaio-aula" value="${item.n}" onchange="atualizarDadosFinais()"><span>${item.n}</span></label>`;
             });
             container.innerHTML = html;
