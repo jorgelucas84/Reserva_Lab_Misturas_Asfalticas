@@ -415,14 +415,14 @@
             const BASE_URL = "https://script.google.com/a/det.ufc.br/macros/s/AKfycbx2i7ZcdLE4qyU9RDtIeWZj0bpNIf5Ol2ULlnpy2V3xZfdAVe4kmlApmCbW0DxLQw/exec";
             const numeroDestino = contatosResponsaveis[categoriaAtiva];
 
-            // MONTAGEM DA MENSAGEM COM OS EMOJIS E FORMATAÇÃO SOLICITADA
-            let mensagem = `🔬 *Novo Agendamento LMP*%0A%0A`;
-            mensagem += `*Aluno:* ${nome}%0A`;
-            mensagem += `*Ensaio:* ${detalhes}%0A%0A`;
-            mensagem += `✅ *ACEITAR:*%0A${BASE_URL}?id=${ID_UNICO}&acao=Aceito%0A%0A`;
-            mensagem += `❌ *RECUSAR:*%0A${BASE_URL}?id=${ID_UNICO}&acao=Recusado`;
+            // Montagem da mensagem com emojis e links separados corretamente
+            let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
+            mensagem += "*Aluno:* " + nome + "\n";
+            mensagem += "*Ensaio:* " + detalhes + "\n\n";
+            mensagem += "✅ ACEITAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
+            mensagem += "❌ RECUSAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
 
-            const urlZap = `https://wa.me/${numeroDestino}?text=${mensagem}`;
+            const urlZap = "https://wa.me/" + numeroDestino + "?text=" + encodeURIComponent(mensagem);
             
             const areaAcao = document.getElementById('area-acao');
             areaAcao.innerHTML = `<a href="${urlZap}" target="_blank" style="background-color: #25D366; color: white; padding: 15px 35px; border-radius: 8px; text-decoration: none; font-weight: 900; font-size: 1.2rem; display: inline-block; animation: fadeIn 0.5s ease;">CLIQUE AQUI!</a>`;
