@@ -14,7 +14,6 @@
         .categoria-card h3 {color: #1A4A5A;font-weight: 900;font-size: 1.2rem;text-transform: uppercase;margin: 0;}
         #conteudo-principal {display: none;animation: fadeIn 0.6s ease-out;}
         
-        /* 1 - DESTAQUE NO BOTÃO VOLTAR */
         .btn-voltar {
             background: linear-gradient(135deg, #f5f7f8 0%, #dce4e7 100%);
             border: 2px solid #1A4A5A;
@@ -156,60 +155,28 @@
                     </div>
                 </div>
 
-                <h4 class="section-title-cards">➤ SELECIONE O PROCEDIMENTO DESEJADO</h4>
+                <h4 class="section-title-cards">➤ SELECIONE O EQUIPAMENTO DESEJADO</h4>
                  
                 <div id="container-cards-padrao" class="cards-container">
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufa 1, 2, 3, Misturador, Compactador Marshall, Balança 1', true, 'img/dnit-043_2004-me.pdf')">
-                        <img src="img/Marshall.jpeg" alt="Dosagem Marshall">
-                        <div class="info"><h5>1 - Dosagem Marshall</h5></div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Prensa Marshall', 'Prensa Marshall, Moldes, Soquete, Estufa', false, '#')">
+                        <img src="img/Marsh.jpeg" alt="Prensa Marshall">
+                        <div class="info"><h5>1 - Prensa Marshall</h5></div>
                     </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Superpave', 'Estufa, Conjunto Rice Test, Bomba de Vácuo, Balança 1', true, 'img/superpave.pdf')">
-                        <img src="img/superpave.jpeg" alt="Dosagem Superpave">
-                        <div class="info"><h5>2 - Dosagem Superpave</h5></div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Prensa UTM25', 'Prensa UTM25, Câmara Climática, Atuadores', false, '#')">
+                        <img src="img/utm25.jpeg" alt="Prensa UTM25">
+                        <div class="info"><h5>2 - Prensa UTM25</h5></div>
                     </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Extração de ligante', 'Estufa 1, Rotarex or Extrator Soxhlet, Balança 1', false, 'img/dnit-144_2014-me.pdf')">
-                        <img src="img/rotarex.jpeg" alt="Extração">
-                        <div class="info"><h5>3 - Extração de ligante</h5></div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Prensa UTM30', 'Prensa UTM30, Software de Controle, Sensores', false, '#')">
+                        <img src="img/utm30.jpeg" alt="Prensa UTM30">
+                        <div class="info"><h5>3 - Prensa UTM30</h5></div>
                     </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Fluir ligante', 'Bucha de fluidez, Estufa, Cronômetro', false, '#')">
-                        <img src="img/fluir.jpeg" alt="Fluir ligante">
-                        <div class="info"><h5>4 - Fluir ligante</h5></div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Prensa MTS', 'Sistema de Testes MTS, Unidade Hidráulica', false, '#')">
+                        <img src="img/mts.jpeg" alt="Prensa MTS">
+                        <div class="info"><h5>4 - Prensa MTS</h5></div>
                     </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Homogeneização e quarteamento', 'Quarteador de solo, Bandejas, Espátulas', false, 'img/dnit-147_2014-me.pdf')">
-                        <img src="img/quarte.jpeg" alt="Homogeneização">
-                        <div class="info"><h5>5 - Homogeneização e quarteamento</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Abrasão Los Angeles', 'Máquina Los Angeles, Jogo de Peneiras, Balança 1', false, 'img/dnit-164_2013-me.pdf')">
-                        <img src="img/la.jpeg" alt="Los Angeles">
-                        <div class="info"><h5>6 - Abrasão Los Angeles</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Banho-maria, Balança hidrostática', false, 'img/dnit-117_2010-me.pdf')">
-                        <img src="img/dens.jpeg" alt="Densidade">
-                        <div class="info"><h5>7 - Densidade e absorção</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Tradicional)', 'Estufa, Placas de vidro, Agregados', false, 'img/dnit-078_2006-me.pdf')">
-                        <img src="img/adesiv.jpeg" alt="Adesividade Tradicional">
-                        <div class="info"><h5>8 - Adesividade (Tradicional)</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Adesividade (Asphalt Bond Strength)', 'Pneumatic Adhesion Tester (PAT), Pastilhas, Estufa', false, '#')">
-                        <img src="img/abs.jpeg" alt="Adesividade ABS">
-                        <div class="info"><h5>9 - Adesividade (Asphalt Bond Strength)</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Granulometria', 'Agitador de peneiras, Jogo de peneiras, Balança', false, 'img/dnit-011_2004-me.pdf')">
-                        <img src="img/granu.jpeg" alt="Granulometria">
-                        <div class="info"><h5>10 - Granulometria</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Indice de forma', 'Paquímetro, Agulha de forma, Bandejas', false, 'img/dnit-014_2004-me.pdf')">
-                        <img src="img/if.jpeg" alt="Indice de forma">
-                        <div class="info"><h5>11 - Indice de forma</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Sanidade', 'Solução de sulfato, Estufa, Peneiras', false, 'img/dnit-089_2006-me.pdf')">
-                        <img src="img/sani.jpeg" alt="Sanidade">
-                        <div class="info"><h5>12 - Sanidade</h5></div>
-                    </div>
-                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Secagem de material/Estufa', 'Estufa de circulação forçada, Bandejas', false, '#')">
-                        <img src="img/estufa.jpeg" alt="Secagem">
-                        <div class="info"><h5>13 - Secagem de material/Estufa</h5></div>
+                    <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Prensa RiO', 'Prensa RiO, Acessórios de ensaio', false, '#')">
+                        <img src="img/rio.jpeg" alt="Prensa RiO">
+                        <div class="info"><h5>5 - Prensa RiO</h5></div>
                     </div>
                 </div>
 
@@ -240,7 +207,7 @@
                 </div>
                 <input type="hidden" id="maquina" value="">
                 <div id="caixa-equipamentos" class="equipamentos-info">
-                    <h4><span class="icon">🛠️</span> Equipamentos Necessários:</h4>
+                    <h4><span class="icon">🛠️</span> Equipamentos/Acessórios:</h4>
                     <p id="lista-equipamentos"></p>
                 </div>
             </section>
@@ -290,7 +257,7 @@
                 containerCards.style.display = 'grid';
                 containerLista.style.display = 'none';
                 containerDetalhes.style.display = 'none';
-                document.getElementById('texto-instrucoes').innerText = "Selecione um ensaio abaixo para ver as instruções e equipamentos.";
+                document.getElementById('texto-instrucoes').innerText = "Selecione um equipamento abaixo para ver as instruções e acessórios.";
             }
             atualizarDadosFinais();
             window.scrollTo(0, 0);
@@ -344,7 +311,7 @@
             } else {
                 caixaNormas.style.display = "none";
             }
-            document.getElementById('texto-instrucoes').innerText = `Você selecionou: ${nomeEnsaio}. Certifique-se de reservar os horários necessários para este ensaio na tabela abaixo.`;
+            document.getElementById('texto-instrucoes').innerText = `Você selecionou: ${nomeEnsaio}. Certifique-se de reservar os horários necessários na tabela abaixo.`;
             atualizarDadosFinais();
         }
 
@@ -359,11 +326,11 @@
             const hiddenInput = document.getElementById('maquina');
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
                 const selecionados = Array.from(document.querySelectorAll('.check-ensaio-aula:checked')).map(cb => cb.value);
-                hiddenInput.value = `[AULAS] Ensaios: ${selecionados.length > 0 ? selecionados.join(', ') : 'Nenhum selecionado'}`;
+                hiddenInput.value = `[AULAS] Equipamentos: ${selecionados.length > 0 ? selecionados.join(', ') : 'Nenhum selecionado'}`;
             } else {
                 const qtd = document.getElementById('qtd-amostras').value;
                 const obs = document.getElementById('obs-ensaio').value;
-                let textoFinal = `[${categoriaAtiva}] ${ensaioSelecionado || 'Nenhum ensaio'}${subtipoSelecionado} (${qtd} amostras)`;
+                let textoFinal = `[${categoriaAtiva}] ${ensaioSelecionado || 'Nenhum equipamento'}${subtipoSelecionado} (${qtd} amostras)`;
                 if(obs) textoFinal += ` [OBS: ${obs}]`;
                 hiddenInput.value = textoFinal;
             }
@@ -378,7 +345,7 @@
             if (!data) { alert("Por favor, selecione uma data."); return; }
             if (checkboxes.length === 0) { alert("Selecione pelo menos um horário na agenda."); return; }
             if (categoria !== 'USO DO LABORATÓRIO PARA AULAS' && !ensaioSelecionado) {
-                alert("Por favor, selecione um procedimento nos cards acima.");
+                alert("Por favor, selecione um equipamento nos cards acima.");
                 return;
             }
             if (typeof window.reservarNoScript === "function") {
