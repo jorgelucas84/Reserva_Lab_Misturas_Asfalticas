@@ -60,6 +60,10 @@
         .normas-info {margin-left: auto;padding: 12px 20px;background: #f0f7f9;border: 1px solid #1A4A5A;border-radius: 12px;display: none;text-align: center;}
         .equipamentos-info {margin-top: 15px;padding: 15px;background-color: #f8f9fa;border-left: 5px solid #1A4A5A;border-radius: 5px;display: none;}
         
+        /* Estilos de Status para a Tabela */
+        .status-disponivel { color: green; font-weight: bold; }
+        .status-indisponivel { color: red; font-weight: bold; }
+
         @keyframes fadeIn {from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); }}
         .table-section { margin-top: 20px; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         #tabela-horarios { width: 100%; border-collapse: collapse; }
@@ -188,7 +192,6 @@
         let subtipoSelecionado = "";
         let categoriaAtiva = "";
 
-        // Dados dos 13 cards de Caracterização
         const cardsCaracterizacao = [
             {n: "Dosagem Marshall", img: "Marshall.jpeg", eq: "Prensa Marshall, Estufas, Compactador"},
             {n: "Dosagem Superpave", img: "superpave.jpeg", eq: "Giratório, Rice Test, Estufas"},
@@ -205,7 +208,6 @@
             {n: "Secagem / Estufa", img: "estufa.jpeg", eq: "Estufa de circulação"}
         ];
 
-        // Dados dos 5 cards de Ensaios Mecânicos
         const cardsMecanicos = [
             {n: "Prensa Marshall", img: "marsh.jpeg", eq: "Rompimento Marshall / Estabilidade"},
             {n: "Prensa UTM25", img: "utm25.jpeg", eq: "Ensaios dinâmicos e Fadiga"},
@@ -267,7 +269,6 @@
 
         function gerarListaAulas() {
             const container = document.getElementById('container-lista-aulas');
-            // Usa a lista completa (caracterização) para os professores marcarem o que terá na aula
             let html = '<h4>Marque os ensaios da aula:</h4>';
             cardsCaracterizacao.forEach(item => {
                 html += `<label class="item-aula-checkbox"><input type="checkbox" class="check-ensaio-aula" value="${item.n}" onchange="atualizarDadosFinais()"><span>${item.n}</span></label>`;
@@ -299,7 +300,11 @@
             let html = '';
             for (let h = 7; h <= 17; h++) {
                 const hora = h.toString().padStart(2, '0') + ":00";
-                html += `<tr><td>${hora}</td><td class="status-disponivel">Livre</td><td><input type="checkbox" name="selecionar-hora" value="${hora}"></td></tr>`;
+                html += `<tr>
+                    <td>${hora}</td>
+                    <td class="status-disponivel">DISPONÍVEL</td>
+                    <td><input type="checkbox" name="selecionar-hora" value="${hora}"></td>
+                </tr>`;
             }
             corpo.innerHTML = html;
         }
