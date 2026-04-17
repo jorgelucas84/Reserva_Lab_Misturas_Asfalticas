@@ -146,13 +146,6 @@
 
                 <div id="container-detalhes" class="detalhes-ensaio">
                     <div class="detalhes-grid">
-                        <div id="opcoes-marshall" style="display:none;" class="detalhes-item">
-                            <label>Estado da Mistura:</label>
-                            <div>
-                                <button class="btn-opcao" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button>
-                                <button class="btn-opcao" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button>
-                            </div>
-                        </div>
                         <div class="detalhes-item">
                             <label>Qtd. Amostras:</label>
                             <input type="number" id="qtd-amostras" class="input-detalhe" style="width: 80px;" value="1" min="1" onchange="atualizarDadosFinais()">
@@ -189,7 +182,6 @@
 
     <script>
         let ensaioSelecionado = "";
-        let subtipoSelecionado = "";
         let categoriaAtiva = "";
 
         const cardsCaracterizacao = [
@@ -226,7 +218,6 @@
             const containerLista = document.getElementById('container-lista-aulas');
             
             ensaioSelecionado = "";
-            subtipoSelecionado = "";
             containerCards.innerHTML = "";
             document.getElementById('caixa-equipamentos').style.display = 'none';
             document.getElementById('container-detalhes').style.display = 'none';
@@ -243,7 +234,7 @@
                 listaUsar.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'ensaio-card';
-                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq, item.n.includes("Marshall"));
+                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq);
                     card.innerHTML = `
                         <img src="img/${item.img}" alt="${item.n}">
                         <div class="info"><h5>${index + 1} - ${item.n}</h5></div>
@@ -254,13 +245,12 @@
             window.scrollTo(0, 0);
         }
 
-        function selecionarEnsaio(elemento, nome, eq, ehMarshall) {
+        function selecionarEnsaio(elemento, nome, eq) {
             document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
             
             document.getElementById('container-detalhes').style.display = "block";
-            document.getElementById('opcoes-marshall').style.display = ehMarshall ? "block" : "none";
             document.getElementById('caixa-equipamentos').style.display = "block";
             document.getElementById('lista-equipamentos').innerText = eq;
             
@@ -276,13 +266,6 @@
             container.innerHTML = html;
         }
 
-        function definirSubtipo(tipo, botao) {
-            document.querySelectorAll('.btn-opcao').forEach(b => b.classList.remove('active'));
-            botao.classList.add('active');
-            subtipoSelecionado = " (" + tipo + ")";
-            atualizarDadosFinais();
-        }
-
         function atualizarDadosFinais() {
             const hiddenInput = document.getElementById('maquina');
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
@@ -291,7 +274,7 @@
             } else {
                 const qtd = document.getElementById('qtd-amostras').value;
                 const obs = document.getElementById('obs-ensaio').value;
-                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} | Qtd: ${qtd} | Obs: ${obs}`;
+                hiddenInput.value = `${ensaioSelecionado} | Qtd: ${qtd} | Obs: ${obs}`;
             }
         }
 
