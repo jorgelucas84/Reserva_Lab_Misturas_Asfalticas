@@ -103,11 +103,8 @@
             <section class="info-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
                 <div class="card info-geral" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                     <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>
-                    <ul style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;">
-                        <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar EPIs obrigatórios.</li>
-                        <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o laboratório limpo.</li>
-                        <li style="margin-bottom: 8px; color: red;"><strong>3.</strong> Reservas até sexta às 12:00 terão prioridade para a próxima semana.</li>
-                    </ul>
+                    <ul id="lista-info-geral" style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;">
+                        </ul>
                 </div>
                 <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                     <h3><span class="icon">📝</span> INSTRUÇÕES</h3>
@@ -132,6 +129,10 @@
                     <div class="input-group campos-extras" style="display:none;">
                         <label>Projeto/Órgão</label>
                         <input type="text" id="projeto" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div id="grupo-qtd-alunos" class="input-group" style="display:none;">
+                        <label>Número de Alunos</label>
+                        <input type="number" id="qtd-alunos" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" min="1">
                     </div>
                     <div class="input-group">
                         <label>Data do Uso</label>
@@ -230,6 +231,8 @@
             const containerLista = document.getElementById('container-lista-aulas');
             const extras = document.querySelectorAll('.campos-extras');
             const tituloCards = document.getElementById('titulo-selecao-cards');
+            const listaInfo = document.getElementById('lista-info-geral');
+            const grupoAlunos = document.getElementById('grupo-qtd-alunos');
             
             ensaioSelecionado = "";
             subtipoSelecionado = "";
@@ -237,26 +240,32 @@
             document.getElementById('caixa-equipamentos').style.display = 'none';
             document.getElementById('container-detalhes').style.display = 'none';
 
-            // Lógica para mudar os títulos conforme a categoria selecionada
-            if (nome === 'ENSAIOS MECÂNICOS') {
-                tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO";
-            } else if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
-                tituloCards.innerText = "➤ SELECIONE Os ENSAIOs QUE SERÃO APRESENTADOs EM AULA";
-            } else {
-                tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
-            }
-
+            // Ajuste de Textos e Campos conforme categoria
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
+                tituloCards.innerText = "➤ SELECIONE Os ENSAIOs QUE SERÃO APRESENTADOs EM AULA";
+                listaInfo.innerHTML = `
+                    <li style="margin-bottom: 8px;"><strong>1.</strong> É proibida a entrada usando chinelos, sandálias ou calçados abertos.</li>
+                    <li style="margin-bottom: 8px;"><strong>2.</strong> Não é permitido comer ou beber no laboratório.</li>
+                `;
+                grupoAlunos.style.display = 'block';
                 containerCards.style.display = 'none';
                 containerLista.style.display = 'flex';
                 extras.forEach(el => el.style.display = 'none');
                 gerarListaAulas();
             } else {
+                listaInfo.innerHTML = `
+                    <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar EPIs obrigatórios.</li>
+                    <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o laboratório limpo.</li>
+                    <li style="margin-bottom: 8px; color: red;"><strong>3.</strong> Reservas até sexta às 12:00 terão prioridade para a próxima semana.</li>
+                `;
+                grupoAlunos.style.display = 'none';
                 containerCards.style.display = 'grid';
                 containerLista.style.display = 'none';
                 extras.forEach(el => el.style.display = 'block');
-                const listaUsar = (nome === 'ENSAIOS MECÂNICOS') ? cardsMecanicos : cardsCaracterizacao;
                 
+                tituloCards.innerText = (nome === 'ENSAIOS MECÂNICOS') ? "➤ SELECIONE O EQUIPAMENTO" : "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
+                
+                const listaUsar = (nome === 'ENSAIOS MECÂNICOS') ? cardsMecanicos : cardsCaracterizacao;
                 listaUsar.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'ensaio-card';
@@ -303,7 +312,8 @@
             const hiddenInput = document.getElementById('maquina');
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
                 const sel = Array.from(document.querySelectorAll('.check-ensaio-aula:checked')).map(c => c.value);
-                hiddenInput.value = `[AULA] ${sel.join(', ')}`;
+                const qtdAlunos = document.getElementById('qtd-alunos').value;
+                hiddenInput.value = `[AULA] Alunos: ${qtdAlunos} | Ensaios: ${sel.join(', ')}`;
             } else {
                 const qtd = document.getElementById('qtd-amostras').value;
                 const obs = document.getElementById('obs-ensaio').value;
