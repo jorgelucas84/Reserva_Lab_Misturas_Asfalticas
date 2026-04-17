@@ -182,6 +182,7 @@
 
     <script>
         let ensaioSelecionado = "";
+        let subtipoSelecionado = ""; // Mantido para compatibilidade de lógica, mas não será preenchido via botões
         let categoriaAtiva = "";
 
         const cardsCaracterizacao = [
@@ -218,6 +219,7 @@
             const containerLista = document.getElementById('container-lista-aulas');
             
             ensaioSelecionado = "";
+            subtipoSelecionado = "";
             containerCards.innerHTML = "";
             document.getElementById('caixa-equipamentos').style.display = 'none';
             document.getElementById('container-detalhes').style.display = 'none';
@@ -266,6 +268,13 @@
             container.innerHTML = html;
         }
 
+        function definirSubtipo(tipo, botao) {
+            document.querySelectorAll('.btn-opcao').forEach(b => b.classList.remove('active'));
+            botao.classList.add('active');
+            subtipoSelecionado = " (" + tipo + ")";
+            atualizarDadosFinais();
+        }
+
         function atualizarDadosFinais() {
             const hiddenInput = document.getElementById('maquina');
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
@@ -274,7 +283,7 @@
             } else {
                 const qtd = document.getElementById('qtd-amostras').value;
                 const obs = document.getElementById('obs-ensaio').value;
-                hiddenInput.value = `${ensaioSelecionado} | Qtd: ${qtd} | Obs: ${obs}`;
+                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} | Qtd: ${qtd} | Obs: ${obs}`;
             }
         }
 
