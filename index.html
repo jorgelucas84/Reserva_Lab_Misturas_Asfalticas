@@ -86,7 +86,7 @@
             <span class="icon-grande">🔬</span>
             <h3>Caracterização de Materiais</h3>
         </div>
-        <div class="categoria-card" onclick="escolherCategoria('ENSAIOS MECÂNICOS')">
+        <div class="categoria-card" onclick="escolherCategoria('ENSAIOS MECÂMICOS')">
             <span class="icon-grande">🏗️</span>
             <h3>Ensaios Mecânicos</h3>
         </div>
@@ -143,7 +143,7 @@
                     </div>
                 </div>
 
-                <h4 id="titulo-selecao-cards" class="section-title-cards">➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO</h4>
+                <h4 id="secao-titulo-selecao" class="section-title-cards">➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO</h4>
                 
                 <div id="container-cards-padrao" class="cards-container"></div>
                 <div id="container-lista-aulas" class="modo-lista-aulas"></div>
@@ -229,7 +229,7 @@
             const containerCards = document.getElementById('container-cards-padrao');
             const containerLista = document.getElementById('container-lista-aulas');
             const extras = document.querySelectorAll('.campos-extras');
-            const tituloCards = document.getElementById('titulo-selecao-cards');
+            const tituloSelecao = document.getElementById('secao-titulo-selecao');
             
             ensaioSelecionado = "";
             subtipoSelecionado = "";
@@ -237,19 +237,14 @@
             document.getElementById('caixa-equipamentos').style.display = 'none';
             document.getElementById('container-detalhes').style.display = 'none';
 
-            // Lógica para mudar o título apenas no card ENSAIOS MECÂNICOS
-            if (nome === 'ENSAIOS MECÂNICOS') {
-                tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO";
-            } else {
-                tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
-            }
-
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
+                tituloSelecao.innerText = "➤ SELECIONE OS ENSAIOS QUE SERÃO APRESENTADOS NA AULA";
                 containerCards.style.display = 'none';
                 containerLista.style.display = 'flex';
                 extras.forEach(el => el.style.display = 'none');
                 gerarListaAulas();
             } else {
+                tituloSelecao.innerText = "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
                 containerCards.style.display = 'grid';
                 containerLista.style.display = 'none';
                 extras.forEach(el => el.style.display = 'block');
