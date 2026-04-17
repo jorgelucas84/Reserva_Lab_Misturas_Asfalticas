@@ -248,7 +248,6 @@
         let subtipoSelecionado = "";
         let categoriaAtiva = "";
 
-        // CONTATOS DOS RESPONSÁVEIS
         const contatosResponsaveis = {
             "CARACTERIZAÇÃO DE MATERIAIS": "5585988179510", 
             "USO DO LABORATÓRIO PARA AULAS": "5585988179510", 
@@ -322,7 +321,7 @@
                 
                 tituloCards.innerText = (nome === 'ENSAIOS MECÂNICOS') ? "➤ SELECIONE O EQUIPAMENTO" : "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
                 
-                const listaUsar = (nome === 'ENSAIOS MECÂMICOS') ? cardsMecanicos : cardsCaracterizacao;
+                const listaUsar = (nome === 'ENSAIOS MECÂNICOS') ? cardsMecanicos : cardsCaracterizacao;
                 listaUsar.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'ensaio-card';
@@ -343,17 +342,8 @@
                 c.classList.remove('selected');
                 c.classList.remove('blocked');
             });
-
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
-
-            if (nome.toLowerCase().includes("dosagem")) {
-                const cardEstufa = document.querySelector('.ensaio-card[data-nome="Secagem / Estufa"]');
-                if (cardEstufa) {
-                    cardEstufa.classList.add('blocked');
-                }
-            }
-
             document.getElementById('container-detalhes').style.display = "block";
             document.getElementById('opcoes-marshall').style.display = ehMarshall ? "block" : "none";
             document.getElementById('caixa-equipamentos').style.display = "block";
@@ -387,9 +377,7 @@
             } else {
                 const qtd = document.getElementById('qtd-amostras').value;
                 const obs = document.getElementById('obs-ensaio').value;
-                const orient = document.getElementById('orientador').value;
-                const proj = document.getElementById('projeto').value;
-                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} | Qtd: ${qtd} | Orient: ${orient} | Proj: ${proj} | Obs: ${obs}`;
+                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras) [OBS: ${obs}]`;
             }
         }
 
@@ -423,20 +411,19 @@
                 return; 
             }
 
-            const horarios = Array.from(check).map(c => c.value).join(", ");
+            const ID_UNICO = "ID-" + Date.now();
+            const BASE_URL = "https://script.google.com/a/det.ufc.br/macros/s/AKfycbx2i7ZcdLE4qyU9RDtIeWZj0bpNIf5Ol2ULlnpy2V3xZfdAVe4kmlApmCbW0DxLQw/exec";
             const numeroDestino = contatosResponsaveis[categoriaAtiva];
 
-            let mensagem = `*Solicitação de Agendamento - LMP*%0A%0A`;
-            mensagem += `*Solicitante:* ${nome}%0A`;
-            mensagem += `*Categoria:* ${categoriaAtiva}%0A`;
-            mensagem += `*Data:* ${dataUso}%0A`;
-            mensagem += `*Horários:* ${horarios}%0A`;
-            mensagem += `*Detalhes:* ${detalhes}%0A`;
-            mensagem += `%0A_Enviado via Sistema de Agendamento_`;
+            // MONTAGEM DA MENSAGEM EXATAMENTE COMO SOLICITADO
+            let mensagem = `🔬 *Novo Agendamento LMP*%0A%0A`;
+            mensagem += `*Aluno:* ${nome}%0A`;
+            mensagem += `*Ensaio:* ${detalhes}%0A%0A`;
+            mensagem += `✅ *ACEITAR:*%0A${BASE_URL}?id=${ID_UNICO}&acao=Aceito%0A%0A`;
+            mensagem += `❌ *RECUSAR:*%0A${BASE_URL}?id=${ID_UNICO}&acao=Recusado`;
 
             const urlZap = `https://wa.me/${numeroDestino}?text=${mensagem}`;
             
-            // Criar retorno de confirmação
             const areaAcao = document.getElementById('area-acao');
             areaAcao.innerHTML = `<a href="${urlZap}" target="_blank" style="background-color: #25D366; color: white; padding: 15px 35px; border-radius: 8px; text-decoration: none; font-weight: 900; font-size: 1.2rem; display: inline-block; animation: fadeIn 0.5s ease;">CLIQUE AQUI!</a>`;
         }
