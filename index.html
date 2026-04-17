@@ -143,7 +143,7 @@
                     </div>
                 </div>
 
-                <h4 class="section-title-cards">➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO</h4>
+                <h4 id="titulo-selecao-cards" class="section-title-cards">➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO</h4>
                 
                 <div id="container-cards-padrao" class="cards-container"></div>
                 <div id="container-lista-aulas" class="modo-lista-aulas"></div>
@@ -229,12 +229,20 @@
             const containerCards = document.getElementById('container-cards-padrao');
             const containerLista = document.getElementById('container-lista-aulas');
             const extras = document.querySelectorAll('.campos-extras');
+            const tituloCards = document.getElementById('titulo-selecao-cards');
             
             ensaioSelecionado = "";
             subtipoSelecionado = "";
             containerCards.innerHTML = "";
             document.getElementById('caixa-equipamentos').style.display = 'none';
             document.getElementById('container-detalhes').style.display = 'none';
+
+            // Lógica para mudar o título apenas no card ENSAIOS MECÂNICOS
+            if (nome === 'ENSAIOS MECÂNICOS') {
+                tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO";
+            } else {
+                tituloCards.innerText = "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
+            }
 
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
                 containerCards.style.display = 'none';
