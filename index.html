@@ -57,10 +57,6 @@
         .btn-opcao.active {background: linear-gradient(135deg, #D35400 0%, #E67E22 100%) !important;}
         .input-detalhe {padding: 10px;border: 1px solid #d1d9e0;border-radius: 8px;font-family: 'Inter', sans-serif;}
         
-        .normas-info {margin-left: auto;padding: 12px 20px;background: #f0f7f9;border: 1px solid #1A4A5A;border-radius: 12px;display: none;text-align: center;}
-        .equipamentos-info {margin-top: 15px;padding: 15px;background-color: #f8f9fa;border-left: 5px solid #1A4A5A;border-radius: 5px;display: none;}
-        
-        /* Estilos de Status para a Tabela */
         .status-disponivel { color: green; font-weight: bold; }
         .status-indisponivel { color: red; font-weight: bold; }
 
@@ -70,6 +66,8 @@
         #tabela-horarios thead th { background-color: #1A4A5A; color: white; padding: 15px; text-transform: uppercase; }
         #tabela-horarios td { padding: 15px; text-align: center; border-bottom: 1px solid #eee; }
         input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #1A4A5A; }
+        
+        .equipamentos-info {margin-top: 15px;padding: 15px;background-color: #f8f9fa;border-left: 5px solid #1A4A5A;border-radius: 5px;display: none;}
     </style>
 </head>
 <body>
@@ -135,17 +133,31 @@
                         <label>Categoria</label>
                         <input type="text" id="categoria-display" readonly style="width: 100%; padding: 10px; border: 1px solid #eee; background: #f9f9f9; font-weight: bold;">
                     </div>
+                    
+                    <div class="input-group campos-extras" style="display:none;">
+                        <label>Orientador</label>
+                        <input type="text" id="orientador" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
+                    <div class="input-group campos-extras" style="display:none;">
+                        <label>Projeto/Órgão</label>
+                        <input type="text" id="projeto" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    </div>
                 </div>
 
                 <h4 class="section-title-cards">➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO</h4>
                 
-                <div id="container-cards-padrao" class="cards-container">
-                    </div>
-
+                <div id="container-cards-padrao" class="cards-container"></div>
                 <div id="container-lista-aulas" class="modo-lista-aulas"></div>
 
                 <div id="container-detalhes" class="detalhes-ensaio">
                     <div class="detalhes-grid">
+                        <div id="opcoes-marshall" style="display:none;" class="detalhes-item">
+                            <label>Estado da Mistura:</label>
+                            <div>
+                                <button class="btn-opcao" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button>
+                                <button class="btn-opcao" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button>
+                            </div>
+                        </div>
                         <div class="detalhes-item">
                             <label>Qtd. Amostras:</label>
                             <input type="number" id="qtd-amostras" class="input-detalhe" style="width: 80px;" value="1" min="1" onchange="atualizarDadosFinais()">
@@ -182,7 +194,7 @@
 
     <script>
         let ensaioSelecionado = "";
-        let subtipoSelecionado = ""; // Mantido para compatibilidade de lógica, mas não será preenchido via botões
+        let subtipoSelecionado = "";
         let categoriaAtiva = "";
 
         const cardsCaracterizacao = [
@@ -217,6 +229,7 @@
             
             const containerCards = document.getElementById('container-cards-padrao');
             const containerLista = document.getElementById('container-lista-aulas');
+            const extras = document.querySelectorAll('.campos-extras');
             
             ensaioSelecionado = "";
             subtipoSelecionado = "";
@@ -227,16 +240,18 @@
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
                 containerCards.style.display = 'none';
                 containerLista.style.display = 'flex';
+                extras.forEach(el => el.style.display = 'none');
                 gerarListaAulas();
             } else {
                 containerCards.style.display = 'grid';
                 containerLista.style.display = 'none';
+                extras.forEach(el => el.style.display = 'block');
                 const listaUsar = (nome === 'ENSAIOS MECÂNICOS') ? cardsMecanicos : cardsCaracterizacao;
                 
                 listaUsar.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'ensaio-card';
-                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq);
+                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq, item.n.includes("Marshall"));
                     card.innerHTML = `
                         <img src="img/${item.img}" alt="${item.n}">
                         <div class="info"><h5>${index + 1} - ${item.n}</h5></div>
@@ -247,15 +262,14 @@
             window.scrollTo(0, 0);
         }
 
-        function selecionarEnsaio(elemento, nome, eq) {
+        function selecionarEnsaio(elemento, nome, eq, ehMarshall) {
             document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
-            
             document.getElementById('container-detalhes').style.display = "block";
+            document.getElementById('opcoes-marshall').style.display = ehMarshall ? "block" : "none";
             document.getElementById('caixa-equipamentos').style.display = "block";
             document.getElementById('lista-equipamentos').innerText = eq;
-            
             atualizarDadosFinais();
         }
 
@@ -283,7 +297,9 @@
             } else {
                 const qtd = document.getElementById('qtd-amostras').value;
                 const obs = document.getElementById('obs-ensaio').value;
-                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} | Qtd: ${qtd} | Obs: ${obs}`;
+                const orient = document.getElementById('orientador').value;
+                const proj = document.getElementById('projeto').value;
+                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} | Qtd: ${qtd} | Orient: ${orient} | Proj: ${proj} | Obs: ${obs}`;
             }
         }
 
