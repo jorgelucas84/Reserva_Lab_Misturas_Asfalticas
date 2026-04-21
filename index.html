@@ -137,6 +137,14 @@
         input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #1A4A5A; }
         
         .equipamentos-info {margin-top: 15px;padding: 15px;background-color: #f8f9fa;border-left: 5px solid #1A4A5A;border-radius: 5px;display: none;}
+
+        .btn-planilha {
+            display: inline-block; margin-top: 15px; padding: 10px 20px;
+            background-color: #217346; color: white; text-decoration: none;
+            border-radius: 8px; font-weight: 700; font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .btn-planilha:hover { background-color: #1a5a37; }
     </style>
 </head>
 <body>
@@ -267,11 +275,15 @@
                     </thead>
                     <tbody id="corpo-agenda"></tbody>
                 </table>
+                <div style="text-align: center;">
+                    <a href="https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0" target="_blank" class="btn-planilha">📊 Consultar Agenda (Planilha)</a>
+                </div>
             </section>
         </main>
     </div>
 
     <script>
+        const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0";
         let ensaioSelecionado = "";
         let subtipoSelecionado = "";
         let categoriaAtiva = "";
@@ -445,7 +457,6 @@
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
             
-            // Habilita as opções de estado da mistura para Marshall e Superpave
             const nomeLower = nome.toLowerCase();
             const precisaOpcoesMistura = nomeLower.includes("marshall") || nomeLower.includes("superpave");
             
