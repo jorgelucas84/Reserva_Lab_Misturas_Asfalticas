@@ -78,24 +78,30 @@
         .ensaio-card.selected {border-color: #1A4A5A;background-color: #f0f7f9;box-shadow: 0 0 0 4px rgba(26, 74, 90, 0.1);}
         
         .ensaio-card.blocked {
-            opacity: 0.4;
+            opacity: 0.5;
             cursor: not-allowed;
-            filter: grayscale(1);
+            filter: grayscale(0.8);
             pointer-events: none;
             position: relative;
         }
         .ensaio-card.blocked::after {
-            content: "SÓ SEXTAS";
+            content: "MARCAÇÃO PARA AS SEXTAS-FEIRA";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-            background: rgba(211, 84, 0, 0.9);
-            color: white;
-            padding: 5px 10px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.7);
+            color: #cc0000;
+            padding: 10px;
             font-weight: 900;
-            font-size: 0.7rem;
-            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            text-align: center;
+            box-sizing: border-box;
         }
 
         .ensaio-card img {width: 100%;height: 110px;object-fit: cover;display: block;border-bottom: 1px solid #eee;}
@@ -285,11 +291,11 @@
         ];
 
         const cardsMecanicos = [
-            {n: "Prensa Marshall", img: "marsh.jpeg", eq: "MARSHALL"},
-            {n: "Prensa UTM-25", img: "utm25.jpeg", eq: "UNIVERSAL TESTING MACHINE-25KN"},
-            {n: "Prensa UTM-30", img: "utm30.jpeg", eq: "UNIVERSAL TESTING MACHINE-30KN"},
-            {n: "Prensa MTS", img: "mts.jpeg", eq: "MATERIALS TENST SYSTEMS"},
-            {n: "Prensa RiO", img: "rio.jpeg", eq: "RiO"}
+            {n: "Prensa Marshall", img: "marsh.jpeg", eq: "Rompimento Marshall / Estabilidade / Fluência"},
+            {n: "Prensa UTM-25", img: "utm25.jpeg", eq: "Ensaios Dinâmicos, Fadiga de Misturas Asfálticas"},
+            {n: "Prensa UTM-30", img: "utm30.jpeg", eq: "Módulo de Resiliência, Resistência à Tração (RT)"},
+            {n: "Prensa MTS", img: "mts.jpeg", eq: "Ensaios de Alta Precisão e Caracterização Avançada"},
+            {n: "Prensa RiO", img: "rio.jpeg", eq: "Ensaios de Compressão Simples e Estáticos"}
         ];
 
         function escolherCategoria(nome) {
@@ -348,7 +354,7 @@
                     `;
                     containerCards.appendChild(card);
                 });
-                verificarRestricoesData(); // Checa bloqueios logo ao abrir
+                verificarRestricoesData();
             }
             window.scrollTo(0, 0);
         }
@@ -357,7 +363,6 @@
             const dataInput = document.getElementById('data').value;
             if (!dataInput) return;
 
-            // Corrige fuso horário para pegar o dia correto
             const dataSelecionada = new Date(dataInput + 'T00:00:00');
             const diaSemana = dataSelecionada.getDay(); // 5 = Sexta-feira
 
