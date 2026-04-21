@@ -377,10 +377,8 @@
             document.querySelectorAll('.ensaio-card').forEach(card => {
                 const nomeEnsaio = card.getAttribute('data-nome');
                 
-                // Limpeza de classes de bloqueio anteriores
                 card.classList.remove('blocked', 'lock-adesividade', 'lock-secagem');
 
-                // Regra Adesividade: Somente Sextas
                 if (nomeEnsaio === "Adesividade (Tradicional)") {
                     if (diaSemana !== 5) {
                         card.classList.add('blocked', 'lock-adesividade');
@@ -388,16 +386,14 @@
                     }
                 }
 
-                // Regra Secagem: Segunda a Quinta
                 if (nomeEnsaio === "Secagem / Estufa") {
-                    if (diaSemana === 0 || diaSemana === 5 || diaSemana === 6) { // Dom, Sex, Sab
+                    if (diaSemana === 0 || diaSemana === 5 || diaSemana === 6) { 
                         card.classList.add('blocked', 'lock-secagem');
                         if (ensaioSelecionado === "Secagem / Estufa") resetarSelecao();
                     }
                 }
             });
 
-            // Atualiza tabela de horários para Secagem (só libera 16h em diante)
             atualizarTabelaHorarios(diaSemana);
         }
 
@@ -449,14 +445,15 @@
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
             
-            const precisaOpcoesDosagem = nome.toLowerCase().includes("marshall") || nome.toLowerCase().includes("superpave");
+            // Alterado para mostrar opções de estado da mistura APENAS no Superpave
+            const precisaOpcoesMistura = nome.toLowerCase().includes("superpave");
             
             document.getElementById('container-detalhes').style.display = "block";
-            document.getElementById('opcoes-estado-mistura').style.display = precisaOpcoesDosagem ? "block" : "none";
+            document.getElementById('opcoes-estado-mistura').style.display = precisaOpcoesMistura ? "block" : "none";
             document.getElementById('caixa-equipamentos').style.display = "block";
             document.getElementById('lista-equipamentos').innerText = eq;
             
-            if(!precisaOpcoesDosagem) subtipoSelecionado = "";
+            if(!precisaOpcoesMistura) subtipoSelecionado = "";
             
             const dataInput = document.getElementById('data').value;
             if (dataInput) {
