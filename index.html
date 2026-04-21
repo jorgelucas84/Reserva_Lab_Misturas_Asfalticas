@@ -445,8 +445,9 @@
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
             
-            // Alterado para mostrar opções de estado da mistura APENAS no Superpave
-            const precisaOpcoesMistura = nome.toLowerCase().includes("superpave");
+            // Habilita as opções de estado da mistura para Marshall e Superpave
+            const nomeLower = nome.toLowerCase();
+            const precisaOpcoesMistura = nomeLower.includes("marshall") || nomeLower.includes("superpave");
             
             document.getElementById('container-detalhes').style.display = "block";
             document.getElementById('opcoes-estado-mistura').style.display = precisaOpcoesMistura ? "block" : "none";
