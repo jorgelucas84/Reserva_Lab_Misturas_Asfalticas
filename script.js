@@ -1,4 +1,11 @@
+/**
+ * SISTEMA DE AGENDAMENTO - LABORATÓRIO DE MISTURAS ASFÁLTICAS (LMP)
+ * Endereço da Planilha de Destino: 
+ * https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit
+ */
+
 const URL_API = "https://script.google.com/macros/s/AKfycbx2i7ZcdLE4qyU9RDtIeWZj0bpNIf5Ol2ULlnpy2V3xZfdAVe4kmlApmCbW0DxLQw/exec";
+const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit";
 
 const corpoAgenda = document.getElementById('corpo-agenda');
 const seletorData = document.getElementById('data');
@@ -6,11 +13,11 @@ const seletorMaquina = document.getElementById('maquina');
 let reservasGlobais = {};
 let selecoesTemporarias = new Set();
 
-// --- CONFIGURAÇÕES DE CONFLITO (IDs DO SEU PRINT) ---
+// --- CONFIGURAÇÕES DE CONFLITO ---
 const maquinasEstufa = ["1", "2", "4", "8", "9", "13"]; 
-const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave fecham a estufa
+const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave têm prioridade na estufa
 
-// --- LIMITAÇÃO DE DATA (2 SEMANAS) ---
+// --- LIMITAÇÃO DE DATA (Máximo 2 semanas à frente) ---
 if (seletorData) {
     const hoje = new Date();
     const dataMinima = hoje.toISOString().split("T")[0];
@@ -55,7 +62,7 @@ function mostrarInstrucoes() {
 
 async function carregarReservas() {
     if (!corpoAgenda) return;
-    corpoAgenda.innerHTML = '<tr><td colspan="3">Carregando horários...</td></tr>';
+    corpoAgenda.innerHTML = '<tr><td colspan="3">Sincronizando com a planilha...</td></tr>';
     try {
         const response = await fetch(URL_API);
         const texto = await response.text();
@@ -63,7 +70,7 @@ async function carregarReservas() {
         atualizarAgenda();
     } catch (e) {
         console.error("Erro na requisição:", e);
-        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">Erro ao carregar dados.</td></tr>';
+        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">Erro ao carregar dados da planilha.</td></tr>';
     }
 }
 
@@ -72,9 +79,9 @@ function atualizarAgenda() {
     
     // --- BLOQUEIO DE FIM DE SEMANA ---
     const dataObj = new Date(seletorData.value + 'T00:00:00');
-    const diaSemana = dataObj.getDay(); // 0 = Domingo, 6 = Sábado
+    const diaSemana = dataObj.getDay(); 
     if (diaSemana === 0 || diaSemana === 6) {
-        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:orange; text-align:center; font-weight:bold; padding: 20px;">⚠️ O laboratório não funciona aos sábados e domingos. Por favor, selecione um dia útil.</td></tr>';
+        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:orange; text-align:center; font-weight:bold; padding: 20px;">⚠️ O laboratório não funciona aos sábados e domingos.</td></tr>';
         return;
     }
 
@@ -169,19 +176,21 @@ async function reservarSelecionados() {
         
         if (resultado.includes("Erro: Senha Incorreta")) {
             alert("Senha incorreta!");
+            document.getElementById('senha-lab').value = "";
         } else if (resultado.startsWith("http")) { 
-            alert("Solicitação enviada! Redirecionando ao WhatsApp...");
+            alert("Solicitação registrada na planilha! Redirecionando ao WhatsApp do técnico...");
             window.location.href = resultado;
             selecoesTemporarias.clear();
             document.getElementById('senha-lab').value = "";
             carregarReservas();
         } else {
-            alert("Solicitação processada.");
+            alert("Solicitação processada com sucesso.");
             selecoesTemporarias.clear();
+            document.getElementById('senha-lab').value = "";
             carregarReservas();
         }
     } catch (e) {
-        alert("Erro no envio.");
+        alert("Erro ao conectar com o servidor da planilha.");
     } finally {
         btn.disabled = false;
         btn.innerText = "Confirmar Reservas Selecionadas";
