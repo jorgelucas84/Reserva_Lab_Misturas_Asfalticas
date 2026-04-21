@@ -298,10 +298,11 @@
             document.getElementById('container-detalhes').style.display = 'none';
 
             if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
-                tituloCards.innerText = "➤ SELECIONE OS ENSAIOS QUE SERÃO APRESENTADOs EM AULA";
+                tituloCards.innerText = "➤ SELECIONE OS ENSAIOS QUE SERÃO APRESENTADOS EM AULA";
                 listaInfo.innerHTML = `
                     <li style="margin-bottom: 8px;"><strong>1.</strong> É proibida a entrada usando chinelos, sandálias ou calçados abertos.</li>
                     <li style="margin-bottom: 8px;"><strong>2.</strong> Não é permitido comer ou beber no laboratório.</li>
+                    <li style="margin-bottom: 8px; color: #D35400;"><strong>3.</strong> AGENDAMENTO DE AULA: Bloqueia todos os demais procedimentos no horário selecionado.</li>
                 `;
                 grupoAlunos.style.display = 'block';
                 containerCards.style.display = 'none';
@@ -345,7 +346,6 @@
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
             
-            // Verifica se é Marshall ou Superpave para mostrar as opções extras
             const precisaOpcoesDosagem = nome.toLowerCase().includes("marshall") || nome.toLowerCase().includes("superpave");
             
             document.getElementById('container-detalhes').style.display = "block";
@@ -353,7 +353,6 @@
             document.getElementById('caixa-equipamentos').style.display = "block";
             document.getElementById('lista-equipamentos').innerText = eq;
             
-            // Limpa subtipo se mudar de um ensaio de dosagem para um comum
             if(!precisaOpcoesDosagem) subtipoSelecionado = "";
             
             atualizarDadosFinais();
@@ -423,9 +422,18 @@
             const BASE_URL = "https://script.google.com/a/det.ufc.br/macros/s/AKfycbx2i7ZcdLE4qyU9RDtIeWZj0bpNIf5Ol2ULlnpy2V3xZfdAVe4kmlApmCbW0DxLQw/exec";
             const numeroDestino = contatosResponsaveis[categoriaAtiva];
 
+            // LOGICA DE PRIORIDADE: Se for aula, adiciona aviso de fechamento total
+            let prioridadeAviso = "";
+            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+                prioridadeAviso = "\n⚠️ *PRIORIDADE AULA:* Bloqueia todos os demais equipamentos no horário.";
+            }
+
             let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
-            mensagem += "*Aluno:* " + nome + "\n";
-            mensagem += "*Ensaio:* " + detalhes + "\n\n";
+            mensagem += "*Aluno/Professor:* " + nome + "\n";
+            mensagem += "*Categoria:* " + categoriaAtiva + "\n";
+            mensagem += "*Procedimento:* " + detalhes + "\n";
+            mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n\n";
+            
             mensagem += "✅ ACEITAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
             mensagem += "❌ RECUSAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
 
