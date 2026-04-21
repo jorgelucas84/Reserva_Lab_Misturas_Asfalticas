@@ -73,45 +73,43 @@
         .item-aula-checkbox:hover { background: #f9f9f9; }
         .item-aula-checkbox input {margin: 0 15px 0 0;width: 20px;height: 20px;cursor: pointer;flex-shrink: 0;}
         
-        .ensaio-card {background: #fff;border: 2px solid #eee;border-radius: 12px;overflow: hidden;cursor: pointer;transition: all 0.3s ease;text-align: center;display: flex;flex-direction: column;min-height: 190px;}
+        .ensaio-card {background: #fff;border: 2px solid #eee;border-radius: 12px;overflow: hidden;cursor: pointer;transition: all 0.3s ease;text-align: center;display: flex;flex-direction: column;min-height: 190px;position: relative;}
         .ensaio-card:hover {transform: translateY(-5px);box-shadow: 0 10px 20px rgba(0,0,0,0.1);border-color: #D35400;}
         .ensaio-card.selected {border-color: #1A4A5A;background-color: #f0f7f9;box-shadow: 0 0 0 4px rgba(26, 74, 90, 0.1);}
         
+        /* BLOQUEIO GERAL */
         .ensaio-card.blocked {
             cursor: not-allowed;
             pointer-events: none;
-            position: relative;
         }
-        .ensaio-card.blocked::after {
-            content: "MARCAÇÃO PARA AS SEXTAS-FEIRAS";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.85);
-            /* --- TEXTO GRADIENTE VERMELHO PARA LARANJA --- */
-            background-image: linear-gradient(135deg, #ff0000 0%, #ff8c00 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            padding: 15px;
-            font-weight: 900;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            text-align: center;
-            box-sizing: border-box;
-            z-index: 2;
-        }
-        /* Fundo branco semi-transparente atrás do texto gradiente para legibilidade */
         .ensaio-card.blocked::before {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             z-index: 1;
+        }
+        .ensaio-card.blocked::after {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background-image: linear-gradient(135deg, #ff0000 0%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 15px; font-weight: 900; font-size: 0.8rem;
+            text-transform: uppercase; text-align: center; box-sizing: border-box;
+            z-index: 2;
+        }
+
+        /* TEXTO ESPECÍFICO PARA ADESIVIDADE */
+        .ensaio-card.blocked.lock-adesividade::after {
+            content: "MARCAÇÃO PARA AS SEXTAS-FEIRA";
+        }
+
+        /* TEXTO ESPECÍFICO PARA SECAGEM */
+        .ensaio-card.blocked.lock-secagem::after {
+            content: "Marcações de Seg-Qui a partir das 16:00; Retirar no dia posterior até as 09:00";
+            font-size: 0.7rem;
         }
 
         .ensaio-card img {width: 100%;height: 110px;object-fit: cover;display: block;border-bottom: 1px solid #eee;}
@@ -374,19 +372,60 @@
             if (!dataInput) return;
 
             const dataSelecionada = new Date(dataInput + 'T00:00:00');
-            const diaSemana = dataSelecionada.getDay(); // 5 = Sexta-feira
+            const diaSemana = dataSelecionada.getDay(); // 0: Dom, 1: Seg, 2: Ter, 3: Qua, 4: Qui, 5: Sex, 6: Sab
 
             document.querySelectorAll('.ensaio-card').forEach(card => {
                 const nomeEnsaio = card.getAttribute('data-nome');
+                
+                // Limpeza de classes de bloqueio anteriores
+                card.classList.remove('blocked', 'lock-adesividade', 'lock-secagem');
+
+                // Regra Adesividade: Somente Sextas
                 if (nomeEnsaio === "Adesividade (Tradicional)") {
                     if (diaSemana !== 5) {
-                        card.classList.add('blocked');
-                        if (ensaioSelecionado === "Adesividade (Tradicional)") {
-                            resetarSelecao();
-                        }
-                    } else {
-                        card.classList.remove('blocked');
+                        card.classList.add('blocked', 'lock-adesividade');
+                        if (ensaioSelecionado === "Adesividade (Tradicional)") resetarSelecao();
                     }
+                }
+
+                // Regra Secagem: Segunda a Quinta
+                if (nomeEnsaio === "Secagem / Estufa") {
+                    if (diaSemana === 0 || diaSemana === 5 || diaSemana === 6) { // Dom, Sex, Sab
+                        card.classList.add('blocked', 'lock-secagem');
+                        if (ensaioSelecionado === "Secagem / Estufa") resetarSelecao();
+                    }
+                }
+            });
+
+            // Atualiza tabela de horários para Secagem (só libera 16h em diante)
+            atualizarTabelaHorarios(diaSemana);
+        }
+
+        function atualizarTabelaHorarios(dia) {
+            const corpo = document.getElementById('corpo-agenda');
+            const rows = corpo.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const horaStr = row.cells[0].innerText;
+                const horaInt = parseInt(horaStr.split(':')[0]);
+                const checkbox = row.querySelector('input');
+                const statusTd = row.cells[1];
+
+                if (ensaioSelecionado === "Secagem / Estufa") {
+                    if (horaInt < 16) {
+                        checkbox.disabled = true;
+                        checkbox.checked = false;
+                        statusTd.innerText = "Restrito (Início 16h)";
+                        statusTd.className = "status-indisponivel";
+                    } else {
+                        checkbox.disabled = false;
+                        statusTd.innerText = "Disponível";
+                        statusTd.className = "status-disponivel";
+                    }
+                } else {
+                    checkbox.disabled = false;
+                    statusTd.innerText = "Disponível";
+                    statusTd.className = "status-disponivel";
                 }
             });
         }
@@ -401,13 +440,12 @@
 
         function selecionarEnsaio(elemento, nome, eq) {
             if (elemento.classList.contains('blocked')) {
-                alert("Este ensaio só pode ser agendado para Sextas-feiras.");
+                const msg = elemento.classList.contains('lock-adesividade') ? "Este ensaio só pode ser agendado para Sextas-feiras." : "A secagem em estufa só é permitida de Segunda a Quinta-feira.";
+                alert(msg);
                 return;
             }
 
-            document.querySelectorAll('.ensaio-card').forEach(c => {
-                c.classList.remove('selected');
-            });
+            document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
             elemento.classList.add('selected');
             ensaioSelecionado = nome;
             
@@ -420,6 +458,12 @@
             
             if(!precisaOpcoesDosagem) subtipoSelecionado = "";
             
+            const dataInput = document.getElementById('data').value;
+            if (dataInput) {
+                const dataSel = new Date(dataInput + 'T00:00:00');
+                atualizarTabelaHorarios(dataSel.getDay());
+            }
+
             atualizarDadosFinais();
         }
 
