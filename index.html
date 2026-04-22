@@ -6,585 +6,116 @@
     <title>Agendamento | Lab Misturas Asfálticas</title> 
     <link rel="stylesheet" href="style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"> 
-    <style> 
-        /* --- ESTILOS DO CABEÇALHO --- */
-        .header-main {
-            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);
-            padding: 16px 0; color: white; border-bottom: 4px solid #143a46;
-            position: relative; overflow: hidden;
-        }
-        .header-bg-overlay {
-            position: absolute; top: 0; right: 0; width: 45%; height: 100%;
-            background: url('img/pavimento.jpg') no-repeat center right;
-            background-size: cover; opacity: 0.15; pointer-events: none; z-index: 0;
-        }
-        .header-container {
-            display: flex; align-items: center; justify-content: center; gap: 50px;
-            max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;
-        }
-        .header-logo { width: 221px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.25); }
-        .header-title { margin: 0; font-size: 2.7rem; font-weight: 900; line-height: 1.2; text-shadow: 0 4px 12px rgba(0,0,0,0.3); letter-spacing: -1px; }
-        .header-subtitle { margin: 5px 0 10px; font-size: 1.5rem; font-weight: 600; color: #FFD27D; }
-        
-        .coord-info {
-            font-size: 0.85rem; font-family: 'Inter', sans-serif; font-weight: 300;
-            margin-bottom: 15px; line-height: 1.4; border-left: 3px solid #D35400;
-            padding: 5px 15px; background: rgba(0,0,0,0.1);
-        }
-        .coord-info a { color: #fff; text-decoration: underline; }
-        
-        .footer-tag {
-            font-size: 0.8rem; font-weight: 300; color: rgba(255, 255, 255, 0.8);
-            background: rgba(0,0,0,0.25); padding: 4px 15px; border-radius: 50px;
-            display: inline-block; border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* --- ESTILOS DO CONTEÚDO --- */
-        #selecao-inicial {display: flex;justify-content: center;gap: 30px;padding: 50px 20px;flex-wrap: wrap;max-width: 1100px;margin: 0 auto;}
-        .categoria-card {background: #fff;border: 3px solid #eee;border-radius: 20px;width: 300px;padding: 40px 20px;text-align: center;cursor: pointer;transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
-        .categoria-card:hover {transform: translateY(-10px);border-color: #D35400;box-shadow: 0 15px 30px rgba(211, 84, 0, 0.2);}
-        .categoria-card .icon-grande {font-size: 50px;margin-bottom: 20px;display: block;}
-        .categoria-card h3 {color: #1A4A5A;font-weight: 900;font-size: 1.2rem;text-transform: uppercase;margin: 0;}
-        #conteudo-principal {display: none;animation: fadeIn 0.6s ease-out;}
-        
-        .btn-voltar {
-            background: linear-gradient(135deg, #f5f7f8 0%, #dce4e7 100%);
-            border: 2px solid #1A4A5A;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 25px;
-            font-weight: 700;
-            color: #1A4A5A;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: inline-flex;
-            align-items: center;
-        }
-        .btn-voltar:hover { 
-            background: linear-gradient(135deg, #dce4e7 0%, #c8d2d6 100%);
-            transform: scale(1.02);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-
-        .cards-container {display: grid;grid-template-columns: repeat(5, 1fr);gap: 12px;margin-bottom: 25px;width: 100%;}
-        .modo-lista-aulas {display: none;flex-direction: column;gap: 0px;background: #fff;padding: 20px;border-radius: 12px;border: 1px solid #eee;text-align: left;margin-bottom: 25px;}
-        .item-aula-checkbox {display: flex;align-items: center;justify-content: flex-start;padding: 12px;border-bottom: 1px solid #f5f5f5;cursor: pointer;transition: background 0.2s;width: 100%;text-align: left;}
-        .item-aula-checkbox:hover { background: #f9f9f9; }
-        .item-aula-checkbox input {margin: 0 15px 0 0;width: 20px;height: 20px;cursor: pointer;flex-shrink: 0;}
-        
-        .ensaio-card {background: #fff;border: 2px solid #eee;border-radius: 12px;overflow: hidden;cursor: pointer;transition: all 0.3s ease;text-align: center;display: flex;flex-direction: column;min-height: 190px;position: relative;}
-        .ensaio-card:hover {transform: translateY(-5px);box-shadow: 0 10px 20px rgba(0,0,0,0.1);border-color: #D35400;}
-        .ensaio-card.selected {border-color: #1A4A5A;background-color: #f0f7f9;box-shadow: 0 0 0 4px rgba(26, 74, 90, 0.1);}
-        
-        /* BLOQUEIO GERAL */
-        .ensaio-card.blocked {
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        .ensaio-card.blocked::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.85);
-            z-index: 1;
-        }
-        .ensaio-card.blocked::after {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            background-image: linear-gradient(135deg, #ff0000 0%, #ff8c00 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            padding: 15px; font-weight: 900; font-size: 0.8rem;
-            text-transform: uppercase; text-align: center; box-sizing: border-box;
-            z-index: 2;
-        }
-
-        /* TEXTO ESPECÍFICO PARA ADESIVIDADE */
-        .ensaio-card.blocked.lock-adesividade::after {
-            content: "Marcação: Sextas";
-        }
-
-        /* TEXTO ESPECÍFICO PARA SECAGEM */
-        .ensaio-card.blocked.lock-secagem::after {
-            content: "Marcação: Seg-Qui a partir das 16:00; Retirar amostra no dia posterior até as 09:00";
-            font-size: 0.7rem;
-        }
-
-        .ensaio-card img {width: 100%;height: 110px;object-fit: cover;display: block;border-bottom: 1px solid #eee;}
-        .ensaio-card .info {padding: 8px;flex-grow: 1;display: flex;align-items: center;justify-content: center;}
-        .ensaio-card h5 {margin: 0;font-size: 0.8rem;color: #333;font-weight: 700;line-height: 1.2;}
-        
-        .section-title-cards {color: #D35400;font-weight: 900;font-size: 1.1rem;margin: 30px 0 15px 0;text-transform: uppercase;border-bottom: 2px solid #eee;padding-bottom: 5px;text-align: left;}
-        .detalhes-ensaio {display: none;background: #f8fafb;padding: 20px;border-radius: 16px;border: 1px solid #e1e8ed;box-shadow: 0 4px 15px rgba(0,0,0,0.05);margin-bottom: 25px;animation: fadeIn 0.3s ease-in-out;}
-        .detalhes-grid {display: flex;flex-wrap: wrap;align-items: flex-end;gap: 20px;}
-        .detalhes-item {display: flex;flex-direction: column;align-items: flex-start;}
-        .detalhes-item.full-width {width: 100%;}
-        .detalhes-item label {font-size: 0.8rem;font-weight: 700;color: #1A4A5A;margin-bottom: 6px;text-transform: uppercase;}
-        .btn-opcao {background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);color: white;padding: 10px 18px;border: none;border-radius: 8px;cursor: pointer;font-weight: 600;transition: all 0.3s ease;margin-right: 8px;font-size: 0.85rem;}
-        .btn-opcao.active {background: linear-gradient(135deg, #D35400 0%, #E67E22 100%) !important;}
-        .input-detalhe {padding: 10px;border: 1px solid #d1d9e0;border-radius: 8px;font-family: 'Inter', sans-serif;}
-        
-        .status-disponivel { color: green; font-weight: bold; }
-        .status-indisponivel { color: red; font-weight: bold; }
-
-        @keyframes fadeIn {from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); }}
-        .table-section { margin-top: 20px; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        #tabela-horarios { width: 100%; border-collapse: collapse; }
-        #tabela-horarios thead th { background-color: #1A4A5A; color: white; padding: 15px; text-transform: uppercase; }
-        #tabela-horarios td { padding: 15px; text-align: center; border-bottom: 1px solid #eee; }
-        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #1A4A5A; }
-        
-        .equipamentos-info {margin-top: 15px;padding: 15px;background-color: #f8f9fa;border-left: 5px solid #1A4A5A;border-radius: 5px;display: none;}
-
-        .btn-planilha {
-            display: inline-block; margin-top: 15px; padding: 10px 20px;
-            background-color: #217346; color: white; text-decoration: none;
-            border-radius: 8px; font-weight: 700; font-size: 0.9rem;
-            transition: background 0.3s;
-        }
-        .btn-planilha:hover { background-color: #1a5a37; }
-    </style>
 </head>
 <body>
- 
-    <header class="header-main">  
-        <div class="header-bg-overlay"></div>  
-        <div class="header-container">  
-            <img src="img/foto.png" alt="Logotipo" class="header-logo">  
-            <div style="text-align: left;">  
-                <h1 class="header-title">Sistema de Agendamento</h1>  
-                <p class="header-subtitle">Laboratório de Misturas Asfálticas - LMP | INCT-Infra | UFC</p>  
-                <div class="coord-info"> 
-                    <strong>Coordenação:</strong> Jorge Lucas (<a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a>)<br>
-                    <strong>Técnico de Laboratório:</strong> Rômulo Jacome (<a href="mailto:romulojacome@yahoo.com.br">romulojacome@yahoo.com.br</a>)<br>
-                    <strong>Técnico de Equipamentos:</strong> Hermano Barreto (<a href="mailto:hermano@det.ufc.br">hermano@det.ufc.br</a>)  
-                </div>  
-                <span class="footer-tag">  
-                    © 2026 | <img src="img/lmp.jpeg" alt="LMP" style="height: 1rem; vertical-align: middle; mix-blend-mode: multiply;"> | Todos os direitos reservados  
-                </span>  
-            </div>  
-        </div>  
+
+    <header class="header-main">
+        <div class="header-bg-overlay"></div>
+        <div class="header-container">
+            <div class="header-content">
+                <h1 class="header-title">LMP</h1>
+                <p class="header-subtitle">Laboratório de Misturas e Pavimentos</p>
+                <div class="header-badge">SISTEMA DE AGENDAMENTO</div>
+            </div>
+        </div>
     </header>
 
-    <section id="selecao-inicial">
-        <div class="categoria-card" onclick="escolherCategoria('CARACTERIZAÇÃO DE MATERIAIS')">
-            <span class="icon-grande">🔬</span>
-            <h3>Caracterização de Materiais</h3>
-        </div>
-        <div class="categoria-card" onclick="escolherCategoria('ENSAIOS MECÂNICOS')">
-            <span class="icon-grande">🏗️</span>
-            <h3>Ensaios Mecânicos</h3>
-        </div>
-        <div class="categoria-card" onclick="escolherCategoria('USO DO LABORATÓRIO PARA AULAS')">
-            <span class="icon-grande">🎓</span>
-            <h3>Uso para Aulas</h3>
-        </div>
-    </section>
+    <main class="container">
+        <section class="section-card">
+            <div class="section-header">
+                <span class="step-number">1</span>
+                <h2>Selecione o Equipamento</h2>
+            </div>
+            
+            <input type="hidden" id="maquina" value="Compactador Marshall">
 
-    <div id="conteudo-principal">
-        <main class="container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">
-            <button class="btn-voltar" onclick="voltarInicio()">← Voltar ao início</button>
- 
-            <section class="info-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                <div class="card info-geral" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                    <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3>
-                    <ul id="lista-info-geral" style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;">
-                        </ul>
+            <div class="cards-container">
+                <div class="ensaio-card selected" onclick="selecionarEquipamento('Compactador Marshall', this)">
+                    <div class="ensaio-info"><h3>Compactador Marshall</h3><p>Estabilidade e Fluência</p></div>
                 </div>
-                <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                    <h3><span class="icon">📝</span> INSTRUÇÕES</h3>
-                    <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">
-                        1. <b>Preencha</b> seu nome, e-mail, nome do orientador, nome do projeto/trabalho e a data.<br>
-                        2. <b>Selecione</b> o ensaio/equipamento.<br>
-                        3. <b>Digite</b> a senha do laboratório.<br>
-                        4. <b>Selecione</b> os horários desejados.<br>
-                        5. <b>Clique </b> em confirmar agendamento.<br>
-                        6. <b>Clique</b> em clique aqui! e envie a mensagem de WhatsApp para o responsável validar.<br> 
-                    </p>   
+                <div class="ensaio-card" onclick="selecionarEquipamento('Compactador Giratório', this)">
+                    <div class="ensaio-info"><h3>Compactador Giratório</h3><p>Dosagem Superpave</p></div>
                 </div>
-            </section>
-
-            <section class="booking-section card" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" id="nome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                    </div>
-                    <div class="input-group">
-                        <label>E-mail</label>
-                        <input type="email" id="email" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                    </div>
-                    <div class="input-group campos-extras" style="display:none;">
-                        <label>Orientador</label>
-                        <input type="text" id="orientador" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                    </div>
-                    <div class="input-group campos-extras" style="display:none;">
-                        <label>Projeto/Trabalho</label>
-                        <input type="text" id="projeto" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                    </div>
-                    <div id="grupo-qtd-alunos" class="input-group" style="display:none;">
-                        <label>Número de Alunos</label>
-                        <input type="number" id="qtd-alunos" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" min="1">
-                    </div>
-                    <div class="input-group">
-                        <label>Data do Uso</label>
-                        <input type="date" id="data" onchange="verificarRestricoesData()" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                    </div>
-                    <div class="input-group">
-                        <label>Categoria</label>
-                        <input type="text" id="categoria-display" readonly style="width: 100%; padding: 10px; border: 1px solid #eee; background: #f9f9f9; font-weight: bold;">
-                    </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Rice Test', this)">
+                    <div class="ensaio-info"><h3>Rice Test</h3><p>Densidade Máxima</p></div>
                 </div>
-
-                <h4 id="titulo-selecao-cards" class="section-title-cards">➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO</h4>
-                
-                <div id="container-cards-padrao" class="cards-container"></div>
-                <div id="container-lista-aulas" class="modo-lista-aulas"></div>
-
-                <div id="container-detalhes" class="detalhes-ensaio">
-                    <div class="detalhes-grid">
-                        <div id="opcoes-estado-mistura" style="display:none;" class="detalhes-item">
-                            <label>Estado da Mistura:</label>
-                            <div>
-                                <button class="btn-opcao" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button>
-                                <button class="btn-opcao" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button>
-                            </div>
-                        </div>
-                        <div class="detalhes-item">
-                            <label>Qtd. Amostras:</label>
-                            <input type="number" id="qtd-amostras" class="input-detalhe" style="width: 80px;" value="1" min="1" onchange="atualizarDadosFinais()">
-                        </div>
-                        <div class="detalhes-item full-width" style="margin-top: 15px;">
-                            <label>Observações:</label>
-                            <input type="text" id="obs-ensaio" class="input-detalhe" style="width: 100%;" placeholder="Notas adicionais..." oninput="atualizarDadosFinais()">
-                        </div>
-                    </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Extração de Betume', this)">
+                    <div class="ensaio-info"><h3>Extração de Betume</h3><p>Teor de Ligante</p></div>
                 </div>
-
-                <input type="hidden" id="maquina" value="">
-                <div id="caixa-equipamentos" class="equipamentos-info">
-                    <h4>🛠️ Equipamentos/Normas:</h4>
-                    <p id="lista-equipamentos"></p>
+                <div class="ensaio-card" onclick="selecionarEquipamento('RTFOT', this)">
+                    <div class="ensaio-info"><h3>RTFOT</h3><p>Envelhecimento</p></div>
                 </div>
-            </section>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Viscosímetro Saybolt', this)">
+                    <div class="ensaio-info"><h3>Saybolt-Furol</h3><p>Viscosidade</p></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Ponto de Amolecimento', this)">
+                    <div class="ensaio-info"><h3>Anel e Bola</h3><p>Amolecimento</p></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Penetração', this)">
+                    <div class="ensaio-info"><h3>Penetrômetro</h3><p>Consistência</p></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Ductilidade', this)">
+                    <div class="ensaio-info"><h3>Ductilômetro</h3><p>Elasticidade</p></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Recuperação Elástica', this)">
+                    <div class="ensaio-info"><h3>Recuperação Elástica</h3><p>Asfaltos Modificados</p></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Estufa de Secagem', this)">
+                    <div class="ensaio-info"><h3>Estufa</h3><p>Secagem de Agregados</p></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Máquina Los Angeles', this)">
+                    <div class="ensaio-info"><h3>Los Angeles</h3><p>Abrasão</p></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarEquipamento('Reserva para Aula', this)">
+                    <div class="ensaio-info"><h3>Uso para Aula</h3><p>Bloqueio do Lab</p></div>
+                </div>
+            </div>
+        </section>
 
-            <section id="area-acao" class="action-area" style="text-align: center; margin: 30px 0;">
-                <input type="password" id="senha-lab" placeholder="Senha do Lab" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-                <button id="btn-confirmar" onclick="reservarSelecionados()" style="background-color: #1A4A5A; color: white; padding: 11px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Confirmar Agendamento</button>
-            </section>
+        <section class="section-card">
+            <div class="section-header">
+                <span class="step-number">2</span>
+                <h2>Data e Identificação</h2>
+            </div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Data:</label>
+                    <input type="date" id="data">
+                </div>
+                <div class="input-group">
+                    <label>Nome:</label>
+                    <input type="text" id="nome" placeholder="Seu nome">
+                </div>
+                <div class="input-group">
+                    <label>E-mail:</label>
+                    <input type="email" id="email" placeholder="usuario@ufc.br">
+                </div>
+            </div>
+        </section>
 
-            <section class="table-section">
-                <table id="tabela-horarios">
+        <section class="section-card">
+            <div class="section-header">
+                <span class="step-number">3</span>
+                <h2>Horários</h2>
+            </div>
+            <div class="table-section">
+                <table>
                     <thead>
-                        <tr><th style="width: 40%;">Horário</th><th style="width: 30%;">Status</th><th style="width: 30%;">Ação</th></tr>
+                        <tr><th>Hora</th><th>Status</th><th>Sel.</th></tr>
                     </thead>
                     <tbody id="corpo-agenda"></tbody>
                 </table>
-                <div style="text-align: center;">
-                    <a href="https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0" target="_blank" class="btn-planilha">📊 Consultar Agenda (Planilha)</a>
-                </div>
-            </section>
-        </main>
-    </div>
+            </div>
+        </section>
 
-    <script>
-        const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0";
-        let ensaioSelecionado = "";
-        let subtipoSelecionado = "";
-        let categoriaAtiva = "";
+        <section class="finalizar-container">
+            <input type="password" id="senha-lab" placeholder="Senha do Lab">
+            <button class="btn-confirmar-final" id="btn-confirmar" onclick="reservarSelecionados()">
+                Confirmar e Enviar WhatsApp
+            </button>
+        </section>
+    </main>
 
-        const contatosResponsaveis = {
-            "CARACTERIZAÇÃO DE MATERIAIS": "5585988179510", 
-            "USO DO LABORATÓRIO PARA AULAS": "5585988179510", 
-            "ENSAIOS MECÂNICOS": "5585988179510" 
-        };
-
-        const cardsCaracterizacao = [
-            {n: "Dosagem Marshall", img: "Marshall.jpeg", eq: "Prensa Marshall, Estufas, Compactador"},
-            {n: "Dosagem Superpave", img: "superpave.jpeg", eq: "Compactador Giratório, Rice Test, Estufas"},
-            {n: "Extração de ligante", img: "rotarex.jpeg", eq: "Rotarex or Soxhlet"},
-            {n: "Fluir ligante", img: "fluir.jpeg", eq: "Bucha de fluidez, Estufa"},
-            {n: "Homogeneização", img: "quarte.jpeg", eq: "Quarteador, Bandejas"},
-            {n: "Abrasão Los Angeles", img: "la.jpeg", eq: "Máquina Los Angeles"},
-            {n: "Densidade e absorção", img: "dens.jpeg", eq: "Balança Hidrostática"},
-            {n: "Adesividade (Tradicional)", img: "adesiv.jpeg", eq: "Placas de vidro, Estufa"},
-            {n: "Adesividade (ABS)", img: "abs.jpeg", eq: "PAT Tester"},
-            {n: "Granulometria", img: "granu.jpeg", eq: "Agitador de peneiras"},
-            {n: "Indice de forma", img: "if.jpeg", eq: "Paquímetro, Agulha"},
-            {n: "Sanidade", img: "sani.jpeg", eq: "Sulfato, Estufa"},
-            {n: "Secagem / Estufa", img: "estufa.jpeg", eq: "Estufa de circulação"}
-        ];
-
-        const cardsMecanicos = [
-            {n: "Prensa Marshall", img: "marsh.jpeg", eq: "Rompimento Marshall / Estabilidade / Fluência"},
-            {n: "Prensa UTM-25", img: "utm25.jpeg", eq: "Ensaios Dinâmicos, Fadiga de Misturas Asfálticas"},
-            {n: "Prensa UTM-30", img: "utm30.jpeg", eq: "Módulo de Resiliência, Resistência à Tração (RT)"},
-            {n: "Prensa MTS", img: "mts.jpeg", eq: "Ensaios de Alta Precisão e Caracterização Avançada"},
-            {n: "Prensa RiO", img: "rio.jpeg", eq: "Ensaios de Compressão Simples e Estáticos"}
-        ];
-
-        function escolherCategoria(nome) {
-            categoriaAtiva = nome;
-            document.getElementById('categoria-display').value = nome;
-            document.getElementById('selecao-inicial').style.display = 'none';
-            document.getElementById('conteudo-principal').style.display = 'block';
-            
-            const containerCards = document.getElementById('container-cards-padrao');
-            const containerLista = document.getElementById('container-lista-aulas');
-            const extras = document.querySelectorAll('.campos-extras');
-            const tituloCards = document.getElementById('titulo-selecao-cards');
-            const listaInfo = document.getElementById('lista-info-geral');
-            const grupoAlunos = document.getElementById('grupo-qtd-alunos');
-            
-            ensaioSelecionado = "";
-            subtipoSelecionado = "";
-            containerCards.innerHTML = "";
-            document.getElementById('caixa-equipamentos').style.display = 'none';
-            document.getElementById('container-detalhes').style.display = 'none';
-
-            if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
-                tituloCards.innerText = "➤ SELECIONE OS ENSAIOS QUE SERÃO APRESENTADOS EM AULA";
-                listaInfo.innerHTML = `
-                    <li style="margin-bottom: 8px;"><strong>1.</strong> É proibida a entrada usando chinelos, sandálias ou calçados abertos.</li>
-                    <li style="margin-bottom: 8px;"><strong>2.</strong> Não é permitido comer ou beber no laboratório.</li>
-                    <li style="margin-bottom: 8px; color: #D35400;"><strong>3.</strong> AGENDAMENTO DE AULA: Bloqueia todos os demais procedimentos no horário selecionado.</li>
-                `;
-                grupoAlunos.style.display = 'block';
-                containerCards.style.display = 'none';
-                containerLista.style.display = 'flex';
-                extras.forEach(el => el.style.display = 'none');
-                gerarListaAulas();
-            } else {
-                listaInfo.innerHTML = `
-                    <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar EPIs obrigatórios.</li>
-                    <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o laboratório limpo.</li>
-                    <li style="margin-bottom: 8px; color: red;"><strong>3.</strong> Reservas até sexta às 12:00 terão prioridade para a próxima semana.</li>
-                `;
-                grupoAlunos.style.display = 'none';
-                containerCards.style.display = 'grid';
-                containerLista.style.display = 'none';
-                extras.forEach(el => el.style.display = 'block');
-                
-                tituloCards.innerText = (nome === 'ENSAIOS MECÂNICOS') ? "➤ SELECIONE O EQUIPAMENTO" : "➤ SELECIONE O EQUIPAMENTO OU PROCEDIMENTO";
-                
-                const listaUsar = (nome === 'ENSAIOS MECÂNICOS') ? cardsMecanicos : cardsCaracterizacao;
-                listaUsar.forEach((item, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'ensaio-card';
-                    card.setAttribute('data-nome', item.n); 
-                    card.onclick = () => selecionarEnsaio(card, item.n, item.eq);
-                    card.innerHTML = `
-                        <img src="img/${item.img}" alt="${item.n}">
-                        <div class="info"><h5>${index + 1} - ${item.n}</h5></div>
-                    `;
-                    containerCards.appendChild(card);
-                });
-                verificarRestricoesData();
-            }
-            window.scrollTo(0, 0);
-        }
-
-        function verificarRestricoesData() {
-            const dataInput = document.getElementById('data').value;
-            if (!dataInput) return;
-
-            const dataSelecionada = new Date(dataInput + 'T00:00:00');
-            const diaSemana = dataSelecionada.getDay(); // 0: Dom, 1: Seg, 2: Ter, 3: Qua, 4: Qui, 5: Sex, 6: Sab
-
-            document.querySelectorAll('.ensaio-card').forEach(card => {
-                const nomeEnsaio = card.getAttribute('data-nome');
-                
-                card.classList.remove('blocked', 'lock-adesividade', 'lock-secagem');
-
-                if (nomeEnsaio === "Adesividade (Tradicional)") {
-                    if (diaSemana !== 5) {
-                        card.classList.add('blocked', 'lock-adesividade');
-                        if (ensaioSelecionado === "Adesividade (Tradicional)") resetarSelecao();
-                    }
-                }
-
-                if (nomeEnsaio === "Secagem / Estufa") {
-                    if (diaSemana === 0 || diaSemana === 5 || diaSemana === 6) { 
-                        card.classList.add('blocked', 'lock-secagem');
-                        if (ensaioSelecionado === "Secagem / Estufa") resetarSelecao();
-                    }
-                }
-            });
-
-            atualizarTabelaHorarios(diaSemana);
-        }
-
-        function atualizarTabelaHorarios(dia) {
-            const corpo = document.getElementById('corpo-agenda');
-            const rows = corpo.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const horaStr = row.cells[0].innerText;
-                const horaInt = parseInt(horaStr.split(':')[0]);
-                const checkbox = row.querySelector('input');
-                const statusTd = row.cells[1];
-
-                if (ensaioSelecionado === "Secagem / Estufa") {
-                    if (horaInt < 16) {
-                        checkbox.disabled = true;
-                        checkbox.checked = false;
-                        statusTd.innerText = "Restrito (Início 16h)";
-                        statusTd.className = "status-indisponivel";
-                    } else {
-                        checkbox.disabled = false;
-                        statusTd.innerText = "Disponível";
-                        statusTd.className = "status-disponivel";
-                    }
-                } else {
-                    checkbox.disabled = false;
-                    statusTd.innerText = "Disponível";
-                    statusTd.className = "status-disponivel";
-                }
-            });
-        }
-
-        function resetarSelecao() {
-            ensaioSelecionado = "";
-            document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('container-detalhes').style.display = "none";
-            document.getElementById('caixa-equipamentos').style.display = "none";
-            atualizarDadosFinais();
-        }
-
-        function selecionarEnsaio(elemento, nome, eq) {
-            if (elemento.classList.contains('blocked')) {
-                const msg = elemento.classList.contains('lock-adesividade') ? "Este ensaio só pode ser agendado para Sextas-feiras." : "A secagem em estufa só é permitida de Segunda a Quinta-feira.";
-                alert(msg);
-                return;
-            }
-
-            document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
-            elemento.classList.add('selected');
-            ensaioSelecionado = nome;
-            
-            const nomeLower = nome.toLowerCase();
-            const precisaOpcoesMistura = nomeLower.includes("marshall") || nomeLower.includes("superpave");
-            
-            document.getElementById('container-detalhes').style.display = "block";
-            document.getElementById('opcoes-estado-mistura').style.display = precisaOpcoesMistura ? "block" : "none";
-            document.getElementById('caixa-equipamentos').style.display = "block";
-            document.getElementById('lista-equipamentos').innerText = eq;
-            
-            if(!precisaOpcoesMistura) subtipoSelecionado = "";
-            
-            const dataInput = document.getElementById('data').value;
-            if (dataInput) {
-                const dataSel = new Date(dataInput + 'T00:00:00');
-                atualizarTabelaHorarios(dataSel.getDay());
-            }
-
-            atualizarDadosFinais();
-        }
-
-        function gerarListaAulas() {
-            const container = document.getElementById('container-lista-aulas');
-            const cardsParaAulas = (typeof cardsCaracterizacao !== 'undefined') ? cardsCaracterizacao : [];
-            let html = '<h4>Marque os ensaios da aula:</h4>';
-            cardsParaAulas.forEach(item => {
-                html += `<label class="item-aula-checkbox"><input type="checkbox" class="check-ensaio-aula" value="${item.n}" onchange="atualizarDadosFinais()"><span>${item.n}</span></label>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function definirSubtipo(tipo, botao) {
-            document.querySelectorAll('.btn-opcao').forEach(b => b.classList.remove('active'));
-            botao.classList.add('active');
-            subtipoSelecionado = " (" + tipo + ")";
-            atualizarDadosFinais();
-        }
-
-        function atualizarDadosFinais() {
-            const hiddenInput = document.getElementById('maquina');
-            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
-                const sel = Array.from(document.querySelectorAll('.check-ensaio-aula:checked')).map(c => c.value);
-                const qtdAlunos = document.getElementById('qtd-alunos').value;
-                hiddenInput.value = `[AULA] Alunos: ${qtdAlunos} | Ensaios: ${sel.join(', ')}`;
-            } else {
-                const qtd = document.getElementById('qtd-amostras').value;
-                const obs = document.getElementById('obs-ensaio').value;
-                hiddenInput.value = `${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras) [OBS: ${obs}]`;
-            }
-        }
-
-        function carregarHorarios() {
-            const corpo = document.getElementById('corpo-agenda');
-            let html = '';
-            for (let h = 7; h <= 17; h++) {
-                const hora = h.toString().padStart(2, '0') + ":00";
-                html += `<tr>
-                    <td>${hora}</td>
-                    <td class="status-disponivel">Disponível</td>
-                    <td><input type="checkbox" name="selecionar-hora" value="${hora}"></td>
-                </tr>`;
-            }
-            corpo.innerHTML = html;
-        }
-
-        function voltarInicio() {
-            document.getElementById('selecao-inicial').style.display = 'flex';
-            document.getElementById('conteudo-principal').style.display = 'none';
-        }
-
-        function reservarSelecionados() {
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const dataUso = document.getElementById('data').value;
-            const detalhes = document.getElementById('maquina').value;
-            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
-
-            // Validação Principal
-            if (!nome || !email || !dataUso || check.length === 0) { 
-                alert("Por favor, preencha Nome, E-mail, Data e escolha os horários."); 
-                return; 
-            }
-
-            // Validação de Seleção de Ensaio (Cards vs Aulas)
-            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
-                const ensaiosAula = document.querySelectorAll('.check-ensaio-aula:checked');
-                if (ensaiosAula.length === 0) {
-                    alert("Por favor, selecione ao menos um ensaio para a aula nas caixas de seleção.");
-                    return;
-                }
-            } else {
-                if (!ensaioSelecionado) {
-                    alert("Por favor, selecione o equipamento ou procedimento clicando nos ícones acima.");
-                    return;
-                }
-            }
-
-            const ID_UNICO = "ID-" + Date.now();
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbwfekjvpj6vMVL5L67ZJMdCag68Ssze8N-o21guM7cWgDiTL8CnGsmLWQJyfVRyOALVVw/exec";
-            const numeroDestino = contatosResponsaveis[categoriaAtiva];
-
-            let prioridadeAviso = "";
-            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
-                prioridadeAviso = "\n⚠️ *PRIORIDADE AULA:* Bloqueia todos os demais equipamentos no horário.";
-            }
-
-            let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
-            mensagem += "*Aluno/Professor:* " + nome + "\n";
-            mensagem += "*E-mail:* " + email + "\n";
-            mensagem += "*Categoria:* " + categoriaAtiva + "\n";
-            mensagem += "*Procedimento:* " + detalhes + "\n";
-            mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n\n";
-            
-            mensagem += "✅ ACEITAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
-            mensagem += "❌ RECUSAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
-
-            const urlZap = "https://wa.me/" + numeroDestino + "?text=" + encodeURIComponent(mensagem);
-            
-            const areaAcao = document.getElementById('area-acao');
-            areaAcao.innerHTML = `<a href="${urlZap}" target="_blank" style="background-color: #25D366; color: white; padding: 15px 35px; border-radius: 8px; text-decoration: none; font-weight: 900; font-size: 1.2rem; display: inline-block; animation: fadeIn 0.5s ease;">CLIQUE AQUI!</a>`;
-        }
-
-        window.onload = carregarHorarios;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
