@@ -51,12 +51,10 @@ function configurarDataAtual() {
     }
 }
 
-// ALTERAÇÃO AQUI: Adicionado o passo a passo resumido
 function mostrarInstrucoes() {
     const textoInstrucoes = document.getElementById('texto-instrucoes');
     if (!textoInstrucoes) return;
 
-    // Passo a passo fixo
     let tutorial = `
         <strong>Como funciona:</strong><br>
         1. Escolha o Ensaio e a Data desejada.<br>
@@ -170,25 +168,62 @@ async function reservarSelecionados() {
     const ID_UNICO = "ID-" + Date.now();
     const dataUso = seletorData.value;
     const maquina = seletorMaquina.value;
+    const chavesSelecionadas = Array.from(selecoesTemporarias);
 
     try {
-        await fetch(URL_API, {
+        // 1) Envia para o Apps Script usando "simple request" (text/plain),
+        //    o que NÃO gera preflight CORS e ainda permite ler a resposta.
+        const response = await fetch(URL_API, {
             method: 'POST',
-            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ 
                 action: 'reservar_lote', 
                 id: ID_UNICO,
                 senha: campos.senha,
                 usuario: campos,
-                reservas: Array.from(selecoesTemporarias).map(chave => ({ chave, maquina: maquina })),
+                reservas: chavesSelecionadas.map(chave => ({ chave, maquina: maquina })),
                 data: dataUso
             })
         });
 
-        btn.innerText = "Sincronizando ID...";
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (!response.ok) {
+            throw new Error('Servidor respondeu com erro ' + response.status);
+        }
 
-        const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
+        // Lê a resposta do Apps Script (se houver) e aborta se vier mensagem de erro
+        let respostaTexto = '';
+        try { respostaTexto = (await response.text()) || ''; } catch (_) {}
+        if (/senha\s*(incorreta|inv[áa]lida|errada)|n[ãa]o\s*autoriz/i.test(respostaTexto)) {
+            alert("Falha ao gravar: " + respostaTexto);
+            return;
+        }
+
+        // 2) Confirma que o agendamento REALMENTE apareceu na planilha
+        //    antes de abrir o WhatsApp. Tenta por até ~15 segundos.
+        btn.innerText = "Confirmando gravação...";
+        let confirmado = false;
+        for (let tentativa = 0; tentativa < 10 && !confirmado; tentativa++) {
+            await new Promise(r => setTimeout(r, 1500));
+            try {
+                const r = await fetch(URL_API + '?_=' + Date.now(), { cache: 'no-store' });
+                const dados = await r.json();
+                // Aparece o ID em algum lugar?
+                const valores = Object.values(dados || {}).join(' | ');
+                if (valores.includes(ID_UNICO)) { confirmado = true; break; }
+                // Ou as chaves selecionadas já estão ocupadas?
+                if (chavesSelecionadas.length && chavesSelecionadas.every(ch => dados && dados[ch])) {
+                    confirmado = true; break;
+                }
+            } catch (_) { /* tenta novamente */ }
+        }
+
+        if (!confirmado) {
+            alert("Não foi possível confirmar a gravação do agendamento na planilha. Aguarde alguns segundos e tente novamente — o WhatsApp NÃO foi aberto para evitar erro de 'Agendamento não encontrado'.");
+            return;
+        }
+
+        // 3) Só agora monta a mensagem e abre o WhatsApp
+        const horas = chavesSelecionadas.map(ch => ch.split('-').pop() + ":00").sort().join(', ');
         
         let mensagem = `🔬 *Novo Agendamento LMP*\n\n`;
         mensagem += `*ID:* ${ID_UNICO}\n`;
@@ -199,14 +234,14 @@ async function reservarSelecionados() {
         mensagem += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
         mensagem += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
 
-        alert("Dados gravados com sucesso! Agora clique em OK para abrir o WhatsApp.");
+        alert("Agendamento gravado com sucesso! Clique em OK para abrir o WhatsApp.");
         
         window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(mensagem)}`, '_blank');
         
         selecoesTemporarias.clear();
         carregarReservas();
     } catch (e) {
-        alert("Erro ao conectar com o servidor.");
+        alert("Erro ao conectar com o servidor: " + (e.message || e));
     } finally {
         btn.disabled = false;
         btn.innerText = "Confirmar Reservas";
