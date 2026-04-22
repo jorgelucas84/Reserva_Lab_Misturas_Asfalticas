@@ -1,6 +1,6 @@
 /**
  * SISTEMA DE AGENDAMENTO - LABORATÓRIO DE MISTURAS ASFÁLTICAS (LMP)
- * Revisado para compatibilidade total com Backend de Aprovação via WhatsApp.
+ * Versão: 2.1 - Correção de Redirecionamento e Confirmação Visual
  */
 
 const URL_API = "https://script.google.com/macros/s/AKfycbzGPqygb9dsbUi5JC_JuBvWvWCU0WzsyciR-ocfr-lhg2zAze9d4TyW9YfKsiNv91Ll/exec";
@@ -13,9 +13,9 @@ let selecoesTemporarias = new Set();
 
 // --- CONFIGURAÇÕES DE CONFLITO ---
 const maquinasEstufa = ["1", "2", "4", "8", "9", "13"]; 
-const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave
+const maquinasPrioritarias = ["1", "2"]; 
 
-// --- LIMITAÇÃO DE DATA (Máximo 2 semanas) ---
+// --- LIMITAÇÃO DE DATA ---
 if (seletorData) {
     const hoje = new Date();
     const dataMinima = hoje.toISOString().split("T")[0];
@@ -25,7 +25,7 @@ if (seletorData) {
     
     seletorData.min = dataMinima;
     seletorData.max = dataMaxima;
-    seletorData.value = dataMinima;
+    if (!seletorData.value) seletorData.value = dataMinima;
 }
 
 const instrucoesMaquinas = {
@@ -53,7 +53,7 @@ function mostrarInstrucoes() {
         1. Escolha o Ensaio e a Data.<br>
         2. Marque os horários disponíveis.<br>
         3. Preencha seus dados e a senha do lab.<br>
-        4. Clique em Confirmar e envie o WhatsApp.<br>
+        4. Clique em Confirmar e aguarde o aviso para abrir o WhatsApp.<br>
         <hr style="margin: 10px 0; border: 0; border-top: 1px solid #ccc;">
     `;
 
@@ -101,7 +101,6 @@ function atualizarAgenda() {
         let motivoBloqueio = "";
         const nomeReserva = reservasGlobais[chaveAtual];
 
-        // Verificação de conflitos de Estufa/Dosagem
         let temDosagem = false;
         let temOutraEstufa = false;
         Object.keys(reservasGlobais).forEach(ch => {
@@ -131,26 +130,25 @@ function gerenciarSelecao(checkbox) {
 }
 
 async function reservarSelecionados() {
-    const campos = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        orientador: document.getElementById('orientador').value,
-        senha: document.getElementById('senha-lab').value
-    };
+    const nome = document.getElementById('nome').value;
+    const email = document.getElementById('email').value;
+    const orientador = document.getElementById('orientador').value;
+    const senha = document.getElementById('senha-lab').value;
 
-    if (!campos.senha || !campos.nome) return alert("Preencha o nome e a senha!");
-    if (selecoesTemporarias.size === 0) return alert("Selecione um horário!");
+    if (!senha || !nome) return alert("Preencha o nome e a senha do laboratório!");
+    if (selecoesTemporarias.size === 0) return alert("Selecione pelo menos um horário na tabela.");
 
     const btn = document.querySelector('button[onclick="reservarSelecionados()"]');
-    btn.innerText = "Gravando...";
+    const textoOriginal = btn.innerText;
+    btn.innerText = "⏳ Gravando na Planilha...";
     btn.disabled = true;
 
     const ID_UNICO = "ID-" + Date.now();
     const payload = {
         action: 'reservar_lote',
         id: ID_UNICO,
-        senha: campos.senha,
-        usuario: campos,
+        senha: senha,
+        usuario: { nome, email, orientador },
         reservas: Array.from(selecoesTemporarias).map(ch => ({ chave: ch, maquina: seletorMaquina.value })),
         data: seletorData.value
     };
@@ -163,32 +161,35 @@ async function reservarSelecionados() {
         });
 
         const resultText = await response.text();
-        if (resultText.includes("Erro")) {
-            alert(resultText);
-            return;
-        }
-
-        // Montagem da mensagem para WhatsApp com links de aprovação
-        const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
-        let msg = `🔬 *Novo Agendamento LMP*\n\n`;
-        msg += `*ID:* ${ID_UNICO}\n`;
-        msg += `*Solicitante:* ${campos.nome}\n`;
-        msg += `*Ensaio:* ${seletorMaquina.value}\n`;
-        msg += `*Data:* ${seletorData.value}\n`;
-        msg += `*Horas:* ${horas}\n\n`;
-        msg += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
-        msg += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
-
-        alert("Gravado com sucesso! Clique OK para enviar o WhatsApp de aprovação.");
-        window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(msg)}`, '_blank');
         
-        selecoesTemporarias.clear();
-        carregarReservas();
+        if (resultText.includes("Sucesso")) {
+            // CONFIRMAÇÃO VISUAL ANTES DO WHATSAPP
+            alert("✅ Agendamento salvo com sucesso!\n\nAgora você será redirecionado para o WhatsApp para enviar a solicitação de aprovação.");
+
+            const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
+            let msg = `🔬 *Novo Agendamento LMP*\n\n`;
+            msg += `*ID:* ${ID_UNICO}\n`;
+            msg += `*Solicitante:* ${nome}\n`;
+            msg += `*Ensaio:* ${seletorMaquina.value}\n`;
+            msg += `*Data:* ${seletorData.value}\n`;
+            msg += `*Horas:* ${horas}\n\n`;
+            msg += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
+            msg += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
+
+            window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            // Limpa tudo para o próximo uso
+            selecoesTemporarias.clear();
+            document.getElementById('senha-lab').value = "";
+            carregarReservas();
+        } else {
+            alert("⚠️ " + resultText);
+        }
     } catch (e) {
-        alert("Erro na conexão: " + e.message);
+        alert("Erro de conexão: Verifique se o script está publicado como 'Qualquer pessoa'.");
     } finally {
         btn.disabled = false;
-        btn.innerText = "Confirmar Reservas";
+        btn.innerText = textoOriginal;
     }
 }
 
