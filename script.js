@@ -1,106 +1,86 @@
-/**
- * FRONTEND COMPLETO - script.js
- */
+const URL_API = "SUA_URL_DO_GOOGLE_AQUI"; 
 
-const URL_API = "https://script.google.com/macros/s/AKfycbwfekjvpj6vMVL5L67ZJMdCag68Ssze8N-o21guM7cWgDiTL8CnGsmLWQJyfVRyOALVVw/exec";
-
-const corpoAgenda = document.getElementById('corpo-agenda');
-const seletorData = document.getElementById('data');
-const seletorMaquina = document.getElementById('maquina'); 
 let reservasGlobais = {};
 let selecoesTemporarias = new Set();
 
+window.onload = () => {
+    document.getElementById('data').valueAsDate = new Date();
+    carregarReservas();
+};
+
 async function carregarReservas() {
-    if (!corpoAgenda) return;
-    corpoAgenda.innerHTML = '<tr><td colspan="3">A carregar horários...</td></tr>';
+    const corpo = document.getElementById('corpo-agenda');
+    corpo.innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
     try {
-        const response = await fetch(URL_API);
-        reservasGlobais = await response.json();
+        const res = await fetch(URL_API);
+        reservasGlobais = await res.json();
         atualizarAgenda();
     } catch (e) {
-        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">Erro na conexão.</td></tr>';
+        corpo.innerHTML = '<tr><td colspan="3">Erro ao conectar.</td></tr>';
     }
+}
+
+function selecionarEquipamento(nome, el) {
+    document.getElementById('maquina').value = nome;
+    document.querySelectorAll('.ensaio-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    atualizarAgenda();
 }
 
 function atualizarAgenda() {
-    if (!corpoAgenda || !seletorData.value) return;
-    corpoAgenda.innerHTML = '';
-    const dataSel = seletorData.value;
-    const maqSel = seletorMaquina.value;
+    const corpo = document.getElementById('corpo-agenda');
+    const data = document.getElementById('data').value;
+    const maq = document.getElementById('maquina').value;
+    corpo.innerHTML = '';
 
-    for (let hora = 7; hora <= 16; hora++) {
-        const chave = `${dataSel}-${maqSel}-${hora}`;
+    for (let h = 7; h <= 17; h++) {
+        const chave = `${data}-${maq}-${h}`;
         const ocupado = reservasGlobais[chave];
-        const marcado = selecoesTemporarias.has(chave);
-
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${hora}:00</td>
-            <td class="${ocupado ? 'ocupado' : 'disponivel'}">${ocupado ? 'Reservado por: ' + ocupado : 'Disponível'}</td>
-            <td>${ocupado ? '---' : `<input type="checkbox" ${marcado ? 'checked' : ''} value="${chave}" onchange="gerenciar(this)">`}</td>
+            <td>${h}:00</td>
+            <td class="${ocupado ? 'ocupado' : 'disponivel'}">${ocupado ? 'Reservado' : 'Livre'}</td>
+            <td>${ocupado ? '-' : `<input type="checkbox" onchange="gerenciar('${chave}', this.checked)">`}</td>
         `;
-        corpoAgenda.appendChild(tr);
+        corpo.appendChild(tr);
     }
 }
 
-function gerenciar(cb) {
-    cb.checked ? selecoesTemporarias.add(cb.value) : selecoesTemporarias.delete(cb.value);
+function gerenciar(chave, checked) {
+    checked ? selecoesTemporarias.add(chave) : selecoesTemporarias.delete(chave);
 }
 
 async function reservarSelecionados() {
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha-lab').value;
-
-    if (!nome || !senha || selecoesTemporarias.size === 0) {
-        return alert("Por favor, preencha o Nome, Senha e selecione pelo menos um horário.");
-    }
-
-    const btn = document.querySelector('button');
-    btn.disabled = true;
-    btn.innerText = "A gravar...";
-
-    const ID_UNICO = "ID-" + Date.now();
-    const payload = {
-        action: 'reservar_lote',
-        id: ID_UNICO,
-        senha: senha,
-        usuario: { nome, email },
-        reservas: Array.from(selecoesTemporarias).map(ch => ({ chave: ch, maquina: seletorMaquina.value })),
-        data: seletorData.value
+    const btn = document.getElementById('btn-confirmar');
+    const dados = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        senha: document.getElementById('senha-lab').value,
+        data: document.getElementById('data').value,
+        maquina: document.getElementById('maquina').value
     };
 
+    if (!dados.nome || !dados.senha || selecoesTemporarias.size === 0) return alert("Preencha tudo!");
+
+    btn.disabled = true;
+    const ID = "LMP-" + Date.now();
+
     try {
-        const response = await fetch(URL_API, {
+        await fetch(URL_API, {
             method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload)
+            mode: 'no-cors',
+            body: JSON.stringify({ id: ID, ...dados, reservas: Array.from(selecoesTemporarias) })
         });
 
-        const respText = await response.text();
+        const horas = Array.from(selecoesTemporarias).map(c => c.split('-').pop() + ":00").sort().join(', ');
+        let msg = `🔬 *Novo Agendamento LMP*\n\n*Solicitante:* ${dados.nome}\n*Equipamento:* ${dados.maquina}\n*Data:* ${dados.data}\n*Horas:* ${horas}\n\n✅ *ACEITAR:* \n${URL_API}?id=${ID}&acao=Aceito`;
 
-        if (respText.includes("Sucesso")) {
-            alert("✅ Dados salvos com sucesso!\nClique em OK para enviar a mensagem de aprovação.");
-            
-            const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
-            let msg = `🔬 *Novo Agendamento LMP*\n\n`;
-            msg += `*ID:* ${ID_UNICO}\n*Nome:* ${nome}\n*Ensaio:* ${seletorMaquina.value}\n*Data:* ${seletorData.value}\n*Horas:* ${horas}\n\n`;
-            msg += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
-            msg += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
-
-            window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(msg)}`, '_blank');
-            location.reload(); 
-        } else {
-            alert("❌ Erro: " + respText);
-        }
+        window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(msg)}`, '_blank');
+        location.reload();
     } catch (e) {
-        alert("Erro técnico ao conectar ao servidor.");
-    } finally {
+        alert("Erro no servidor.");
         btn.disabled = false;
-        btn.innerText = "Confirmar Reservas";
     }
 }
 
-seletorData.addEventListener('change', atualizarAgenda);
-seletorMaquina.addEventListener('change', atualizarAgenda);
-carregarReservas();
+document.getElementById('data').addEventListener('change', atualizarAgenda);
