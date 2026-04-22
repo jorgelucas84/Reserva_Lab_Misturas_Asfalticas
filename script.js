@@ -96,10 +96,6 @@ function atualizarAgenda() {
         let motivoBloqueio = "";
         const nomeReserva = reservasGlobais[chaveAtual];
 
-        // Lógica de conflito de equipamentos
-        let temDosagemNoHorario = false;
-        let temOutraEstufaNoHorario = false;
-
         Object.keys(reservasGlobais).forEach(chaveExistente => {
             if (chaveExistente.startsWith(dataSelecionada) && chaveExistente.endsWith(`-${hora}`)) {
                 const partes = chaveExistente.split('-');
@@ -150,19 +146,18 @@ async function reservarSelecionados() {
     btn.innerText = "Gravando na Planilha...";
     btn.disabled = true;
 
-    // AQUI ESTÁ A CORREÇÃO: Gerar o ID antes do envio
     const ID_UNICO = "ID-" + Date.now();
     const dataUso = seletorData.value;
     const maquina = seletorMaquina.value;
 
     try {
-        // 1. Envia para a planilha com o ID
+        // 1. Envia para a planilha
         await fetch(URL_API, {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify({ 
                 action: 'reservar_lote', 
-                id: ID_UNICO, // ENVIANDO O ID PARA A PLANILHA
+                id: ID_UNICO,
                 senha: campos.senha,
                 usuario: campos,
                 reservas: Array.from(selecoesTemporarias).map(chave => ({ chave, maquina: maquina })),
@@ -170,7 +165,10 @@ async function reservarSelecionados() {
             })
         });
 
-        // 2. Monta a mensagem do WhatsApp COM O MESMO ID
+        // 2. PAUSA DE SEGURANÇA (2 segundos) para o Google Sheets processar
+        btn.innerText = "Sincronizando ID...";
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
         const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
         
         let mensagem = `🔬 *Novo Agendamento LMP*\n\n`;
@@ -182,7 +180,7 @@ async function reservarSelecionados() {
         mensagem += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
         mensagem += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
 
-        alert("Dados gravados! Clique em OK para enviar ao responsável via WhatsApp.");
+        alert("Dados gravados com sucesso! Agora clique em OK para abrir o WhatsApp.");
         
         window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(mensagem)}`, '_blank');
         
@@ -196,7 +194,6 @@ async function reservarSelecionados() {
     }
 }
 
-// Inicialização
 if (seletorData) seletorData.addEventListener('change', atualizarAgenda);
 if (seletorMaquina) seletorMaquina.addEventListener('change', atualizarAgenda);
 
