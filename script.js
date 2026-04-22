@@ -150,19 +150,19 @@ async function reservarSelecionados() {
     btn.innerText = "Gravando na Planilha...";
     btn.disabled = true;
 
-    // 1. Gera o ID ÚNICO aqui no JavaScript
+    // AQUI ESTÁ A CORREÇÃO: Gerar o ID antes do envio
     const ID_UNICO = "ID-" + Date.now();
     const dataUso = seletorData.value;
     const maquina = seletorMaquina.value;
 
     try {
-        // 2. Envia os dados com o ID para a planilha
+        // 1. Envia para a planilha com o ID
         await fetch(URL_API, {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify({ 
                 action: 'reservar_lote', 
-                id: ID_UNICO,
+                id: ID_UNICO, // ENVIANDO O ID PARA A PLANILHA
                 senha: campos.senha,
                 usuario: campos,
                 reservas: Array.from(selecoesTemporarias).map(chave => ({ chave, maquina: maquina })),
@@ -170,25 +170,20 @@ async function reservarSelecionados() {
             })
         });
 
-        // 3. Monta a mensagem para o WhatsApp com os links dinâmicos
-        const horasSelecionadas = Array.from(selecoesTemporarias)
-            .map(ch => ch.split('-').pop() + ":00")
-            .sort()
-            .join(', ');
-
+        // 2. Monta a mensagem do WhatsApp COM O MESMO ID
+        const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
+        
         let mensagem = `🔬 *Novo Agendamento LMP*\n\n`;
         mensagem += `*ID:* ${ID_UNICO}\n`;
         mensagem += `*Solicitante:* ${campos.nome}\n`;
         mensagem += `*Ensaio:* ${maquina}\n`;
         mensagem += `*Data:* ${dataUso}\n`;
-        mensagem += `*Horários:* ${horasSelecionadas}\n\n`;
-        
+        mensagem += `*Horários:* ${horas}\n\n`;
         mensagem += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
         mensagem += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
 
-        alert("Pedido gravado na planilha! Agora envie o aviso pelo WhatsApp.");
+        alert("Dados gravados! Clique em OK para enviar ao responsável via WhatsApp.");
         
-        // 4. Abre o WhatsApp com a mensagem pronta
         window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(mensagem)}`, '_blank');
         
         selecoesTemporarias.clear();
