@@ -3,7 +3,7 @@
  * Versão: 2.1 - Correção de Redirecionamento e Confirmação Visual
  */
 
-const URL_API = "https://script.google.com/macros/s/AKfycbzGPqygb9dsbUi5JC_JuBvWvWCU0WzsyciR-ocfr-lhg2zAze9d4TyW9YfKsiNv91Ll/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbzfeA4v1zCqsEce7w2osXLl47MRXa881tSf8w6V455BzNRWyWMtIJuEyQSc0E7ZFxiQ/exec";
 
 const corpoAgenda = document.getElementById('corpo-agenda');
 const seletorData = document.getElementById('data');
