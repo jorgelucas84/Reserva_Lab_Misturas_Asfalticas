@@ -150,25 +150,46 @@ async function reservarSelecionados() {
     btn.innerText = "Gravando na Planilha...";
     btn.disabled = true;
 
+    // 1. Gera o ID ÚNICO aqui no JavaScript
+    const ID_UNICO = "ID-" + Date.now();
+    const dataUso = seletorData.value;
+    const maquina = seletorMaquina.value;
+
     try {
-        const response = await fetch(URL_API, {
+        // 2. Envia os dados com o ID para a planilha
+        await fetch(URL_API, {
             method: 'POST',
-            mode: 'no-cors', // Importante para evitar erros de CORS com Apps Script
+            mode: 'no-cors',
             body: JSON.stringify({ 
                 action: 'reservar_lote', 
+                id: ID_UNICO,
                 senha: campos.senha,
                 usuario: campos,
-                reservas: Array.from(selecoesTemporarias).map(chave => ({ chave, maquina: seletorMaquina.value }))
+                reservas: Array.from(selecoesTemporarias).map(chave => ({ chave, maquina: maquina })),
+                data: dataUso
             })
         });
 
-        // Como usamos 'no-cors', o redirecionamento para o WhatsApp deve ser feito manualmente 
-        // ou o script deve retornar a URL. Se o erro de "não encontrado" persistir, 
-        // verifique se a função 'reservar_lote' no seu arquivo .gs está a usar:
-        // spreadsheet.getSheetByName("SuaAba").appendRow([...])
+        // 3. Monta a mensagem para o WhatsApp com os links dinâmicos
+        const horasSelecionadas = Array.from(selecoesTemporarias)
+            .map(ch => ch.split('-').pop() + ":00")
+            .sort()
+            .join(', ');
 
-        alert("Pedido enviado! Se o WhatsApp não abrir, consulte a planilha.");
-        window.open(PLANILHA_URL, '_blank');
+        let mensagem = `🔬 *Novo Agendamento LMP*\n\n`;
+        mensagem += `*ID:* ${ID_UNICO}\n`;
+        mensagem += `*Solicitante:* ${campos.nome}\n`;
+        mensagem += `*Ensaio:* ${maquina}\n`;
+        mensagem += `*Data:* ${dataUso}\n`;
+        mensagem += `*Horários:* ${horasSelecionadas}\n\n`;
+        
+        mensagem += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
+        mensagem += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
+
+        alert("Pedido gravado na planilha! Agora envie o aviso pelo WhatsApp.");
+        
+        // 4. Abre o WhatsApp com a mensagem pronta
+        window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(mensagem)}`, '_blank');
         
         selecoesTemporarias.clear();
         carregarReservas();
