@@ -1,10 +1,9 @@
 /**
  * SISTEMA DE AGENDAMENTO - LABORATÓRIO DE MISTURAS ASFÁLTICAS (LMP)
- * Link da Planilha: https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit
+ * Revisado para compatibilidade total com Backend de Aprovação via WhatsApp.
  */
 
 const URL_API = "https://script.google.com/macros/s/AKfycbzGPqygb9dsbUi5JC_JuBvWvWCU0WzsyciR-ocfr-lhg2zAze9d4TyW9YfKsiNv91Ll/exec";
-const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit";
 
 const corpoAgenda = document.getElementById('corpo-agenda');
 const seletorData = document.getElementById('data');
@@ -14,19 +13,19 @@ let selecoesTemporarias = new Set();
 
 // --- CONFIGURAÇÕES DE CONFLITO ---
 const maquinasEstufa = ["1", "2", "4", "8", "9", "13"]; 
-const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave fecham a estufa
+const maquinasPrioritarias = ["1", "2"]; // Marshall e Superpave
 
 // --- LIMITAÇÃO DE DATA (Máximo 2 semanas) ---
 if (seletorData) {
     const hoje = new Date();
     const dataMinima = hoje.toISOString().split("T")[0];
-    
     const duasSemanasDepois = new Date();
     duasSemanasDepois.setDate(hoje.getDate() + 14);
     const dataMaxima = duasSemanasDepois.toISOString().split("T")[0];
     
     seletorData.min = dataMinima;
     seletorData.max = dataMaxima;
+    seletorData.value = dataMinima;
 }
 
 const instrucoesMaquinas = {
@@ -45,34 +44,26 @@ const instrucoesMaquinas = {
     "13": "Equipamentos: Estufa."
 };
 
-function configurarDataAtual() {
-    if (seletorData && !seletorData.value) {
-        seletorData.value = new Date().toISOString().split('T')[0];
-    }
-}
-
 function mostrarInstrucoes() {
     const textoInstrucoes = document.getElementById('texto-instrucoes');
     if (!textoInstrucoes) return;
 
     let tutorial = `
         <strong>Como funciona:</strong><br>
-        1. Escolha o Ensaio e a Data desejada.<br>
-        2. Marque os horários disponíveis na tabela abaixo.<br>
-        3. Preencha seus dados, a senha do laboratório e clique em 'Confirmar'.<br>
-        4. Envie a mensagem gerada para o WhatsApp do responsável para aprovação.<br>
+        1. Escolha o Ensaio e a Data.<br>
+        2. Marque os horários disponíveis.<br>
+        3. Preencha seus dados e a senha do lab.<br>
+        4. Clique em Confirmar e envie o WhatsApp.<br>
         <hr style="margin: 10px 0; border: 0; border-top: 1px solid #ccc;">
     `;
 
     if (!seletorMaquina.value) {
-        textoInstrucoes.innerHTML = tutorial + "<em>Selecione um ensaio para ver os equipamentos específicos.</em>";
+        textoInstrucoes.innerHTML = tutorial + "<em>Selecione um ensaio para ver os detalhes.</em>";
         return;
     }
 
     const maquinaId = seletorMaquina.value.split(' ')[0]; 
-    const instrucaoEquipamento = instrucoesMaquinas[maquinaId] || "";
-    
-    textoInstrucoes.innerHTML = tutorial + "<strong>Equipamentos deste ensaio:</strong><br>" + instrucaoEquipamento;
+    textoInstrucoes.innerHTML = tutorial + "<strong>Equipamentos deste ensaio:</strong><br>" + (instrucoesMaquinas[maquinaId] || "");
 }
 
 async function carregarReservas() {
@@ -80,8 +71,7 @@ async function carregarReservas() {
     corpoAgenda.innerHTML = '<tr><td colspan="3">Sincronizando com a planilha...</td></tr>';
     try {
         const response = await fetch(URL_API);
-        const texto = await response.text();
-        reservasGlobais = JSON.parse(texto);
+        reservasGlobais = await response.json();
         atualizarAgenda();
     } catch (e) {
         corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:red">Erro ao ler dados da planilha.</td></tr>';
@@ -89,58 +79,48 @@ async function carregarReservas() {
 }
 
 function atualizarAgenda() {
-    if (!corpoAgenda) return;
-    const dataObj = new Date(seletorData.value + 'T00:00:00');
-    const diaSemana = dataObj.getDay(); 
+    if (!corpoAgenda || !seletorData.value) return;
     
-    if (diaSemana === 0 || diaSemana === 6) {
-        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:orange; text-align:center;">⚠️ Laboratório fechado aos fins de semana.</td></tr>';
+    const dataObj = new Date(seletorData.value + 'T00:00:00');
+    if (dataObj.getDay() === 0 || dataObj.getDay() === 6) {
+        corpoAgenda.innerHTML = '<tr><td colspan="3" style="color:orange; text-align:center;">⚠️ Fechado aos fins de semana.</td></tr>';
         return;
     }
 
     corpoAgenda.innerHTML = '';
     const dataSelecionada = seletorData.value;
-    const maquinaSelecionadaTexto = seletorMaquina.value || "LMP";
-    const idMaquinaSelecionada = maquinaSelecionadaTexto.split(' ')[0];
+    const maquinaTexto = seletorMaquina.value || "LMP";
+    const idMaquina = maquinaTexto.split(' ')[0];
 
     mostrarInstrucoes();
 
     for (let hora = 7; hora <= 16; hora++) {
         const horarioFormatado = `${hora.toString().padStart(2, '0')}:00 - ${(hora + 1).toString().padStart(2, '0')}:00`;
-        const chaveAtual = `${dataSelecionada}-${maquinaSelecionadaTexto}-${hora}`;
+        const chaveAtual = `${dataSelecionada}-${maquinaTexto}-${hora}`;
         
         let motivoBloqueio = "";
         const nomeReserva = reservasGlobais[chaveAtual];
 
-        let temDosagemNoHorario = false;
-        let temOutraEstufaNoHorario = false;
-
-        Object.keys(reservasGlobais).forEach(chaveExistente => {
-            if (chaveExistente.startsWith(dataSelecionada) && chaveExistente.endsWith(`-${hora}`)) {
-                const partes = chaveExistente.split('-');
-                if (partes.length >= 4) {
-                    const idExistente = partes[3].split(' ')[0];
-                    if (maquinasPrioritarias.includes(idExistente)) temDosagemNoHorario = true;
-                    if (maquinasEstufa.includes(idExistente) && !maquinasPrioritarias.includes(idExistente)) temOutraEstufaNoHorario = true;
-                }
+        // Verificação de conflitos de Estufa/Dosagem
+        let temDosagem = false;
+        let temOutraEstufa = false;
+        Object.keys(reservasGlobais).forEach(ch => {
+            if (ch.startsWith(dataSelecionada) && ch.endsWith(`-${hora}`)) {
+                const idExistente = ch.split('-')[3]?.split(' ')[0];
+                if (maquinasPrioritarias.includes(idExistente)) temDosagem = true;
+                if (maquinasEstufa.includes(idExistente) && !maquinasPrioritarias.includes(idExistente)) temOutraEstufa = true;
             }
         });
 
-        if (nomeReserva) {
-            motivoBloqueio = `Reservado: ${nomeReserva}`;
-        } else if (maquinasPrioritarias.includes(idMaquinaSelecionada) && temOutraEstufaNoHorario) {
-            motivoBloqueio = "Bloqueado (Estufa ocupada)";
-        } else if (["4", "8", "9", "13"].includes(idMaquinaSelecionada) && temDosagemNoHorario) {
-            motivoBloqueio = "Prioridade: Dosagem";
-        }
-
-        const estaMarcado = selecoesTemporarias.has(chaveAtual) ? 'checked' : '';
+        if (nomeReserva) motivoBloqueio = `Reservado: ${nomeReserva}`;
+        else if (maquinasPrioritarias.includes(idMaquina) && temOutraEstufa) motivoBloqueio = "Estufa ocupada";
+        else if (["4", "8", "9", "13"].includes(idMaquina) && temDosagem) motivoBloqueio = "Prioridade: Dosagem";
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${horarioFormatado}</td>
             <td class="${motivoBloqueio ? 'ocupado' : 'status-disponivel'}">${motivoBloqueio || 'Disponível'}</td>
-            <td>${motivoBloqueio ? '---' : `<input type="checkbox" value="${chaveAtual}" ${estaMarcado} onchange="gerenciarSelecao(this)">`}</td>
+            <td>${motivoBloqueio ? '---' : `<input type="checkbox" value="${chaveAtual}" onchange="gerenciarSelecao(this)">`}</td>
         `;
         corpoAgenda.appendChild(tr);
     }
@@ -162,86 +142,50 @@ async function reservarSelecionados() {
     if (selecoesTemporarias.size === 0) return alert("Selecione um horário!");
 
     const btn = document.querySelector('button[onclick="reservarSelecionados()"]');
-    btn.innerText = "Gravando na Planilha...";
+    btn.innerText = "Gravando...";
     btn.disabled = true;
 
     const ID_UNICO = "ID-" + Date.now();
-    const dataUso = seletorData.value;
-    const maquina = seletorMaquina.value;
-    const chavesSelecionadas = Array.from(selecoesTemporarias);
+    const payload = {
+        action: 'reservar_lote',
+        id: ID_UNICO,
+        senha: campos.senha,
+        usuario: campos,
+        reservas: Array.from(selecoesTemporarias).map(ch => ({ chave: ch, maquina: seletorMaquina.value })),
+        data: seletorData.value
+    };
 
     try {
-        // 1) Envia para o Apps Script usando "simple request" (text/plain),
-        //    o que NÃO gera preflight CORS e ainda permite ler a resposta.
         const response = await fetch(URL_API, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ 
-                action: 'reservar_lote', 
-                id: ID_UNICO,
-                senha: campos.senha,
-                usuario: campos,
-                reservas: chavesSelecionadas.map(chave => ({ chave, maquina: maquina })),
-                data: dataUso
-            })
+            body: JSON.stringify(payload)
         });
 
-        if (!response.ok) {
-            throw new Error('Servidor respondeu com erro ' + response.status);
-        }
-
-        // Lê a resposta do Apps Script (se houver) e aborta se vier mensagem de erro
-        let respostaTexto = '';
-        try { respostaTexto = (await response.text()) || ''; } catch (_) {}
-        if (/senha\s*(incorreta|inv[áa]lida|errada)|n[ãa]o\s*autoriz/i.test(respostaTexto)) {
-            alert("Falha ao gravar: " + respostaTexto);
+        const resultText = await response.text();
+        if (resultText.includes("Erro")) {
+            alert(resultText);
             return;
         }
 
-        // 2) Confirma que o agendamento REALMENTE apareceu na planilha
-        //    antes de abrir o WhatsApp. Tenta por até ~15 segundos.
-        btn.innerText = "Confirmando gravação...";
-        let confirmado = false;
-        for (let tentativa = 0; tentativa < 10 && !confirmado; tentativa++) {
-            await new Promise(r => setTimeout(r, 1500));
-            try {
-                const r = await fetch(URL_API + '?_=' + Date.now(), { cache: 'no-store' });
-                const dados = await r.json();
-                // Aparece o ID em algum lugar?
-                const valores = Object.values(dados || {}).join(' | ');
-                if (valores.includes(ID_UNICO)) { confirmado = true; break; }
-                // Ou as chaves selecionadas já estão ocupadas?
-                if (chavesSelecionadas.length && chavesSelecionadas.every(ch => dados && dados[ch])) {
-                    confirmado = true; break;
-                }
-            } catch (_) { /* tenta novamente */ }
-        }
+        // Montagem da mensagem para WhatsApp com links de aprovação
+        const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
+        let msg = `🔬 *Novo Agendamento LMP*\n\n`;
+        msg += `*ID:* ${ID_UNICO}\n`;
+        msg += `*Solicitante:* ${campos.nome}\n`;
+        msg += `*Ensaio:* ${seletorMaquina.value}\n`;
+        msg += `*Data:* ${seletorData.value}\n`;
+        msg += `*Horas:* ${horas}\n\n`;
+        msg += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
+        msg += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
 
-        if (!confirmado) {
-            alert("Não foi possível confirmar a gravação do agendamento na planilha. Aguarde alguns segundos e tente novamente — o WhatsApp NÃO foi aberto para evitar erro de 'Agendamento não encontrado'.");
-            return;
-        }
-
-        // 3) Só agora monta a mensagem e abre o WhatsApp
-        const horas = chavesSelecionadas.map(ch => ch.split('-').pop() + ":00").sort().join(', ');
-        
-        let mensagem = `🔬 *Novo Agendamento LMP*\n\n`;
-        mensagem += `*ID:* ${ID_UNICO}\n`;
-        mensagem += `*Solicitante:* ${campos.nome}\n`;
-        mensagem += `*Ensaio:* ${maquina}\n`;
-        mensagem += `*Data:* ${dataUso}\n`;
-        mensagem += `*Horários:* ${horas}\n\n`;
-        mensagem += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
-        mensagem += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
-
-        alert("Agendamento gravado com sucesso! Clique em OK para abrir o WhatsApp.");
-        
-        window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(mensagem)}`, '_blank');
+        alert("Gravado com sucesso! Clique OK para enviar o WhatsApp de aprovação.");
+        window.open(`https://wa.me/5585988179510?text=${encodeURIComponent(msg)}`, '_blank');
         
         selecoesTemporarias.clear();
         carregarReservas();
     } catch (e) {
-        alert("Erro ao conectar com o servidor: " + (e.message || e));
+        alert("Erro na conexão: " + e.message);
     } finally {
         btn.disabled = false;
         btn.innerText = "Confirmar Reservas";
@@ -249,8 +193,6 @@ async function reservarSelecionados() {
 }
 
 // Inicialização
-if (seletorData) seletorData.addEventListener('change', atualizarAgenda);
-if (seletorMaquina) seletorMaquina.addEventListener('change', atualizarAgenda);
-
-configurarDataAtual();
+seletorData.addEventListener('change', atualizarAgenda);
+seletorMaquina.addEventListener('change', atualizarAgenda);
 carregarReservas();
