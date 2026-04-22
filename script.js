@@ -30,8 +30,8 @@ if (seletorData) {
 }
 
 const instrucoesMaquinas = {
-    "1": "Seguir as instruções gerais. Equipamentos: Balança, Compactador Marshall, Estufa, Misturador.",
-    "2": "Seguir as instruções gerais. Equipamentos: Balança, Bomba de vácuo, Compactador Giratório.",
+    "1": "Equipamentos: Balança, Compactador Marshall, Estufa, Misturador.",
+    "2": "Equipamentos: Balança, Bomba de vácuo, Compactador Giratório.",
     "3": "Equipamentos: Extrator Centrifugo (Rotarex).",
     "4": "Equipamentos: Balança e Estufa.",
     "5": "Equipamentos: Quarteador.",
@@ -51,12 +51,30 @@ function configurarDataAtual() {
     }
 }
 
+// ALTERAÇÃO AQUI: Adicionado o passo a passo resumido
 function mostrarInstrucoes() {
     const textoInstrucoes = document.getElementById('texto-instrucoes');
-    if (!textoInstrucoes || !seletorMaquina.value) return;
+    if (!textoInstrucoes) return;
+
+    // Passo a passo fixo
+    let tutorial = `
+        <strong>Como funciona:</strong><br>
+        1. Escolha o Ensaio e a Data desejada.<br>
+        2. Marque os horários disponíveis na tabela abaixo.<br>
+        3. Preencha seus dados, a senha do laboratório e clique em 'Confirmar'.<br>
+        4. Envie a mensagem gerada para o WhatsApp do responsável para aprovação.<br>
+        <hr style="margin: 10px 0; border: 0; border-top: 1px solid #ccc;">
+    `;
+
+    if (!seletorMaquina.value) {
+        textoInstrucoes.innerHTML = tutorial + "<em>Selecione um ensaio para ver os equipamentos específicos.</em>";
+        return;
+    }
+
     const maquinaId = seletorMaquina.value.split(' ')[0]; 
-    const instrucao = instrucoesMaquinas[maquinaId];
-    textoInstrucoes.innerHTML = instrucao ? instrucao.replace(/\n/g, "<br>") : "Selecione um ensaio.";
+    const instrucaoEquipamento = instrucoesMaquinas[maquinaId] || "";
+    
+    textoInstrucoes.innerHTML = tutorial + "<strong>Equipamentos deste ensaio:</strong><br>" + instrucaoEquipamento;
 }
 
 async function carregarReservas() {
@@ -95,6 +113,9 @@ function atualizarAgenda() {
         
         let motivoBloqueio = "";
         const nomeReserva = reservasGlobais[chaveAtual];
+
+        let temDosagemNoHorario = false;
+        let temOutraEstufaNoHorario = false;
 
         Object.keys(reservasGlobais).forEach(chaveExistente => {
             if (chaveExistente.startsWith(dataSelecionada) && chaveExistente.endsWith(`-${hora}`)) {
@@ -151,7 +172,6 @@ async function reservarSelecionados() {
     const maquina = seletorMaquina.value;
 
     try {
-        // 1. Envia para a planilha
         await fetch(URL_API, {
             method: 'POST',
             mode: 'no-cors',
@@ -165,7 +185,6 @@ async function reservarSelecionados() {
             })
         });
 
-        // 2. PAUSA DE SEGURANÇA (2 segundos) para o Google Sheets processar
         btn.innerText = "Sincronizando ID...";
         await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -194,6 +213,7 @@ async function reservarSelecionados() {
     }
 }
 
+// Inicialização
 if (seletorData) seletorData.addEventListener('change', atualizarAgenda);
 if (seletorMaquina) seletorMaquina.addEventListener('change', atualizarAgenda);
 
