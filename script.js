@@ -3,7 +3,7 @@
  * Link da Planilha: https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit
  */
 
-const URL_API = "https://script.google.com/macros/s/AKfycbwCvy_b52pLbOiyLppzAFq4mznMJg5g5eq9KEYvW7eFrHveOjDr2wec3SEXoLUW6ie4/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbzGPqygb9dsbUi5JC_JuBvWvWCU0WzsyciR-ocfr-lhg2zAze9d4TyW9YfKsiNv91Ll/exec";
 const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit";
 
 const corpoAgenda = document.getElementById('corpo-agenda');
