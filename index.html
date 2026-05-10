@@ -1,3 +1,4 @@
+
 <!DOCTYPE html> 
 <html lang="pt-br"> 
 <head>
@@ -605,18 +606,68 @@
                 mensagem += "*Procedimento:* " + detalhes + "\n";
                 mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
                 mensagem += "*Horários:* " + horas.join(', ') + "\n\n";
-                mensagem += "✅ ACEITAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
-                mensagem += "❌ RECUSAR:\n" + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
+                mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
+                mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
 
                 const areaAcao = document.getElementById('area-acao');
-                areaAcao.innerHTML = `<a href="https://wa.me/${numeroDestino}?text=${encodeURIComponent(mensagem)}" target="_blank" style="background-color: #25D366; color: white; padding: 15px 35px; border-radius: 8px; text-decoration: none; font-weight: 900; font-size: 1.2rem; display: inline-block; animation: fadeIn 0.5s ease;">CLIQUE AQUI!</a>`;
+                // Melhorando o botão para ser mais visível e amigável
+                areaAcao.innerHTML = `
+                    <div style="margin-top: 20px; padding: 20px; border: 2px dashed #25D366; border-radius: 10px; background-color: #f0fff4;">
+                        <p style="color: #128C7E; font-weight: bold; margin-bottom: 15px;">✅ Agendamento gravado! Agora envie para o WhatsApp:</p>
+                        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <a href="https://api.whatsapp.com/send?phone=${numeroDestino}&text=${encodeURIComponent(mensagem)}" 
+                               target="_blank" 
+                               style="background-color: #25D366; color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 900; font-size: 1.3rem; display: inline-block; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); transition: transform 0.2s;">
+                               🚀 ENVIAR PARA O WHATSAPP
+                            </a>
+                            <button onclick="copiarMensagem()" 
+                                    style="background-color: #1A4A5A; color: white; padding: 18px 40px; border-radius: 50px; border: none; font-weight: 900; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(26, 74, 90, 0.4); transition: transform 0.2s;">
+                                📋 COPIAR MENSAGEM
+                            </button>
+                        </div>
+                    </div>`;
 
             } catch (e) {
-                alert("Erro técnico ao conectar ao servidor.");
+                alert("Erro técnico ao conectar ao servidor: " + e.message);
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Confirmar Agendamento";
             }
+        }
+
+        // Função para copiar a mensagem para a área de transferência
+        function copiarMensagem() {
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const dataUso = document.getElementById('data').value;
+            const detalhes = document.getElementById('maquina').value;
+            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
+            const horas = Array.from(check).map(c => c.value);
+
+            const ID_UNICO = "ID-" + Date.now();
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbzZhUJybEOkMZODFDUxg5IwiGTt4doTmW374eGLYNH1vyu8QwXpR_VQ3N4Z0L6JC288ZA/exec";
+
+            let prioridadeAviso = "";
+            if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+                prioridadeAviso = "\n⚠️ *PRIORIDADE AULA:* Bloqueia todos os demais equipamentos no horário.";
+            }
+
+            let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
+            mensagem += "*Aluno/Professor:* " + nome + "\n";
+            mensagem += "*E-mail:* " + email + "\n";
+            mensagem += "*Categoria:* " + categoriaAtiva + "\n";
+            mensagem += "*Procedimento:* " + detalhes + "\n";
+            mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
+            mensagem += "*Horários:* " + horas.join(', ') + "\n\n";
+            mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
+            mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
+
+            // Copiar para a área de transferência
+            navigator.clipboard.writeText(mensagem).then(() => {
+                alert('✅ Mensagem copiada para a área de transferência!');
+            }).catch(err => {
+                alert('❌ Erro ao copiar: ' + err);
+            });
         }
 
         window.onload = carregarHorarios;
