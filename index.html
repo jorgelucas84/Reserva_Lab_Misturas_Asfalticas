@@ -1,4 +1,4 @@
-
+index.html
 <!DOCTYPE html> 
 <html lang="pt-br"> 
 <head>
@@ -565,6 +565,7 @@
             btn.innerText = "A gravar...";
 
             const ID_UNICO = "ID-" + Date.now();
+            ultimoIDUnico = ID_UNICO; // Armazenar o ID para usar depois na cópia
             const BASE_URL = "https://script.google.com/macros/s/AKfycbzZhUJybEOkMZODFDUxg5IwiGTt4doTmW374eGLYNH1vyu8QwXpR_VQ3N4Z0L6JC288ZA/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
@@ -635,6 +636,9 @@
             }
         }
 
+        // Variável global para armazenar o ID único da última reserva
+        let ultimoIDUnico = "";
+
         // Função para copiar a mensagem para a área de transferência
         function copiarMensagem() {
             const nome = document.getElementById('nome').value;
@@ -643,9 +647,10 @@
             const detalhes = document.getElementById('maquina').value;
             const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
             const horas = Array.from(check).map(c => c.value);
-
-            const ID_UNICO = "ID-" + Date.now();
             const BASE_URL = "https://script.google.com/macros/s/AKfycbzZhUJybEOkMZODFDUxg5IwiGTt4doTmW374eGLYNH1vyu8QwXpR_VQ3N4Z0L6JC288ZA/exec";
+
+            // Usar o ID único que foi salvo no servidor
+            const ID_UNICO = ultimoIDUnico;
 
             let prioridadeAviso = "";
             if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
