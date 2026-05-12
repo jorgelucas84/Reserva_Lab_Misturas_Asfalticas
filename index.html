@@ -157,9 +157,181 @@
             transition: background 0.3s;
         }
         .btn-planilha:hover { background-color: #1a5a37; }
+
+        /* --- MODO SOMENTE LEITURA --- */
+        #banner-readonly {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);
+            color: white;
+            padding: 12px 24px;
+            font-size: 0.92rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-bottom: 3px solid #D35400;
+        }
+        #banner-readonly .banner-texto {
+            display: flex; align-items: center; gap: 10px;
+        }
+        #banner-readonly .badge-lock {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        #btn-unlock {
+            background: #D35400;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        #btn-unlock:hover { background: #b84600; }
+
+        /* Overlay para bloquear interação em modo leitura */
+        body.modo-readonly .categoria-card {
+            pointer-events: none;
+            opacity: 0.85;
+            cursor: default;
+        }
+        body.modo-readonly .ensaio-card:not(.blocked) {
+            pointer-events: none;
+            cursor: default;
+        }
+        body.modo-readonly .ensaio-card:not(.blocked):hover {
+            transform: none;
+            box-shadow: none;
+            border-color: #eee;
+        }
+        body.modo-readonly input:not([readonly]):not([disabled]),
+        body.modo-readonly textarea {
+            pointer-events: none;
+            background: #f5f5f5 !important;
+            color: #888 !important;
+        }
+        body.modo-readonly #area-acao {
+            display: none !important;
+        }
+        body.modo-readonly .item-aula-checkbox {
+            pointer-events: none;
+        }
+        body.modo-readonly .btn-opcao {
+            pointer-events: none;
+        }
+
+        /* Modal de senha */
+        #modal-senha-editor {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        #modal-senha-editor.ativo { display: flex; }
+        #modal-senha-editor .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 35px 30px;
+            width: 340px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        #modal-senha-editor h3 {
+            color: #1A4A5A;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        #modal-senha-editor p {
+            color: #777;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        #input-senha-editor {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d9e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        #input-senha-editor:focus {
+            outline: none;
+            border-color: #1A4A5A;
+        }
+        .modal-botoes { display: flex; gap: 10px; }
+        #btn-confirmar-senha-editor {
+            flex: 1;
+            background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        #btn-cancelar-senha-editor {
+            flex: 1;
+            background: #f0f0f0;
+            color: #555;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        #erro-senha-editor {
+            color: #c0392b;
+            font-size: 0.82rem;
+            margin-top: 8px;
+            display: none;
+        }
     </style>
 </head>
-<body>
+<body class="modo-readonly">
+
+    <!-- BANNER: MODO SOMENTE LEITURA -->
+    <div id="banner-readonly">
+        <div class="banner-texto">
+            <span>🔒</span>
+            <span><strong>Modo Visualização</strong> — Você está vendo a agenda em modo somente leitura. Agendamentos não podem ser feitos.</span>
+            <span class="badge-lock">SOMENTE LEITURA</span>
+        </div>
+        <button id="btn-unlock" onclick="abrirModalSenhaEditor()">🔑 Sou Editor</button>
+    </div>
+
+    <!-- MODAL: SENHA DO EDITOR -->
+    <div id="modal-senha-editor">
+        <div class="modal-box">
+            <h3>🔐 Acesso de Editor</h3>
+            <p>Digite a senha para habilitar o modo de edição e agendamento.</p>
+            <input type="password" id="input-senha-editor" placeholder="••••••••" onkeydown="if(event.key==='Enter') confirmarSenhaEditor()">
+            <div id="erro-senha-editor">❌ Senha incorreta. Tente novamente.</div>
+            <div class="modal-botoes" style="margin-top: 15px;">
+                <button id="btn-cancelar-senha-editor" onclick="fecharModalSenhaEditor()">Cancelar</button>
+                <button id="btn-confirmar-senha-editor" onclick="confirmarSenhaEditor()">Entrar</button>
+            </div>
+        </div>
+    </div>
  
     <header class="header-main">  
         <div class="header-bg-overlay"></div>  
@@ -294,14 +466,14 @@
                     <tbody id="corpo-agenda"></tbody>
                 </table>
                 <div style="text-align: center;">
-                    <a href="https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0" target="_blank" class="btn-planilha">📊 Consultar Agenda (Planilha)</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/view" target="_blank" class="btn-planilha">📊 Consultar Agenda (Planilha)</a>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/edit?gid=0#gid=0";
+        const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/1o49JtvBfPkNFh703zXam5_9QD_qCQCxUtGD8-E5Uc_g/view";
         let ensaioSelecionado = "";
         let subtipoSelecionado = "";
         let categoriaAtiva = "";
@@ -581,7 +753,7 @@
         let reservasCacheCarregado = false;
 
         async function carregarReservasAPI() {
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbwLpm7vxFHibdzH0ALxmbIYsvAmuFWb_TNGW711KysKrvkYo2vvIpTuYU4d61vyQirVXA/exec";
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbys8fqFtq0M6jh0iZ2tQEGLoSBANDgFExs4mcC4xVVWPeOymknikWYnzr6N_1x4CZxz0A/exec";
             try {
                 const resp = await fetch(BASE_URL);
                 reservasCache = await resp.json();
@@ -673,7 +845,6 @@
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const orientador = (document.getElementById('orientador') && document.getElementById('orientador').value) || 'Não informado';
-            const projeto = (document.getElementById('projeto') && document.getElementById('projeto').value) || 'Não informado';
             const dataUso = document.getElementById('data').value;
             const detalhes = document.getElementById('maquina').value;
             const senha = document.getElementById('senha-lab').value;
@@ -703,7 +874,7 @@
 
             const ID_UNICO = "ID-" + Date.now();
             ultimoIDUnico = ID_UNICO; 
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbwLpm7vxFHibdzH0ALxmbIYsvAmuFWb_TNGW711KysKrvkYo2vvIpTuYU4d61vyQirVXA/exec"; 
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbys8fqFtq0M6jh0iZ2tQEGLoSBANDgFExs4mcC4xVVWPeOymknikWYnzr6N_1x4CZxz0A/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
             const reservas = [{
@@ -718,7 +889,7 @@
                 action: 'reservar_lote',
                 id: ID_UNICO,
                 senha: senha,
-                usuario: { nome, email, orientador, projeto },
+                usuario: { nome, email, orientador },
                 reservas: reservas,
                 data: dataUso
             };
@@ -751,8 +922,6 @@
                 let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
                 mensagem += "*Aluno/Professor:* " + nome + "\n";
                 mensagem += "*E-mail:* " + email + "\n";
-                mensagem += "*Orientador:* " + orientador + "\n";
-                mensagem += "*Projeto/Trabalho:* " + projeto + "\n";
                 mensagem += "*Categoria:* " + categoriaAtiva + "\n";
                 mensagem += "*Procedimento:* " + detalhes + "\n";
                 mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
@@ -790,8 +959,6 @@
         function copiarMensagem() {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
-            const orientador = (document.getElementById('orientador') && document.getElementById('orientador').value) || 'Não informado';
-            const projeto = (document.getElementById('projeto') && document.getElementById('projeto').value) || 'Não informado';
             const dataUso = document.getElementById('data').value;
             const detalhes = document.getElementById('maquina').value;
             const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
@@ -807,8 +974,6 @@
             let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
             mensagem += "*Aluno/Professor:* " + nome + "\n";
             mensagem += "*E-mail:* " + email + "\n";
-            mensagem += "*Orientador:* " + orientador + "\n";
-            mensagem += "*Projeto/Trabalho:* " + projeto + "\n";
             mensagem += "*Categoria:* " + categoriaAtiva + "\n";
             mensagem += "*Procedimento:* " + detalhes + "\n";
             mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
@@ -822,6 +987,63 @@
                 alert('❌ Erro ao copiar: ' + err);
             });
         }
+
+        // ============================================================
+        // SISTEMA DE CONTROLE DE ACESSO (SOMENTE LEITURA / EDITOR)
+        // ============================================================
+
+        // Defina aqui a senha de acesso ao modo de edição.
+        // Você poderá mudar esta senha a qualquer momento.
+        const SENHA_EDITOR = "lab2026";
+
+        function abrirModalSenhaEditor() {
+            document.getElementById('input-senha-editor').value = '';
+            document.getElementById('erro-senha-editor').style.display = 'none';
+            document.getElementById('modal-senha-editor').classList.add('ativo');
+            setTimeout(() => document.getElementById('input-senha-editor').focus(), 100);
+        }
+
+        function fecharModalSenhaEditor() {
+            document.getElementById('modal-senha-editor').classList.remove('ativo');
+        }
+
+        function confirmarSenhaEditor() {
+            const digitada = document.getElementById('input-senha-editor').value;
+            if (digitada === SENHA_EDITOR) {
+                // Ativa modo editor
+                document.body.classList.remove('modo-readonly');
+                document.getElementById('banner-readonly').innerHTML = `
+                    <div class="banner-texto">
+                        <span>✅</span>
+                        <span><strong>Modo Editor Ativo</strong> — Você pode realizar e gerenciar agendamentos.</span>
+                        <span class="badge-lock" style="background: rgba(211,84,0,0.3); border-color: rgba(211,84,0,0.5);">EDITOR</span>
+                    </div>
+                    <button id="btn-unlock" onclick="sairModoEditor()" style="background:#6c757d;">🔒 Sair do modo editor</button>
+                `;
+                fecharModalSenhaEditor();
+            } else {
+                document.getElementById('erro-senha-editor').style.display = 'block';
+                document.getElementById('input-senha-editor').value = '';
+                document.getElementById('input-senha-editor').focus();
+            }
+        }
+
+        function sairModoEditor() {
+            document.body.classList.add('modo-readonly');
+            document.getElementById('banner-readonly').innerHTML = `
+                <div class="banner-texto">
+                    <span>🔒</span>
+                    <span><strong>Modo Visualização</strong> — Você está vendo a agenda em modo somente leitura. Agendamentos não podem ser feitos.</span>
+                    <span class="badge-lock">SOMENTE LEITURA</span>
+                </div>
+                <button id="btn-unlock" onclick="abrirModalSenhaEditor()">🔑 Sou Editor</button>
+            `;
+        }
+
+        // Fechar modal ao clicar fora da caixa
+        document.getElementById('modal-senha-editor').addEventListener('click', function(e) {
+            if (e.target === this) fecharModalSenhaEditor();
+        });
 
         window.onload = carregarReservasAPI;
         
