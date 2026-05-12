@@ -307,9 +307,9 @@
         let categoriaAtiva = "";
 
         const contatosResponsaveis = {
-            "CARACTERIZAÇÃO DE MATERIAIS": "5585988179510", // Substitua pelo número do responsável
-            "USO DO LABORATÓRIO PARA AULAS": "5585988179510", // Substitua pelo número do responsável
-            "ENSAIOS MECÂNICOS": "5585988179510" // Substitua pelo número do responsável
+            "CARACTERIZAÇÃO DE MATERIAIS": "5585988179510", 
+            "USO DO LABORATÓRIO PARA AULAS": "5585988179510", 
+            "ENSAIOS MECÂNICOS": "5585988179510" 
         };
 
         const cardsCaracterizacao = [
@@ -423,61 +423,50 @@
                 }
             });
 
-            // --- BLOQUEIO POR DOSAGEM ---
-            // Ensaios que ficam indisponíveis quando há Dosagem Marshall ou Superpave no dia
-            const ensaiosBloqueadosPorDosagem = [
-                "Dosagem Marshall",
-                "Dosagem Superpave",
-                "Fluir ligante",
-                "Homogeneização",
-                "Abrasão Los Angeles",
-                "Densidade e absorção",
-                "Adesividade (ABS)"
-            ];
+            // --- BLOQUEIO POR DOSAGEM (SOMENTE PARA CARACTERIZAÇÃO) ---
+            if (categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS') {
+                const ensaiosBloqueadosPorDosagem = [
+                    "Dosagem Marshall",
+                    "Dosagem Superpave",
+                    "Fluir ligante",
+                    "Homogeneização",
+                    "Abrasão Los Angeles",
+                    "Densidade e absorção",
+                    "Adesividade (ABS)"
+                ];
 
-            // Verifica se existe qualquer reserva de dosagem para a data selecionada
-            const dosagensNoDia = ["Dosagem Marshall", "Dosagem Superpave"].filter(dosagem =>
-                Object.keys(reservasCache).some(chave => chave.startsWith(dataInput + "-" + dosagem + "-"))
-            );
-            const hasDosagemNoDia = dosagensNoDia.length > 0;
-            const dosagemReservada = hasDosagemNoDia ? dosagensNoDia[0] : null;
+                const dosagensNoDia = ["Dosagem Marshall", "Dosagem Superpave"].filter(dosagem =>
+                    Object.keys(reservasCache).some(chave => chave.startsWith(dataInput + "-" + dosagem + "-"))
+                );
+                const hasDosagemNoDia = dosagensNoDia.length > 0;
+                const dosagemReservada = hasDosagemNoDia ? dosagensNoDia[0] : null;
 
-            document.querySelectorAll('.ensaio-card').forEach(card => {
-                const nomeEnsaio = card.getAttribute('data-nome');
+                document.querySelectorAll('.ensaio-card').forEach(card => {
+                    const nomeEnsaio = card.getAttribute('data-nome');
 
-                // Remove bloqueio de dosagem antes de reavaliar (preserva outros bloqueios)
-                if (card.classList.contains('lock-dosagem')) {
-                    card.classList.remove('blocked', 'lock-dosagem');
-                }
-
-                if (hasDosagemNoDia && ensaiosBloqueadosPorDosagem.includes(nomeEnsaio)) {
-                    // A dosagem já reservada não é bloqueada (usuário pode ver horários ocupados)
-                    // A dosagem concorrente e todos os dependentes são bloqueados
-                    const ehDosagemConcorrente = (nomeEnsaio === "Dosagem Marshall" || nomeEnsaio === "Dosagem Superpave") && nomeEnsaio !== dosagemReservada;
-                    const ehDependente = !nomeEnsaio.startsWith("Dosagem");
-
-                    if (ehDosagemConcorrente || ehDependente) {
-                        card.classList.add('blocked', 'lock-dosagem');
-                        if (ensaioSelecionado === nomeEnsaio) resetarSelecao();
+                    if (card.classList.contains('lock-dosagem')) {
+                        card.classList.remove('blocked', 'lock-dosagem');
                     }
-                }
-            });
-            // --- FIM BLOQUEIO POR DOSAGEM ---
 
-            // --- BLOQUEIO POR AULA ---
-            // Aula tem prioridade nos HORÁRIOS (tratado em carregarHorarios),
-            // mas os cards de ensaio ficam disponíveis — o usuário escolhe
-            // os horários que não coincidem com a aula.
+                    if (hasDosagemNoDia && ensaiosBloqueadosPorDosagem.includes(nomeEnsaio)) {
+                        const ehDosagemConcorrente = (nomeEnsaio === "Dosagem Marshall" || nomeEnsaio === "Dosagem Superpave") && nomeEnsaio !== dosagemReservada;
+                        const ehDependente = !nomeEnsaio.startsWith("Dosagem");
+
+                        if (ehDosagemConcorrente || ehDependente) {
+                            card.classList.add('blocked', 'lock-dosagem');
+                            if (ensaioSelecionado === nomeEnsaio) resetarSelecao();
+                        }
+                    }
+                });
+            }
+
             document.querySelectorAll('.ensaio-card').forEach(card => {
                 if (card.classList.contains('lock-aula')) {
                     card.classList.remove('blocked', 'lock-aula');
                 }
             });
-            // --- FIM BLOQUEIO POR AULA ---
 
             atualizarTabelaHorarios(diaSemana);
-
-            // Se já tem ensaio selecionado, recarrega a tabela com nova data
             if (ensaioSelecionado) carregarHorarios();
         }
 
@@ -489,9 +478,7 @@
                 const horaStr = row.cells[0].innerText;
                 const horaInt = parseInt(horaStr.split(':')[0]);
                 const statusTd = row.cells[1];
-                const acaoTd = row.cells[2];
 
-                // Não sobrescreve linhas já marcadas como reservadas pela API
                 if (statusTd.classList.contains('status-indisponivel') && statusTd.innerText.includes('Reservado')) {
                     return;
                 }
@@ -547,11 +534,11 @@
             
             const dataInput = document.getElementById('data').value;
             
-            carregarHorarios(); // gera as linhas primeiro (com ocupações da API)
+            carregarHorarios(); 
 
             if (dataInput) {
                 const dataSel = new Date(dataInput + 'T00:00:00');
-                atualizarTabelaHorarios(dataSel.getDay()); // depois aplica restrições por dia/hora
+                atualizarTabelaHorarios(dataSel.getDay()); 
             }
 
             atualizarDadosFinais();
@@ -587,13 +574,11 @@
             }
         }
 
-        // Cache de reservas vindas da API: { "chave-tecnica": "Nome do usuário", ... }
         let reservasCache = {};
         let reservasCacheCarregado = false;
 
-        // Carrega todas as reservas da API UMA vez e guarda no cache
         async function carregarReservasAPI() {
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbwvdu861inKDuRpUYoMlzuHHuGF9xdKmp2G4B3nVFp8J5Zy94H2CNFdBx16il0LtjiFag/exec";
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbzSuRh0FtJOP80u7kPvAQ6RfJKJ5Be1BG_Ftj_0sqeqVNEw3f0G2xR7AdODGLr7Z1DvPQ/exec";
             try {
                 const resp = await fetch(BASE_URL);
                 reservasCache = await resp.json();
@@ -604,45 +589,35 @@
             reservasCacheCarregado = true;
             const dataJaEscolhida = document.getElementById('data') && document.getElementById('data').value;
             if (dataJaEscolhida && categoriaAtiva) {
-                verificarRestricoesData(); // aplica bloqueios com dados da API
-                carregarHorarios();        // renderiza tabela após ter os dados
+                verificarRestricoesData(); 
+                carregarHorarios();        
             }
         }
 
-        // Renderiza a tabela de horários levando em conta o ensaio e a data atuais
         function carregarHorarios() {
             const corpo = document.getElementById('corpo-agenda');
             const dataUso = document.getElementById('data').value;
 
-            // Se ainda não carregou da API, mostra loading
             if (!reservasCacheCarregado) {
                 corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px;">⏳ A carregar disponibilidade...</td></tr>';
                 return;
             }
 
-            // Se falta data, mostra instrução
-            // Para Aulas, não exige ensaioSelecionado (ele fica vazio nessa categoria)
             const ehCategoriaAulas = categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS';
             if (!dataUso || (!ensaioSelecionado && !ehCategoriaAulas)) {
                 corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px;">Selecione uma data e um ensaio para ver a disponibilidade.</td></tr>';
                 return;
             }
 
-            // Para Aulas, só mostra a tabela depois que o usuário escolheu a data
-            if (ehCategoriaAulas && !dataUso) return;
-
             let html = '';
 
             for (let h = 7; h <= 17; h++) {
                 const hora = h.toString().padStart(2, '0') + ":00";
-
-                // Verifica se este horário está ocupado para o ensaio + data atuais
                 let ocupado = false;
                 let ocupadoPor = "";
 
                 if (dataUso) {
                     if (!ehCategoriaAulas && ensaioSelecionado) {
-                        // Checa ocupação do ensaio específico
                         const chave = `${dataUso}-${ensaioSelecionado}-${hora}`;
                         if (reservasCache[chave]) {
                             ocupado = true;
@@ -650,12 +625,13 @@
                         }
                     }
 
-                    // Verifica se há aula agendada neste horário — aula tem prioridade sobre tudo
-                    // (bloqueia tanto para ensaios quanto para outra aula)
                     const chaveAula = `${dataUso}-[AULA]-${hora}`;
                     if (reservasCache[chaveAula]) {
-                        ocupado = true;
-                        ocupadoPor = `🎓 AULA (${reservasCache[chaveAula]})`;
+                        // AULA NÃO BLOQUEIA ENSAIOS MECÂNICOS
+                        if (categoriaAtiva !== 'ENSAIOS MECÂNICOS') {
+                            ocupado = true;
+                            ocupadoPor = `🎓 AULA (${reservasCache[chaveAula]})`;
+                        }
                     }
                 }
 
@@ -676,7 +652,6 @@
             }
             corpo.innerHTML = html;
 
-            // Reaplica restrições de horário (ex: Secagem só a partir das 16h)
             if (ensaioSelecionado) {
                 const dataInput = document.getElementById('data').value;
                 if (dataInput) {
@@ -691,9 +666,6 @@
             document.getElementById('conteudo-principal').style.display = 'none';
         }
 
-        // ============================================================
-        // FUNÇÃO CORRIGIDA: Salva no servidor ANTES de abrir WhatsApp
-        // ============================================================
         async function reservarSelecionados() {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
@@ -726,12 +698,10 @@
             btn.innerText = "A gravar...";
 
             const ID_UNICO = "ID-" + Date.now();
-            ultimoIDUnico = ID_UNICO; // Armazenar o ID para usar depois na cópia
-            // SUBSTITUA ESTA URL PELA SUA URL DO GOOGLE APPS SCRIPT PUBLICADO
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbwvdu861inKDuRpUYoMlzuHHuGF9xdKmp2G4B3nVFp8J5Zy94H2CNFdBx16il0LtjiFag/exec"; 
+            ultimoIDUnico = ID_UNICO; 
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbzSuRh0FtJOP80u7kPvAQ6RfJKJ5Be1BG_Ftj_0sqeqVNEw3f0G2xR7AdODGLr7Z1DvPQ/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
-            // ── Uma reserva por hora → cada horário fica registrado com sua própria chave ──
             const reservas = horas.map(h => ({
                 chave: categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
                     ? `${dataUso}-[AULA]-${h}`
@@ -763,18 +733,15 @@
                     return;
                 }
 
-                // Atualiza o cache local para bloquear imediatamente os horários reservados
                 horas.forEach(h => {
                     const chave = categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
                         ? `${dataUso}-[AULA]-${h}`
                         : `${dataUso}-${ensaioSelecionado}-${h}`;
                     reservasCache[chave] = nome;
                 });
-                carregarHorarios(); // re-renderiza a tabela com os slots recém-bloqueados
+                carregarHorarios(); 
 
-                // Só abre o WhatsApp APÓS salvar com sucesso
                 const numeroDestino = contatosResponsaveis[categoriaAtiva];
-
                 let prioridadeAviso = "";
                 if (categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
                     prioridadeAviso = "\n⚠️ *PRIORIDADE AULA:* Bloqueia todos os demais equipamentos no horário.";
@@ -791,7 +758,6 @@
                 mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
 
                 const areaAcao = document.getElementById('area-acao');
-                // Melhorando o botão para ser mais visível e amigável
                 areaAcao.innerHTML = `
                     <div style="margin-top: 20px; padding: 20px; border: 2px dashed #25D366; border-radius: 10px; background-color: #f0fff4;">
                         <p style="color: #128C7E; font-weight: bold; margin-bottom: 15px;">✅ Agendamento gravado! Agora envie para o WhatsApp:</p>
@@ -816,10 +782,8 @@
             }
         }
 
-        // Variável global para armazenar o ID único da última reserva
         let ultimoIDUnico = "";
 
-        // Função para copiar a mensagem para a área de transferência
         function copiarMensagem() {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
@@ -827,10 +791,7 @@
             const detalhes = document.getElementById('maquina').value;
             const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
             const horas = Array.from(check).map(c => c.value);
-            // SUBSTITUA ESTA URL PELA SUA URL DO GOOGLE APPS SCRIPT PUBLICADO
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbx4x2IB5Tt8TTl7ZWnGDKjNew-wLqFpNJqGGBsci_6LR2OxXcTexio0DifVu5u5eYwvFQ/exec";
-
-            // Usar o ID único que foi salvo no servidor
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbzSuRh0FtJOP80u7kPvAQ6RfJKJ5Be1BG_Ftj_0sqeqVNEw3f0G2xR7AdODGLr7Z1DvPQ/exec";
             const ID_UNICO = ultimoIDUnico;
 
             let prioridadeAviso = "";
@@ -848,7 +809,6 @@
             mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
             mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
 
-            // Copiar para a área de transferência
             navigator.clipboard.writeText(mensagem).then(() => {
                 alert('✅ Mensagem copiada para a área de transferência!');
             }).catch(err => {
