@@ -245,7 +245,7 @@
                 <!-- Regras gerais -->
                 <div style="background:#f0f7f9; border-left:4px solid #1A4A5A; border-radius:8px; padding:15px; font-size:0.85rem; color:#444; line-height:1.7;">
                     <strong style="color:#1A4A5A;">📋 Regras Gerais</strong><br>
-                    👟 <b>EPIs obrigatórios:</b> calçados fechados e proteções individuais.<br>
+                    👟 <b>EPIs obrigatórios:</b> calçados fechados(proibido chinelo, cróquis, sandália etc.) e proteções individuais.<br>
                     📅 <b>Antecedência:</b> reservas até sexta às 12h têm prioridade para a semana seguinte.<br>
                     🚫 <b>Aulas:</b> agendamentos de aula bloqueiam outros ensaios no mesmo horário para segurança dos alunos.
                 </div>
@@ -265,17 +265,17 @@
         <div class="categoria-card" onclick="escolherCategoria('CARACTERIZAÇÃO DE MATERIAIS')">
             <span class="icon-grande">🔬</span>
             <h3>Caracterização de Materiais</h3>
-            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Ensaios de rotina em agregados e ligantes asfálticos.</p>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Ensaios em agregados e produção de misturas asfálticas.</p>
         </div>
         <div class="categoria-card" onclick="escolherCategoria('ENSAIOS MECÂNICOS')">
             <span class="icon-grande">🏗️</span>
             <h3>Ensaios Mecânicos</h3>
-            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Uso de prensas e ensaios de desempenho (UTM, Marshall, etc.).</p>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Uso de prensas.</p>
         </div>
         <div class="categoria-card" onclick="escolherCategoria('USO DO LABORATÓRIO PARA AULAS')">
             <span class="icon-grande">🎓</span>
             <h3>Uso para Aulas</h3>
-            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Reserva do espaço completo para turmas. Bloqueia outros ensaios no horário.</p>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Reserva do espaço para aulas. Bloqueia outras atividades no horário.</p>
         </div>
     </section>
 
@@ -337,7 +337,7 @@
                         <div id="opcoes-estado-mistura" style="display:none;" class="detalhes-item">
                             <label>Estado da Mistura:</label>
                             <div>
-                                <button class="btn-opcao" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button>
+                                <button class="btn-opcao" onclick="definirSubtipo('Mistura Solta', this)">Mistura Solta</button>
                                 <button class="btn-opcao" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button>
                             </div>
                         </div>
@@ -409,11 +409,11 @@
         ];
 
         const cardsMecanicos = [
-            {n: "Prensa Marshall", img: "marsh.jpeg", eq: "Rompimento Marshall / Estabilidade / Fluência"},
-            {n: "Prensa UTM-25", img: "utm25.jpeg", eq: "Ensaios Dinâmicos, Fadiga de Misturas Asfálticas"},
-            {n: "Prensa UTM-30", img: "utm30.jpeg", eq: "Módulo de Resiliência, Resistência à Tração (RT)"},
-            {n: "Prensa MTS", img: "mts.jpeg", eq: "Ensaios de Alta Precisão e Caracterização Avançada"},
-            {n: "Prensa RiO", img: "rio.jpeg", eq: "Ensaios de Compressão Simples e Estáticos"}
+            {n: "Prensa Marshall", img: "marsh.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa UTM-25", img: "utm25.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa UTM-30", img: "utm30.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa MTS", img: "mts.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."},
+            {n: "Prensa RiO", img: "rio.jpeg", eq: "A excelência nos resultados depende do uso correto das ferramentas. Utilize os equipamentos de forma independente somente após a instrução técnica."}
         ];
 
         function escolherCategoria(nome) {
@@ -429,7 +429,7 @@
                     <li>✏️ <b>Preencha</b> seu <b>Nome Completo</b>.</li>
                     <li>📧 Informe seu <b>E-mail</b>.</li>
                     <li>👥 Informe o <b>Número de Alunos</b>.</li>
-                    <li>📅 Selecione a <b>Data do Uso</b>.</li>
+                    <li>📅 Selecione a <b>Data do Uso e os ensaios que serão realizados na aula</b>.</li>
                     <li>🔑 <b>Digite</b> a senha do laboratório.</li>
                     <li>☑️ <b>Marque</b> os horários na tabela e <span style="color:#25D366; font-weight:700;">envie pelo WhatsApp</span> para validar.</li>
                 `;
