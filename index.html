@@ -736,12 +736,9 @@
                     return;
                 }
 
-                horas.forEach(h => {
-                    const chave = categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
-                        ? `${dataUso}-[AULA]-${h}`
-                        : `${dataUso}-${ensaioSelecionado}-${h}`;
-                    reservasCache[chave] = nome;
-                });
+                // Não bloqueamos localmente: o horário só fica indisponível
+                // para outros usuários APÓS o responsável ACEITAR via WhatsApp.
+                // A próxima sincronização com a API refletirá o estado real.
                 carregarHorarios(); 
 
                 const numeroDestino = contatosResponsaveis[categoriaAtiva];
@@ -820,6 +817,12 @@
         }
 
         window.onload = carregarReservasAPI;
+        
+        // Sincronizar a cada 30 segundos para detectar deleções
+        setInterval(carregarReservasAPI, 30000);
+    </script>
+</body>
+</html>
         
         // Sincronizar a cada 30 segundos para detectar deleções
         setInterval(carregarReservasAPI, 30000);
