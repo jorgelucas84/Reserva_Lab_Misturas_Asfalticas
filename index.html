@@ -241,7 +241,7 @@
                     </div>
                     <div class="input-group">
                         <label>Data do Uso</label>
-                        <input type="date" id="data" onchange="verificarRestricoesData()" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        <input type="date" id="data" onchange="verificarRestricoesData(); if(categoriaAtiva==='USO DO LABORATÓRIO PARA AULAS') carregarHorarios();" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
                     </div>
                     <div class="input-group">
                         <label>Categoria</label>
@@ -626,11 +626,16 @@
                 return;
             }
 
-            // Se falta data ou ensaio, mostra instrução
-            if (!dataUso || !ensaioSelecionado) {
+            // Se falta data, mostra instrução
+            // Para Aulas, não exige ensaioSelecionado (ele fica vazio nessa categoria)
+            const ehCategoriaAulas = categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS';
+            if (!dataUso || (!ensaioSelecionado && !ehCategoriaAulas)) {
                 corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px;">Selecione uma data e um ensaio para ver a disponibilidade.</td></tr>';
                 return;
             }
+
+            // Para Aulas, só mostra a tabela depois que o usuário escolheu a data
+            if (ehCategoriaAulas && !dataUso) return;
 
             let html = '';
 
@@ -641,18 +646,18 @@
                 let ocupado = false;
                 let ocupadoPor = "";
 
-                if (dataUso && ensaioSelecionado) {
-                    // A chave técnica gravada na planilha segue o padrão: "AAAA-MM-DD-NomeEnsaio-HH:00"
-                    // O script.js original usava: `${dataUso}-${detalhes}-${hora}`
-                    // detalhes = valor de #maquina, que inclui o ensaio formatado completo
-                    // Para checar ocupação usamos o nome base do ensaio
-                    const chave = `${dataUso}-${ensaioSelecionado}-${hora}`;
-                    if (reservasCache[chave]) {
-                        ocupado = true;
-                        ocupadoPor = reservasCache[chave];
+                if (dataUso) {
+                    if (!ehCategoriaAulas && ensaioSelecionado) {
+                        // Checa ocupação do ensaio específico
+                        const chave = `${dataUso}-${ensaioSelecionado}-${hora}`;
+                        if (reservasCache[chave]) {
+                            ocupado = true;
+                            ocupadoPor = reservasCache[chave];
+                        }
                     }
 
-                    // Verifica se há aula agendada neste horário específico — aula tem prioridade sobre tudo
+                    // Verifica se há aula agendada neste horário — aula tem prioridade sobre tudo
+                    // (bloqueia tanto para ensaios quanto para outra aula)
                     const chaveAula = `${dataUso}-[AULA]-${hora}`;
                     if (reservasCache[chaveAula]) {
                         ocupado = true;
