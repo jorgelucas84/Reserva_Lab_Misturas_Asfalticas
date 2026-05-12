@@ -180,18 +180,102 @@
         </div>  
     </header>
 
+    <!-- MODAL DE AJUDA -->
+    <div id="modal-ajuda" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; overflow-y:auto; padding: 30px 15px;">
+        <div style="background:#fff; max-width:720px; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.4); font-family:'Inter',sans-serif;">
+            <!-- Header do modal -->
+            <div style="background:linear-gradient(135deg,#1A4A5A 0%,#2a6f84 100%); padding:25px 30px; display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                    <h2 style="margin:0; color:#fff; font-size:1.4rem; font-weight:900;">📖 Como usar o sistema</h2>
+                    <p style="margin:5px 0 0; color:#FFD27D; font-size:0.85rem;">Siga os passos abaixo para realizar seu agendamento</p>
+                </div>
+                <button onclick="document.getElementById('modal-ajuda').style.display='none'" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:50%; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+            </div>
+            <!-- Corpo do modal -->
+            <div style="padding:25px 30px;">
+
+                <!-- Passo 1 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">1</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Escolha a categoria de atividade</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Na tela inicial, selecione o tipo de uso que melhor descreve sua atividade:<br>
+                        🔬 <b>Caracterização</b> — ensaios de rotina em agregados e ligantes.<br>
+                        🏗️ <b>Ensaios Mecânicos</b> — prensas e ensaios de desempenho (UTM, Marshall, etc.).<br>
+                        🎓 <b>Uso para Aulas</b> — reserva do espaço completo para turmas.</p>
+                    </div>
+                </div>
+
+                <!-- Passo 2 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">2</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Preencha suas informações</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Informe <b>Nome Completo</b>, <b>E-mail</b>, <b>Orientador</b> e <b>Projeto/Trabalho</b> vinculado ao ensaio. Em seguida, selecione a <b>Data do Uso</b> — a disponibilidade de horários será carregada automaticamente.</p>
+                    </div>
+                </div>
+
+                <!-- Passo 3 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">3</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Selecione o equipamento e preencha os detalhes</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Clique no <b>card</b> do equipamento desejado. Cards em <span style="color:red; font-weight:700;">vermelho</span> indicam restrições naquele dia (ex.: Adesividade só às sextas). Informe a <b>quantidade de amostras</b> e use o campo <b>Observações</b> para necessidades especiais (solventes, equipamentos extras, etc.).</p>
+                    </div>
+                </div>
+
+                <!-- Passo 4 -->
+                <div style="display:flex; gap:15px; margin-bottom:22px; align-items:flex-start;">
+                    <div style="background:#1A4A5A; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">4</div>
+                    <div>
+                        <strong style="color:#1A4A5A; font-size:1rem;">Marque os horários e insira a senha</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Na tabela abaixo do formulário, marque os <b>check-boxes</b> dos horários pretendidos. Horários marcados como <b>"Reservado"</b> não estão disponíveis. Digite a <b>senha de autorização</b> fornecida pela coordenação para liberar o envio.</p>
+                    </div>
+                </div>
+
+                <!-- Passo 5 — destaque -->
+                <div style="background:#fff8f0; border:2px solid #D35400; border-radius:12px; padding:18px; display:flex; gap:15px; align-items:flex-start; margin-bottom:22px;">
+                    <div style="background:#D35400; color:#fff; font-weight:900; font-size:1rem; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">5</div>
+                    <div>
+                        <strong style="color:#D35400; font-size:1rem;">⚠️ Confirme pelo WhatsApp — passo obrigatório!</strong>
+                        <p style="margin:5px 0 0; font-size:0.88rem; color:#555; line-height:1.6;">Clique em <b>"Confirmar Agendamento"</b>. O sistema gerará um link para o WhatsApp. <b>Você precisa clicar e enviar a mensagem</b> — só assim o agendamento é validado na planilha após o técnico ou coordenador clicar em "Aceitar".</p>
+                    </div>
+                </div>
+
+                <!-- Regras gerais -->
+                <div style="background:#f0f7f9; border-left:4px solid #1A4A5A; border-radius:8px; padding:15px; font-size:0.85rem; color:#444; line-height:1.7;">
+                    <strong style="color:#1A4A5A;">📋 Regras Gerais</strong><br>
+                    👟 <b>EPIs obrigatórios:</b> calçados fechados e proteções individuais.<br>
+                    📅 <b>Antecedência:</b> reservas até sexta às 12h têm prioridade para a semana seguinte.<br>
+                    🚫 <b>Aulas:</b> agendamentos de aula bloqueiam outros ensaios no mesmo horário para segurança dos alunos.
+                </div>
+
+            </div>
+            <div style="padding:15px 30px 25px; text-align:center;">
+                <button onclick="document.getElementById('modal-ajuda').style.display='none'" style="background:linear-gradient(135deg,#1A4A5A 0%,#2a6f84 100%); color:#fff; border:none; padding:12px 40px; border-radius:50px; font-weight:700; font-size:0.95rem; cursor:pointer;">Entendido, vamos começar!</button>
+            </div>
+        </div>
+    </div>
+
     <section id="selecao-inicial">
+        <div style="width:100%; text-align:center; padding: 30px 20px 0; max-width:1100px; margin: 0 auto;">
+            <p style="font-size:1rem; color:#555; margin-bottom:5px;">Selecione abaixo o tipo de atividade para iniciar o agendamento.</p>
+            <button onclick="document.getElementById('modal-ajuda').style.display='flex'; document.getElementById('modal-ajuda').style.display='block';" style="background:none; border:2px solid #1A4A5A; color:#1A4A5A; padding:8px 22px; border-radius:50px; font-weight:700; font-size:0.85rem; cursor:pointer; margin-bottom:10px; transition:all 0.2s;" onmouseover="this.style.background='#1A4A5A';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='#1A4A5A'">❓ Como funciona o agendamento?</button>
+        </div>
         <div class="categoria-card" onclick="escolherCategoria('CARACTERIZAÇÃO DE MATERIAIS')">
             <span class="icon-grande">🔬</span>
             <h3>Caracterização de Materiais</h3>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Ensaios de rotina em agregados e ligantes asfálticos.</p>
         </div>
         <div class="categoria-card" onclick="escolherCategoria('ENSAIOS MECÂNICOS')">
             <span class="icon-grande">🏗️</span>
             <h3>Ensaios Mecânicos</h3>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Uso de prensas e ensaios de desempenho (UTM, Marshall, etc.).</p>
         </div>
         <div class="categoria-card" onclick="escolherCategoria('USO DO LABORATÓRIO PARA AULAS')">
             <span class="icon-grande">🎓</span>
             <h3>Uso para Aulas</h3>
+            <p style="font-size:0.78rem; color:#888; margin:8px 0 0; line-height:1.4;">Reserva do espaço completo para turmas. Bloqueia outros ensaios no horário.</p>
         </div>
     </section>
 
@@ -205,15 +289,16 @@
                     <ul id="lista-info-geral" style="list-style: none; padding: 0; font-size: 0.9rem; color: #555;"></ul>
                 </div>
                 <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                    <h3><span class="icon">📝</span> INSTRUÇÕES</h3>
-                    <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">
-                        1. <b>Preencha</b> seu nome, e-mail, nome do orientador, nome do projeto/trabalho e a data.<br>
-                        2. <b>Selecione</b> o ensaio/equipamento.<br>
-                        3. <b>Digite</b> a senha do laboratório.<br>
-                        4. <b>Selecione</b> os horários desejados.<br>
-                        5. <b>Clique </b> em confirmar agendamento.<br>
-                        6. <b>Clique</b> em clique aqui! e envie a mensagem de WhatsApp para o responsável validar.<br> 
-                    </p>   
+                    <h3 style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;"><span><span class="icon">📝</span> INSTRUÇÕES</span> <button onclick="document.getElementById('modal-ajuda').style.display='block'" style="background:none; border:1px solid #1A4A5A; color:#1A4A5A; padding:4px 12px; border-radius:20px; font-size:0.72rem; font-weight:700; cursor:pointer;">Ver guia completo</button></h3>
+                    <ol id="texto-instrucoes" style="font-size: 0.85rem; color: #555; padding-left: 18px; margin: 0; line-height: 1.9;">
+                        <li>✏️ <b>Preencha</b> nome, e-mail, orientador, projeto e a data.</li>
+                        <li>🖱️ <b>Clique</b> no card do equipamento ou procedimento desejado.</li>
+                        <li>🔢 Informe a quantidade de amostras e observações, se houver.</li>
+                        <li>🔑 <b>Digite</b> a senha do laboratório.</li>
+                        <li>☑️ <b>Marque</b> os horários na tabela abaixo.</li>
+                        <li>✅ <b>Confirme</b> o agendamento e <span style="color:#25D366; font-weight:700;">envie pelo WhatsApp</span> para validar.</li>
+                    </ol>
+                    <p style="margin:12px 0 0; padding:8px 12px; background:#fff8f0; border-left:3px solid #D35400; border-radius:6px; font-size:0.78rem; color:#c0392b; font-weight:600;">⚠️ O agendamento só é confirmado após o envio e aceite no WhatsApp.</p>
                 </div>
             </section>
 
