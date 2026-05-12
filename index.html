@@ -290,14 +290,7 @@
                 </div>
                 <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                     <h3 style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;"><span><span class="icon">📝</span> INSTRUÇÕES</span> <button onclick="document.getElementById('modal-ajuda').style.display='block'" style="background:none; border:1px solid #1A4A5A; color:#1A4A5A; padding:4px 12px; border-radius:20px; font-size:0.72rem; font-weight:700; cursor:pointer;">Ver guia completo</button></h3>
-                    <ol id="texto-instrucoes" style="font-size: 0.85rem; color: #555; padding-left: 18px; margin: 0; line-height: 1.9;">
-                        <li>✏️ <b>Preencha</b> nome, e-mail, orientador, projeto e a data.</li>
-                        <li>🖱️ <b>Clique</b> no card do equipamento ou procedimento desejado.</li>
-                        <li>🔢 Informe a quantidade de amostras e observações, se houver.</li>
-                        <li>🔑 <b>Digite</b> a senha do laboratório.</li>
-                        <li>☑️ <b>Marque</b> os horários na tabela abaixo.</li>
-                        <li>✅ <b>Confirme</b> o agendamento e <span style="color:#25D366; font-weight:700;">envie pelo WhatsApp</span> para validar.</li>
-                    </ol>
+                    <ol id="texto-instrucoes" style="font-size: 0.85rem; color: #555; padding-left: 18px; margin: 0; line-height: 1.9;"></ol>
                     <p style="margin:12px 0 0; padding:8px 12px; background:#fff8f0; border-left:3px solid #D35400; border-radius:6px; font-size:0.78rem; color:#c0392b; font-weight:600;">⚠️ O agendamento só é confirmado após o envio e aceite no WhatsApp.</p>
                 </div>
             </section>
@@ -428,6 +421,28 @@
             document.getElementById('categoria-display').value = nome;
             document.getElementById('selecao-inicial').style.display = 'none';
             document.getElementById('conteudo-principal').style.display = 'block';
+
+            // ── INSTRUÇÕES DINÂMICAS POR CATEGORIA ──
+            const instrucoes = document.getElementById('texto-instrucoes');
+            if (nome === 'USO DO LABORATÓRIO PARA AULAS') {
+                instrucoes.innerHTML = `
+                    <li>✏️ <b>Preencha</b> seu <b>Nome Completo</b>.</li>
+                    <li>📧 Informe seu <b>E-mail</b>.</li>
+                    <li>👥 Informe o <b>Número de Alunos</b>.</li>
+                    <li>📅 Selecione a <b>Data do Uso</b>.</li>
+                    <li>🔑 <b>Digite</b> a senha do laboratório.</li>
+                    <li>☑️ <b>Marque</b> os horários na tabela e <span style="color:#25D366; font-weight:700;">envie pelo WhatsApp</span> para validar.</li>
+                `;
+            } else {
+                instrucoes.innerHTML = `
+                    <li>✏️ <b>Preencha</b> nome, e-mail, orientador, projeto e a data.</li>
+                    <li>🖱️ <b>Clique</b> no card do equipamento ou procedimento desejado.</li>
+                    <li>🔢 Informe a quantidade de amostras e observações, se houver.</li>
+                    <li>🔑 <b>Digite</b> a senha do laboratório.</li>
+                    <li>☑️ <b>Marque</b> os horários na tabela abaixo.</li>
+                    <li>✅ <b>Confirme</b> o agendamento e <span style="color:#25D366; font-weight:700;">envie pelo WhatsApp</span> para validar.</li>
+                `;
+            }
             
             const containerCards = document.getElementById('container-cards-padrao');
             const containerLista = document.getElementById('container-lista-aulas');
@@ -610,7 +625,6 @@
             ensaioSelecionado = nome;
             
             const nomeLower = nome.toLowerCase();
-            // Apenas para caracterização de materiais e especificamente esses ensaios de dosagem mostram as opções de mistura
             const precisaOpcoesMistura = categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS' && (nomeLower.includes("dosagem marshall") || nomeLower.includes("dosagem superpave"));
             
             document.getElementById('container-detalhes').style.display = "block";
@@ -715,7 +729,6 @@
 
                     const chaveAula = `${dataUso}-[AULA]-${hora}`;
                     if (reservasCache[chaveAula]) {
-                        // AULA NÃO BLOQUEIA ENSAIOS MECÂNICOS
                         if (categoriaAtiva !== 'ENSAIOS MECÂNICOS') {
                             ocupado = true;
                             ocupadoPor = `🎓 AULA (${reservasCache[chaveAula]})`;
@@ -822,9 +835,6 @@
                     return;
                 }
 
-                // Não bloqueamos localmente: o horário só fica indisponível
-                // para outros usuários APÓS o responsável ACEITAR via WhatsApp.
-                // A próxima sincronização com a API refletirá o estado real.
                 carregarHorarios(); 
 
                 const numeroDestino = contatosResponsaveis[categoriaAtiva];
@@ -913,7 +923,5 @@
         // Sincronizar a cada 30 segundos para detectar deleções
         setInterval(carregarReservasAPI, 30000);
     </script>
-</body>
-</html>
 </body>
 </html>
