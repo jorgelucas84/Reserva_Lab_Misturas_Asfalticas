@@ -581,7 +581,7 @@
         let reservasCacheCarregado = false;
 
         async function carregarReservasAPI() {
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbzSuRh0FtJOP80u7kPvAQ6RfJKJ5Be1BG_Ftj_0sqeqVNEw3f0G2xR7AdODGLr7Z1DvPQ/exec";
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbzlV_WUCovxcYpVSEPTPzO1DDlp38G199QNmbUp7H8OFk-zXp99F0kxmpyormardvea1w/exec";
             try {
                 const resp = await fetch(BASE_URL);
                 reservasCache = await resp.json();
@@ -702,7 +702,7 @@
 
             const ID_UNICO = "ID-" + Date.now();
             ultimoIDUnico = ID_UNICO; 
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbzSuRh0FtJOP80u7kPvAQ6RfJKJ5Be1BG_Ftj_0sqeqVNEw3f0G2xR7AdODGLr7Z1DvPQ/exec"; 
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbzlV_WUCovxcYpVSEPTPzO1DDlp38G199QNmbUp7H8OFk-zXp99F0kxmpyormardvea1w/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
             const reservas = [{
