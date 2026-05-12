@@ -665,6 +665,7 @@
         async function reservarSelecionados() {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
+            const orientador = (document.getElementById('orientador') && document.getElementById('orientador').value) || 'Não informado';
             const dataUso = document.getElementById('data').value;
             const detalhes = document.getElementById('maquina').value;
             const senha = document.getElementById('senha-lab').value;
@@ -698,12 +699,17 @@
             const BASE_URL = "https://script.google.com/macros/s/AKfycbxOmTiZi-8w4ni6xLRZbbaIT1wqkTjQiqLq8i7dI4HQXyL3cIkajrpvfW54Jg94flSebg/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
+            // ── Todas as horas em uma única reserva → uma linha na planilha ──
             const payload = {
                 action: 'reservar_lote',
                 id: ID_UNICO,
                 senha: senha,
-                usuario: { nome, email },
-                reservas: horas.map(h => ({ chave: `${dataUso}-${ensaioSelecionado}-${h}`, maquina: detalhes })),
+                usuario: { nome, email, orientador },
+                reservas: [{
+                    chave: `${dataUso}-${ensaioSelecionado}-${horas[0]}`,
+                    maquina: detalhes,
+                    horas: horas      // todas as horas no mesmo objeto
+                }],
                 data: dataUso
             };
 
