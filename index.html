@@ -634,10 +634,11 @@
                         <td style="color:#aaa;">—</td>
                     </tr>`;
                 } else {
+                    const isDosagem = ensaioSelecionado === "Dosagem Marshall" || ensaioSelecionado === "Dosagem Superpave";
                     html += `<tr>
                         <td>${hora}</td>
                         <td class="status-disponivel">Disponível</td>
-                        <td><input type="checkbox" name="selecionar-hora" value="${hora}"></td>
+                        <td><input type="checkbox" name="selecionar-hora" value="${hora}" ${isDosagem ? 'checked disabled' : ''}></td>
                     </tr>`;
                 }
             }
@@ -667,7 +668,7 @@
             const dataUso = document.getElementById('data').value;
             const detalhes = document.getElementById('maquina').value;
             const senha = document.getElementById('senha-lab').value;
-            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
+            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked, input[name="selecionar-hora"][disabled]');
 
             if (!nome || !email || !dataUso || check.length === 0) { 
                 alert("Por favor, preencha Nome, E-mail, Data e escolha os horários."); 
