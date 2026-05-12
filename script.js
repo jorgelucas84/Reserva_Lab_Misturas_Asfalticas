@@ -23,51 +23,66 @@ async function carregarReservas() {
 }
 
 function atualizarAgenda() {
-    if (!corpoAgenda || !seletorData.value) return;
-    corpoAgenda.innerHTML = '';
-    const dataSel = seletorData.value;
-    const maqSel = seletorMaquina.value;
+    // Pegamos os elementos diretamente para garantir a atualização
+    const corpo = document.getElementById('corpo-agenda');
+    const dataSel = document.getElementById('data').value;
+    const maqSel = document.getElementById('maquina').value;
 
-    for (let hora = 7; hora <= 16; hora++) {
-        const chave = `${dataSel}-${maqSel}-${hora}`;
-        const ocupado = reservasGlobais[chave];
+    if (!corpo || !dataSel || !maqSel) return;
+    corpo.innerHTML = '';
+
+    for (let hora = 7; hora <= 17; hora++) {
+        const horaFormatada = hora.toString().padStart(2, '0') + ":00";
+        // Chave técnica idêntica à salva na planilha (Coluna H)
+        const chave = `${dataSel}-${maqSel}-${horaFormatada}`;
+        
+        const ocupadoPor = reservasGlobais[chave];
         const marcado = selecoesTemporarias.has(chave);
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${hora}:00</td>
-            <td class="${ocupado ? 'ocupado' : 'disponivel'}">${ocupado ? 'Reservado por: ' + ocupado : 'Disponível'}</td>
-            <td>${ocupado ? '---' : `<input type="checkbox" ${marcado ? 'checked' : ''} value="${chave}" onchange="gerenciar(this)">`}</td>
+            <td>${horaFormatada}</td>
+            <td class="${ocupadoPor ? 'status-indisponivel' : 'status-disponivel'}">
+                ${ocupadoPor ? 'Reservado por: ' + ocupadoPor : 'Disponível'}
+            </td>
+            <td>
+                ${ocupadoPor ? '---' : `<input type="checkbox" name="selecionar-hora" ${marcado ? 'checked' : ''} value="${horaFormatada}" onchange="gerenciar(this, '${chave}')">`}
+            </td>
         `;
-        corpoAgenda.appendChild(tr);
+        corpo.appendChild(tr);
     }
 }
 
-function gerenciar(cb) {
-    cb.checked ? selecoesTemporarias.add(cb.value) : selecoesTemporarias.delete(cb.value);
+function gerenciar(cb, chaveCompleta) {
+    // Usamos a chave técnica para o Set de seleções
+    cb.checked ? selecoesTemporarias.add(chaveCompleta) : selecoesTemporarias.delete(chaveCompleta);
 }
 
 async function reservarSelecionados() {
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha-lab').value;
+    const dataUso = document.getElementById('data').value;
+    const detalhes = document.getElementById('maquina').value;
 
     if (!nome || !senha || selecoesTemporarias.size === 0) {
         return alert("Por favor, preencha o Nome, Senha e selecione pelo menos um horário.");
     }
 
-    const btn = document.querySelector('button');
+    const btn = document.getElementById('btn-confirmar');
     btn.disabled = true;
     btn.innerText = "A gravar...";
 
     const ID_UNICO = "ID-" + Date.now();
+    
     const payload = {
         action: 'reservar_lote',
         id: ID_UNICO,
         senha: senha,
         usuario: { nome, email },
-        reservas: Array.from(selecoesTemporarias).map(ch => ({ chave: ch, maquina: seletorMaquina.value })),
-        data: seletorData.value
+        // Enviamos a chave técnica que contém data, máquina e hora
+        reservas: Array.from(selecoesTemporarias).map(ch => ({ chave: ch, maquina: detalhes })),
+        data: dataUso
     };
 
     try {
@@ -80,11 +95,11 @@ async function reservarSelecionados() {
         const respText = await response.text();
 
         if (respText.includes("Sucesso")) {
-            alert("✅ Dados salvos com sucesso!\nClique em OK para enviar a mensagem de aprovação.");
+            alert("✅ Dados salvos com sucesso!");
             
-            const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop() + ":00").sort().join(', ');
+            const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop()).sort().join(', ');
             let msg = `🔬 *Novo Agendamento LMP*\n\n`;
-            msg += `*ID:* ${ID_UNICO}\n*Nome:* ${nome}\n*Ensaio:* ${seletorMaquina.value}\n*Data:* ${seletorData.value}\n*Horas:* ${horas}\n\n`;
+            msg += `*ID:* ${ID_UNICO}\n*Nome:* ${nome}\n*Ensaio:* ${detalhes}\n*Data:* ${dataUso}\n*Horas:* ${horas}\n\n`;
             msg += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
             msg += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
 
@@ -97,10 +112,11 @@ async function reservarSelecionados() {
         alert("Erro técnico ao conectar ao servidor.");
     } finally {
         btn.disabled = false;
-        btn.innerText = "Confirmar Reservas";
+        btn.innerText = "Confirmar Agendamento";
     }
 }
 
-seletorData.addEventListener('change', atualizarAgenda);
-seletorMaquina.addEventListener('change', atualizarAgenda);
-carregarReservas();
+// Listeners para atualizar a tabela conforme seleção
+document.getElementById('data').addEventListener('change', atualizarAgenda);
+// O seletor de máquina no seu HTML alimenta o input hidden 'maquina'
+// A função selecionarEnsaio já chama atualizarDadosFinais que deve disparar a agenda
