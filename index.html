@@ -412,6 +412,7 @@
             });
 
             atualizarTabelaHorarios(diaSemana);
+            carregarHorarios(); // atualiza disponibilidade ao mudar a data
         }
 
         function atualizarTabelaHorarios(dia) {
@@ -421,22 +422,28 @@
             rows.forEach(row => {
                 const horaStr = row.cells[0].innerText;
                 const horaInt = parseInt(horaStr.split(':')[0]);
-                const checkbox = row.querySelector('input');
                 const statusTd = row.cells[1];
+                const acaoTd = row.cells[2];
+
+                // Não sobrescreve linhas já marcadas como reservadas pela API
+                if (statusTd.classList.contains('status-indisponivel') && statusTd.innerText.includes('Reservado')) {
+                    return;
+                }
+
+                const checkbox = row.querySelector('input');
 
                 if (ensaioSelecionado === "Secagem / Estufa") {
                     if (horaInt < 16) {
-                        checkbox.disabled = true;
-                        checkbox.checked = false;
+                        if (checkbox) { checkbox.disabled = true; checkbox.checked = false; }
                         statusTd.innerText = "Restrito (Início 16h)";
                         statusTd.className = "status-indisponivel";
                     } else {
-                        checkbox.disabled = false;
+                        if (checkbox) checkbox.disabled = false;
                         statusTd.innerText = "Disponível";
                         statusTd.className = "status-disponivel";
                     }
                 } else {
-                    checkbox.disabled = false;
+                    if (checkbox) checkbox.disabled = false;
                     statusTd.innerText = "Disponível";
                     statusTd.className = "status-disponivel";
                 }
@@ -478,6 +485,8 @@
                 atualizarTabelaHorarios(dataSel.getDay());
             }
 
+            carregarHorarios(); // recarrega tabela com ocupações do ensaio selecionado
+
             atualizarDadosFinais();
         }
 
@@ -511,18 +520,86 @@
             }
         }
 
+        // Cache de reservas vindas da API: { "chave-tecnica": "Nome do usuário", ... }
+        let reservasCache = {};
+        let reservasCacheCarregado = false;
+
+        // Carrega todas as reservas da API UMA vez e guarda no cache
+        async function carregarReservasAPI() {
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbx4x2IB5Tt8TTl7ZWnGDKjNew-wLqFpNJqGGBsci_6LR2OxXcTexio0DifVu5u5eYwvFQ/exec";
+            try {
+                const resp = await fetch(BASE_URL);
+                reservasCache = await resp.json();
+            } catch (e) {
+                console.warn("Não foi possível carregar reservas:", e);
+                reservasCache = {};
+            }
+            reservasCacheCarregado = true;
+            carregarHorarios(); // renderiza tabela após ter os dados
+        }
+
+        // Renderiza a tabela de horários levando em conta o ensaio e a data atuais
         function carregarHorarios() {
             const corpo = document.getElementById('corpo-agenda');
+            const dataUso = document.getElementById('data').value;
+
+            // Se ainda não carregou da API, mostra loading
+            if (!reservasCacheCarregado) {
+                corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px;">⏳ A carregar disponibilidade...</td></tr>';
+                return;
+            }
+
+            // Se falta data ou ensaio, mostra instrução
+            if (!dataUso || !ensaioSelecionado) {
+                corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;padding:20px;">Selecione uma data e um ensaio para ver a disponibilidade.</td></tr>';
+                return;
+            }
+
             let html = '';
+
             for (let h = 7; h <= 17; h++) {
                 const hora = h.toString().padStart(2, '0') + ":00";
-                html += `<tr>
-                    <td>${hora}</td>
-                    <td class="status-disponivel">Disponível</td>
-                    <td><input type="checkbox" name="selecionar-hora" value="${hora}"></td>
-                </tr>`;
+
+                // Verifica se este horário está ocupado para o ensaio + data atuais
+                let ocupado = false;
+                let ocupadoPor = "";
+
+                if (dataUso && ensaioSelecionado) {
+                    // A chave técnica gravada na planilha segue o padrão: "AAAA-MM-DD-NomeEnsaio-HH:00"
+                    // O script.js original usava: `${dataUso}-${detalhes}-${hora}`
+                    // detalhes = valor de #maquina, que inclui o ensaio formatado completo
+                    // Para checar ocupação usamos o nome base do ensaio
+                    const chave = `${dataUso}-${ensaioSelecionado}-${hora}`;
+                    if (reservasCache[chave]) {
+                        ocupado = true;
+                        ocupadoPor = reservasCache[chave];
+                    }
+                }
+
+                if (ocupado) {
+                    html += `<tr style="background:#fff5f5;">
+                        <td>${hora}</td>
+                        <td class="status-indisponivel">🔒 Reservado por: ${ocupadoPor}</td>
+                        <td style="color:#aaa;">—</td>
+                    </tr>`;
+                } else {
+                    html += `<tr>
+                        <td>${hora}</td>
+                        <td class="status-disponivel">Disponível</td>
+                        <td><input type="checkbox" name="selecionar-hora" value="${hora}"></td>
+                    </tr>`;
+                }
             }
             corpo.innerHTML = html;
+
+            // Reaplica restrições de horário (ex: Secagem só a partir das 16h)
+            if (ensaioSelecionado) {
+                const dataInput = document.getElementById('data').value;
+                if (dataInput) {
+                    const diaSemana = new Date(dataInput + 'T00:00:00').getDay();
+                    atualizarTabelaHorarios(diaSemana);
+                }
+            }
         }
 
         function voltarInicio() {
@@ -574,7 +651,7 @@
                 id: ID_UNICO,
                 senha: senha,
                 usuario: { nome, email },
-                reservas: horas.map(h => ({ chave: `${dataUso}-${detalhes}-${h}`, maquina: detalhes })),
+                reservas: horas.map(h => ({ chave: `${dataUso}-${ensaioSelecionado}-${h}`, maquina: detalhes })),
                 data: dataUso
             };
 
@@ -591,6 +668,13 @@
                     alert("❌ Erro ao salvar: " + respText);
                     return;
                 }
+
+                // Atualiza o cache local para bloquear imediatamente os horários reservados
+                horas.forEach(h => {
+                    const chave = `${dataUso}-${ensaioSelecionado}-${h}`;
+                    reservasCache[chave] = nome;
+                });
+                carregarHorarios(); // re-renderiza a tabela com os slots recém-bloqueados
 
                 // Só abre o WhatsApp APÓS salvar com sucesso
                 const numeroDestino = contatosResponsaveis[categoriaAtiva];
@@ -676,7 +760,7 @@
             });
         }
 
-        window.onload = carregarHorarios;
+        window.onload = carregarReservasAPI;
     </script>
 </body>
 </html>
