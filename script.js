@@ -23,7 +23,6 @@ async function carregarReservas() {
 }
 
 function atualizarAgenda() {
-    // Pegamos os elementos diretamente para garantir a atualização
     const corpo = document.getElementById('corpo-agenda');
     const dataSel = document.getElementById('data').value;
     const maqSel = document.getElementById('maquina').value;
@@ -33,7 +32,6 @@ function atualizarAgenda() {
 
     for (let hora = 7; hora <= 17; hora++) {
         const horaFormatada = hora.toString().padStart(2, '0') + ":00";
-        // Chave técnica idêntica à salva na planilha (Coluna H)
         const chave = `${dataSel}-${maqSel}-${horaFormatada}`;
         
         const ocupadoPor = reservasGlobais[chave];
@@ -54,16 +52,17 @@ function atualizarAgenda() {
 }
 
 function gerenciar(cb, chaveCompleta) {
-    // Usamos a chave técnica para o Set de seleções
     cb.checked ? selecoesTemporarias.add(chaveCompleta) : selecoesTemporarias.delete(chaveCompleta);
 }
 
 async function reservarSelecionados() {
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha-lab').value;
-    const dataUso = document.getElementById('data').value;
-    const detalhes = document.getElementById('maquina').value;
+    const nome       = document.getElementById('nome').value.trim();
+    const email      = document.getElementById('email').value.trim();
+    const orientador = document.getElementById('orientador').value.trim();
+    const projeto    = document.getElementById('projeto').value.trim();
+    const senha      = document.getElementById('senha-lab').value.trim();
+    const dataUso    = document.getElementById('data').value;
+    const detalhes   = document.getElementById('maquina').value;
 
     if (!nome || !senha || selecoesTemporarias.size === 0) {
         return alert("Por favor, preencha o Nome, Senha e selecione pelo menos um horário.");
@@ -74,14 +73,29 @@ async function reservarSelecionados() {
     btn.innerText = "A gravar...";
 
     const ID_UNICO = "ID-" + Date.now();
-    
+
+    // As chaves já estão completas no formato "data-maquina-hora"
+    // Extraímos apenas as horas para exibir no WhatsApp
+    const horasOrdenadas = Array.from(selecoesTemporarias)
+        .map(ch => ch.split('-').pop())
+        .sort();
+
     const payload = {
         action: 'reservar_lote',
         id: ID_UNICO,
         senha: senha,
-        usuario: { nome, email },
-        // Enviamos a chave técnica que contém data, máquina e hora
-        reservas: Array.from(selecoesTemporarias).map(ch => ({ chave: ch, maquina: detalhes })),
+        usuario: {
+            nome,
+            email,
+            orientador: orientador || "Não informado",
+            projeto:    projeto    || "Não informado"
+        },
+        reservas: [{
+            // Chave base sem a hora (data-maquina) — o backend adiciona a hora
+            chave:   `${dataUso}-${detalhes}`,
+            maquina: detalhes,
+            horas:   horasOrdenadas
+        }],
         data: dataUso
     };
 
@@ -97,9 +111,15 @@ async function reservarSelecionados() {
         if (respText.includes("Sucesso")) {
             alert("✅ Dados salvos com sucesso!");
             
-            const horas = Array.from(selecoesTemporarias).map(ch => ch.split('-').pop()).sort().join(', ');
+            const horasTexto = horasOrdenadas.join(', ');
             let msg = `🔬 *Novo Agendamento LMP*\n\n`;
-            msg += `*ID:* ${ID_UNICO}\n*Nome:* ${nome}\n*Ensaio:* ${detalhes}\n*Data:* ${dataUso}\n*Horas:* ${horas}\n\n`;
+            msg += `*ID:* ${ID_UNICO}\n`;
+            msg += `*Nome:* ${nome}\n`;
+            msg += `*Orientador:* ${orientador || "Não informado"}\n`;
+            msg += `*Projeto:* ${projeto || "Não informado"}\n`;
+            msg += `*Ensaio:* ${detalhes}\n`;
+            msg += `*Data:* ${dataUso}\n`;
+            msg += `*Horas:* ${horasTexto}\n\n`;
             msg += `✅ *ACEITAR:* \n${URL_API}?id=${ID_UNICO}&acao=Aceito\n\n`;
             msg += `❌ *RECUSAR:* \n${URL_API}?id=${ID_UNICO}&acao=Recusado`;
 
@@ -118,5 +138,3 @@ async function reservarSelecionados() {
 
 // Listeners para atualizar a tabela conforme seleção
 document.getElementById('data').addEventListener('change', atualizarAgenda);
-// O seletor de máquina no seu HTML alimenta o input hidden 'maquina'
-// A função selecionarEnsaio já chama atualizarDadosFinais que deve disparar a agenda
