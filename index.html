@@ -241,7 +241,7 @@
                     </div>
                     <div class="input-group">
                         <label>Data do Uso</label>
-                        <input type="date" id="data" onchange="verificarRestricoesData(); if(categoriaAtiva==='USO DO LABORATÓRIO PARA AULAS') carregarHorarios();" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        <input type="date" id="data" onchange="verificarRestricoesData(); carregarHorarios();" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
                     </div>
                     <div class="input-group">
                         <label>Categoria</label>
@@ -602,8 +602,11 @@
                 reservasCache = {};
             }
             reservasCacheCarregado = true;
-            verificarRestricoesData(); // aplica bloqueios de dosagem com dados da API
-            carregarHorarios();        // renderiza tabela após ter os dados
+            const dataJaEscolhida = document.getElementById('data') && document.getElementById('data').value;
+            if (dataJaEscolhida && categoriaAtiva) {
+                verificarRestricoesData(); // aplica bloqueios com dados da API
+                carregarHorarios();        // renderiza tabela após ter os dados
+            }
         }
 
         // Renderiza a tabela de horários levando em conta o ensaio e a data atuais
@@ -728,23 +731,21 @@
             const BASE_URL = "https://script.google.com/macros/s/AKfycbwn0IdpxK7F0Tj1-eB_ZGo024xryoBT1qLBvlePgdDmFavnvTJunKZeVdaJ8gZFZFg2Uw/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
-            // ── Todas as horas em uma única reserva → uma linha na planilha ──
-            // Para aulas, usa "[AULA]" como identificador fixo na chave técnica
-            // para que verificarRestricoesData() possa detectar e bloquear todos os ensaios
-            const chaveBase = categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
-                ? `${dataUso}-[AULA]-${horas[0]}`
-                : `${dataUso}-${ensaioSelecionado}-${horas[0]}`;
+            // ── Uma reserva por hora → cada horário fica registrado com sua própria chave ──
+            const reservas = horas.map(h => ({
+                chave: categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
+                    ? `${dataUso}-[AULA]-${h}`
+                    : `${dataUso}-${ensaioSelecionado}-${h}`,
+                maquina: detalhes,
+                horas: [h]
+            }));
 
             const payload = {
                 action: 'reservar_lote',
                 id: ID_UNICO,
                 senha: senha,
                 usuario: { nome, email, orientador },
-                reservas: [{
-                    chave: chaveBase,
-                    maquina: detalhes,
-                    horas: horas      // todas as horas no mesmo objeto
-                }],
+                reservas: reservas,
                 data: dataUso
             };
 
