@@ -705,13 +705,13 @@
             const BASE_URL = "https://script.google.com/macros/s/AKfycbzSuRh0FtJOP80u7kPvAQ6RfJKJ5Be1BG_Ftj_0sqeqVNEw3f0G2xR7AdODGLr7Z1DvPQ/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
-            const reservas = horas.map(h => ({
+            const reservas = [{
                 chave: categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS'
-                    ? `${dataUso}-[AULA]-${h}`
-                    : `${dataUso}-${ensaioSelecionado}-${h}`,
+                    ? `${dataUso}-[AULA]`
+                    : `${dataUso}-${ensaioSelecionado}`,
                 maquina: detalhes,
-                horas: [h]
-            }));
+                horas: horas
+            }];
 
             const payload = {
                 action: 'reservar_lote',
@@ -820,6 +820,9 @@
         }
 
         window.onload = carregarReservasAPI;
+        
+        // Sincronizar a cada 30 segundos para detectar deleções
+        setInterval(carregarReservasAPI, 30000);
     </script>
 </body>
 </html>
