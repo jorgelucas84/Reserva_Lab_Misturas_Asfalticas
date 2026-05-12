@@ -576,7 +576,7 @@
 
         // Carrega todas as reservas da API UMA vez e guarda no cache
         async function carregarReservasAPI() {
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbxL-6eyZAMikYpXPCfHHsxx1vR2_SLqSxDO3tOqHXPcXIYXMXQeffAa68bNxnsmpZj40Q/exec";
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbx4x2IB5Tt8TTl7ZWnGDKjNew-wLqFpNJqGGBsci_6LR2OxXcTexio0DifVu5u5eYwvFQ/exec";
             try {
                 const resp = await fetch(BASE_URL);
                 reservasCache = await resp.json();
@@ -695,7 +695,7 @@
             const ID_UNICO = "ID-" + Date.now();
             ultimoIDUnico = ID_UNICO; // Armazenar o ID para usar depois na cópia
             // SUBSTITUA ESTA URL PELA SUA URL DO GOOGLE APPS SCRIPT PUBLICADO
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbxL-6eyZAMikYpXPCfHHsxx1vR2_SLqSxDO3tOqHXPcXIYXMXQeffAa68bNxnsmpZj40Q/exec"; 
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbx4x2IB5Tt8TTl7ZWnGDKjNew-wLqFpNJqGGBsci_6LR2OxXcTexio0DifVu5u5eYwvFQ/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
             const payload = {
@@ -743,8 +743,8 @@
                 mensagem += "*Procedimento:* " + detalhes + "\n";
                 mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
                 mensagem += "*Horários:* " + horas.join(', ') + "\n\n";
-                mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "%26acao=Aceito\n\n";
-                mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "%26acao=Recusado";
+                mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
+                mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
 
                 const areaAcao = document.getElementById('area-acao');
                 // Melhorando o botão para ser mais visível e amigável
@@ -801,8 +801,8 @@
             mensagem += "*Procedimento:* " + detalhes + "\n";
             mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
             mensagem += "*Horários:* " + horas.join(', ') + "\n\n";
-            mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "%26acao=Aceito\n\n";
-            mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "%26acao=Recusado";
+            mensagem += "✅ *ACEITAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Aceito\n\n";
+            mensagem += "❌ *RECUSAR:* " + BASE_URL + "?id=" + ID_UNICO + "&acao=Recusado";
 
             // Copiar para a área de transferência
             navigator.clipboard.writeText(mensagem).then(() => {
