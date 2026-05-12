@@ -412,7 +412,9 @@
             });
 
             atualizarTabelaHorarios(diaSemana);
-            carregarHorarios(); // atualiza disponibilidade ao mudar a data
+
+            // Se já tem ensaio selecionado, recarrega a tabela com nova data
+            if (ensaioSelecionado) carregarHorarios();
         }
 
         function atualizarTabelaHorarios(dia) {
@@ -480,12 +482,13 @@
             if(!precisaOpcoesMistura) subtipoSelecionado = "";
             
             const dataInput = document.getElementById('data').value;
+            
+            carregarHorarios(); // gera as linhas primeiro (com ocupações da API)
+
             if (dataInput) {
                 const dataSel = new Date(dataInput + 'T00:00:00');
-                atualizarTabelaHorarios(dataSel.getDay());
+                atualizarTabelaHorarios(dataSel.getDay()); // depois aplica restrições por dia/hora
             }
-
-            carregarHorarios(); // recarrega tabela com ocupações do ensaio selecionado
 
             atualizarDadosFinais();
         }
