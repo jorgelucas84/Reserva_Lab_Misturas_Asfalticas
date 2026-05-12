@@ -673,6 +673,7 @@
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const orientador = (document.getElementById('orientador') && document.getElementById('orientador').value) || 'Não informado';
+            const projeto = (document.getElementById('projeto') && document.getElementById('projeto').value) || 'Não informado';
             const dataUso = document.getElementById('data').value;
             const detalhes = document.getElementById('maquina').value;
             const senha = document.getElementById('senha-lab').value;
@@ -717,7 +718,7 @@
                 action: 'reservar_lote',
                 id: ID_UNICO,
                 senha: senha,
-                usuario: { nome, email, orientador },
+                usuario: { nome, email, orientador, projeto },
                 reservas: reservas,
                 data: dataUso
             };
@@ -750,6 +751,8 @@
                 let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
                 mensagem += "*Aluno/Professor:* " + nome + "\n";
                 mensagem += "*E-mail:* " + email + "\n";
+                mensagem += "*Orientador:* " + orientador + "\n";
+                mensagem += "*Projeto/Trabalho:* " + projeto + "\n";
                 mensagem += "*Categoria:* " + categoriaAtiva + "\n";
                 mensagem += "*Procedimento:* " + detalhes + "\n";
                 mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
@@ -787,6 +790,8 @@
         function copiarMensagem() {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
+            const orientador = (document.getElementById('orientador') && document.getElementById('orientador').value) || 'Não informado';
+            const projeto = (document.getElementById('projeto') && document.getElementById('projeto').value) || 'Não informado';
             const dataUso = document.getElementById('data').value;
             const detalhes = document.getElementById('maquina').value;
             const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
@@ -802,6 +807,8 @@
             let mensagem = "🔬 *Novo Agendamento LMP*\n\n";
             mensagem += "*Aluno/Professor:* " + nome + "\n";
             mensagem += "*E-mail:* " + email + "\n";
+            mensagem += "*Orientador:* " + orientador + "\n";
+            mensagem += "*Projeto/Trabalho:* " + projeto + "\n";
             mensagem += "*Categoria:* " + categoriaAtiva + "\n";
             mensagem += "*Procedimento:* " + detalhes + "\n";
             mensagem += "*Data:* " + dataUso + prioridadeAviso + "\n";
