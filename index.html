@@ -325,7 +325,9 @@
             {n: "Granulometria", img: "granu.jpeg", eq: "Agitador de peneiras"},
             {n: "Indice de forma", img: "if.jpeg", eq: "Paquímetro, Agulha"},
             {n: "Sanidade", img: "sani.jpeg", eq: "Sulfato, Estufa"},
-            {n: "Secagem / Estufa", img: "estufa.jpeg", eq: "Estufa de circulação"}
+            {n: "Secagem / Estufa", img: "estufa.jpeg", eq: "Estufa de circulação"},
+            {n: "Serragem de CPs", img: "serragem.jpeg", eq: "Serra Circular de Bancada"},
+            {n: "Uso de Balança", img: "balanca.jpeg", eq: "Balanças de Precisão / Analíticas"}
         ];
 
         const cardsMecanicos = [
@@ -523,7 +525,8 @@
             ensaioSelecionado = nome;
             
             const nomeLower = nome.toLowerCase();
-            const precisaOpcoesMistura = nomeLower.includes("marshall") || nomeLower.includes("superpave");
+            // Apenas para caracterização de materiais e especificamente esses ensaios de dosagem mostram as opções de mistura
+            const precisaOpcoesMistura = categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS' && (nomeLower.includes("dosagem marshall") || nomeLower.includes("dosagem superpave"));
             
             document.getElementById('container-detalhes').style.display = "block";
             document.getElementById('opcoes-estado-mistura').style.display = precisaOpcoesMistura ? "block" : "none";
@@ -642,7 +645,7 @@
                         <td style="color:#aaa;">—</td>
                     </tr>`;
                 } else {
-                    const isDosagem = ensaioSelecionado === "Dosagem Marshall" || ensaioSelecionado === "Dosagem Superpave";
+                    const isDosagem = (ensaioSelecionado === "Dosagem Marshall" || ensaioSelecionado === "Dosagem Superpave") && categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS';
                     html += `<tr>
                         <td>${hora}</td>
                         <td class="status-disponivel">Disponível</td>
