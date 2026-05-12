@@ -576,7 +576,7 @@
 
         // Carrega todas as reservas da API UMA vez e guarda no cache
         async function carregarReservasAPI() {
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbx4x2IB5Tt8TTl7ZWnGDKjNew-wLqFpNJqGGBsci_6LR2OxXcTexio0DifVu5u5eYwvFQ/exec";
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbxOmTiZi-8w4ni6xLRZbbaIT1wqkTjQiqLq8i7dI4HQXyL3cIkajrpvfW54Jg94flSebg/exec";
             try {
                 const resp = await fetch(BASE_URL);
                 reservasCache = await resp.json();
@@ -695,7 +695,7 @@
             const ID_UNICO = "ID-" + Date.now();
             ultimoIDUnico = ID_UNICO; // Armazenar o ID para usar depois na cópia
             // SUBSTITUA ESTA URL PELA SUA URL DO GOOGLE APPS SCRIPT PUBLICADO
-            const BASE_URL = "https://script.google.com/macros/s/AKfycbx4x2IB5Tt8TTl7ZWnGDKjNew-wLqFpNJqGGBsci_6LR2OxXcTexio0DifVu5u5eYwvFQ/exec"; 
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbxOmTiZi-8w4ni6xLRZbbaIT1wqkTjQiqLq8i7dI4HQXyL3cIkajrpvfW54Jg94flSebg/exec"; 
             const horas = Array.from(check).map(c => c.value);
 
             const payload = {
