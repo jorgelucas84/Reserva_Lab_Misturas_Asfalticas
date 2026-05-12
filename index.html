@@ -360,7 +360,7 @@
                 listaInfo.innerHTML = `
                     <li style="margin-bottom: 8px;"><strong>1.</strong> É proibida a entrada usando chinelos, sandálias ou calçados abertos.</li>
                     <li style="margin-bottom: 8px;"><strong>2.</strong> Não é permitido comer ou beber no laboratório.</li>
-                    <li style="margin-bottom: 8px; color: #D35400;"><strong>3.</strong> AGENDAMENTO DE AULA: Bloqueia todos os demais procedimentos no horário selecionado.</li>
+                    <li style="margin-bottom: 8px; color: #D35400;"><strong>3.</strong> AGENDAMENTO DE AULA: Tem prioridade e bloqueia os horários selecionados para outros usuários.</li>
                 `;
                 grupoAlunos.style.display = 'block';
                 containerCards.style.display = 'none';
@@ -465,21 +465,12 @@
             // --- FIM BLOQUEIO POR DOSAGEM ---
 
             // --- BLOQUEIO POR AULA ---
-            // Se há uma aula agendada (aceita ou pendente) neste dia, bloqueia TODOS os ensaios
-            const aulasNoDia = Object.keys(reservasCache).some(chave => 
-                chave.startsWith(dataInput + "-[AULA]-")
-            );
-
+            // Aula tem prioridade nos HORÁRIOS (tratado em carregarHorarios),
+            // mas os cards de ensaio ficam disponíveis — o usuário escolhe
+            // os horários que não coincidem com a aula.
             document.querySelectorAll('.ensaio-card').forEach(card => {
-                // Remove bloqueio de aula antes de reavaliar (preserva outros bloqueios)
                 if (card.classList.contains('lock-aula')) {
                     card.classList.remove('blocked', 'lock-aula');
-                }
-
-                if (aulasNoDia) {
-                    // Bloqueia todos os ensaios quando há aula no dia
-                    card.classList.add('blocked', 'lock-aula');
-                    if (ensaioSelecionado) resetarSelecao();
                 }
             });
             // --- FIM BLOQUEIO POR AULA ---
