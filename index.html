@@ -783,7 +783,7 @@
             const dataUso = document.getElementById('data').value;
             const detalhes = document.getElementById('maquina').value;
             const senha = document.getElementById('senha-lab').value;
-            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked, input[name="selecionar-hora"][disabled]');
+            const check = document.querySelectorAll('input[name="selecionar-hora"]:checked');
 
             if (!nome || !email || !dataUso || check.length === 0) { 
                 alert("Por favor, preencha Nome, E-mail, Data e escolha os horários."); 
