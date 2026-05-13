@@ -147,6 +147,25 @@
         #tabela-horarios thead th { background-color: #1A4A5A; color: white; padding: 15px; text-transform: uppercase; }
         #tabela-horarios td { padding: 15px; text-align: center; border-bottom: 1px solid #eee; }
         input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #1A4A5A; }
+
+        /* ── DASHBOARD STYLES ── */
+        .dash-kpi-card {
+            background:#fff; border-radius:14px; padding:20px 22px;
+            border:1px solid #d8e4e8; position:relative; overflow:hidden;
+            font-family:'Inter',sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .dash-kpi-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,74,90,0.1); }
+        .dash-kpi-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#6b8a96; margin-bottom:8px; }
+        .dash-kpi-value { font-size:2rem; font-weight:900; color:#1e2d35; line-height:1; margin-bottom:4px; }
+        .dash-kpi-sub { font-size:0.76rem; color:#6b8a96; }
+        .dash-chart-card {
+            background:#fff; border-radius:14px; padding:20px 22px;
+            border:1px solid #d8e4e8; font-family:'Inter',sans-serif;
+        }
+        .dash-chart-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#6b8a96; margin-bottom:3px; }
+        .dash-chart-title { font-size:0.95rem; font-weight:700; color:#1e2d35; margin-bottom:16px; }
+
         
         .equipamentos-info {margin-top: 15px;padding: 15px;background-color: #f8f9fa;border-left: 5px solid #1A4A5A;border-radius: 5px;display: none;}
 
@@ -175,10 +194,64 @@
                 </div>  
                 <span class="footer-tag">  
                     © 2026 | <img src="img/lmp.jpeg" alt="LMP" style="height: 1rem; vertical-align: middle; mix-blend-mode: multiply;"> | Todos os direitos reservados  
-                </span>  
-            </div>  
-        </div>  
+                </span>
+            </div>
+            <button onclick="abrirLoginDashboard()" style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.35);color:#fff;padding:10px 18px;border-radius:10px;font-family:'Inter',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:7px;white-space:nowrap;margin-left:20px;" onmouseover="this.style.background='rgba(211,84,0,0.75)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">📊 Dashboard</button>
+        </div>
     </header>
+
+    <!-- MODAL LOGIN DASHBOARD -->
+    <div id="modal-login-dash" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:2000;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:18px;padding:36px 40px;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.4);text-align:center;font-family:'Inter',sans-serif;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">
+            <div style="font-size:2.5rem;margin-bottom:12px;">🔒</div>
+            <h2 style="color:#1A4A5A;font-size:1.2rem;margin-bottom:6px;">Acesso Restrito</h2>
+            <p style="color:#888;font-size:0.83rem;margin-bottom:22px;">Digite a senha para acessar o dashboard.</p>
+            <input type="password" id="input-senha-dash" placeholder="Senha" onkeydown="if(event.key==='Enter')verificarSenhaDash()" style="width:100%;padding:12px 16px;border:2px solid #ddd;border-radius:9px;font-size:1rem;font-family:'Inter',sans-serif;outline:none;margin-bottom:8px;text-align:center;letter-spacing:0.1em;" onfocus="this.style.borderColor='#1A4A5A'" onblur="this.style.borderColor='#ddd'">
+            <p id="erro-senha-dash" style="color:#e74c3c;font-size:0.78rem;min-height:18px;margin-bottom:10px;"></p>
+            <button onclick="verificarSenhaDash()" style="width:100%;background:#1A4A5A;color:#fff;border:none;padding:12px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#D35400'" onmouseout="this.style.background='#1A4A5A'">Entrar</button>
+            <button onclick="fecharLoginDashboard()" style="margin-top:12px;background:none;border:none;color:#aaa;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- SEÇÃO DASHBOARD -->
+    <div id="secao-dashboard" style="display:none;">
+        <div style="background:linear-gradient(135deg,#1A4A5A 0%,#2a6f84 100%);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #D35400;">
+            <div style="display:flex;align-items:center;gap:14px;"><span style="font-size:1.4rem;">📊</span><div><div style="color:#fff;font-weight:900;font-size:1rem;font-family:'Inter',sans-serif;">Dashboard de Agendamentos</div><div style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-family:'Inter',sans-serif;">Análise de uso — LMP</div></div></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:50px;padding:6px 14px;font-size:0.77rem;color:rgba(255,255,255,0.85);font-family:'Inter',sans-serif;"><div style="width:8px;height:8px;border-radius:50%;" id="dash-dot"></div><span id="dash-status-text">Aguardando...</span></div>
+                <button onclick="carregarDadosDash()" style="background:#D35400;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">↻ Atualizar</button>
+                <button onclick="fecharDashboard()" style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:8px;padding:8px 14px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">✕ Fechar</button>
+            </div>
+        </div>
+        <div style="background:#fff;border-bottom:1px solid #e0e8ec;padding:12px 32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:'Inter',sans-serif;">
+            <label style="font-size:0.75rem;font-weight:700;color:#6b8a96;text-transform:uppercase;letter-spacing:0.06em;">Filtrar:</label>
+            <select id="dash-filtro-cat" onchange="aplicarFiltrosDash()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;"><option value="">Todas as categorias</option><option value="CARACTERIZAÇÃO DE MATERIAIS">Caracterização</option><option value="ENSAIOS MECÂNICOS">Ensaios Mecânicos</option><option value="USO DO LABORATÓRIO PARA AULAS">Aulas</option></select>
+            <select id="dash-filtro-periodo" onchange="dashFiltrarPorPeriodo()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;"><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="365">Último ano</option><option value="0">Tudo</option></select>
+            <input type="date" id="dash-filtro-de" onchange="aplicarFiltrosDash()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;">
+            <span style="color:#aaa;font-size:0.8rem;">até</span>
+            <input type="date" id="dash-filtro-ate" onchange="aplicarFiltrosDash()" style="padding:7px 12px;border:1.5px solid #d8e4e8;border-radius:7px;font-family:'Inter',sans-serif;font-size:0.83rem;outline:none;">
+        </div>
+        <div style="padding:24px 32px;background:#f0f4f6;min-height:80vh;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:24px;">
+                <div class="dash-kpi-card" style="border-left:4px solid #1A4A5A;"><div class="dash-kpi-label">Total de Reservas</div><div class="dash-kpi-value" id="dash-kpi-total">—</div><div class="dash-kpi-sub">horários reservados</div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">📅</span></div>
+                <div class="dash-kpi-card" style="border-left:4px solid #D35400;"><div class="dash-kpi-label">Ensaio Mais Usado</div><div class="dash-kpi-value" id="dash-kpi-top" style="font-size:1rem;line-height:1.3;margin-top:4px;">—</div><div class="dash-kpi-sub" id="dash-kpi-top-sub"></div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">🔬</span></div>
+                <div class="dash-kpi-card" style="border-left:4px solid #27ae60;"><div class="dash-kpi-label">Usuários Únicos</div><div class="dash-kpi-value" id="dash-kpi-usuarios">—</div><div class="dash-kpi-sub">pesquisadores distintos</div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">👤</span></div>
+                <div class="dash-kpi-card" style="border-left:4px solid #f39c12;"><div class="dash-kpi-label">Horário de Pico</div><div class="dash-kpi-value" id="dash-kpi-pico" style="font-size:1.6rem;">—</div><div class="dash-kpi-sub" id="dash-kpi-pico-sub"></div><span style="position:absolute;top:14px;right:14px;font-size:24px;opacity:0.12;">⏰</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px;">
+                <div class="dash-chart-card"><div class="dash-chart-label">Ranking</div><div class="dash-chart-title">Procedimentos mais agendados</div><div style="position:relative;height:280px;"><canvas id="dash-chart-proc"></canvas></div></div>
+                <div class="dash-chart-card"><div class="dash-chart-label">Distribuição</div><div class="dash-chart-title">Por categoria</div><div style="position:relative;height:280px;"><canvas id="dash-chart-cat"></canvas></div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+                <div class="dash-chart-card"><div class="dash-chart-label">Evolução temporal</div><div class="dash-chart-title">Reservas por semana</div><div style="position:relative;height:200px;"><canvas id="dash-chart-time"></canvas></div></div>
+                <div class="dash-chart-card"><div class="dash-chart-label">Horários mais usados</div><div class="dash-chart-title">Picos de uso no dia</div><div style="position:relative;height:200px;"><canvas id="dash-chart-hora"></canvas></div></div>
+            </div>
+            <div style="background:#fff;border-radius:14px;border:1px solid #d8e4e8;overflow:hidden;">
+                <div style="padding:18px 22px 14px;border-bottom:1px solid #e8eef1;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#6b8a96;font-family:'Inter',sans-serif;">Detalhamento completo</div><div style="font-size:1rem;font-weight:700;color:#1e2d35;font-family:'Inter',sans-serif;margin-top:2px;">Todos os procedimentos</div></div><span id="dash-table-count" style="font-size:0.78rem;color:#6b8a96;font-family:'Inter',sans-serif;"></span></div>
+                <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;"><thead><tr><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">#</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Procedimento</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Categoria</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Reservas</th><th style="background:#1A4A5A;color:#fff;padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Frequência</th></tr></thead><tbody id="dash-tabela-corpo"><tr><td colspan="5" style="text-align:center;padding:30px;color:#aaa;font-size:0.85rem;">Carregando...</td></tr></tbody></table></div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL DE AJUDA -->
     <div id="modal-ajuda" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; overflow-y:auto; padding: 30px 15px;">
@@ -932,6 +1005,260 @@
         
         // Sincronizar a cada 30 segundos para detectar deleções
         setInterval(carregarReservasAPI, 30000);
+    </script>
+
+    <!-- CHART.JS + DASHBOARD SCRIPT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+        // ── SENHA E CONTROLE ──
+        const SENHA_DASH = "blaublau";
+        let dashCarregado = false;
+        let dadosBrutosDash = {};
+        let dadosFiltradosDash = {};
+        let chartsDash = {};
+
+        function abrirLoginDashboard() {
+            document.getElementById('modal-login-dash').style.display = 'block';
+            document.getElementById('input-senha-dash').value = '';
+            document.getElementById('erro-senha-dash').textContent = '';
+            setTimeout(() => document.getElementById('input-senha-dash').focus(), 100);
+        }
+
+        function fecharLoginDashboard() {
+            document.getElementById('modal-login-dash').style.display = 'none';
+        }
+
+        function verificarSenhaDash() {
+            const val = document.getElementById('input-senha-dash').value;
+            if (val === SENHA_DASH) {
+                fecharLoginDashboard();
+                abrirDashboard();
+            } else {
+                document.getElementById('erro-senha-dash').textContent = '❌ Senha incorreta.';
+                document.getElementById('input-senha-dash').focus();
+            }
+        }
+
+        function abrirDashboard() {
+            document.getElementById('secao-dashboard').style.display = 'block';
+            document.getElementById('selecao-inicial').style.display = 'none';
+            document.getElementById('conteudo-principal').style.display = 'none';
+            window.scrollTo(0, 0);
+            if (!dashCarregado) carregarDadosDash();
+        }
+
+        function fecharDashboard() {
+            document.getElementById('secao-dashboard').style.display = 'none';
+            document.getElementById('selecao-inicial').style.display = 'flex';
+        }
+
+        // ── CARREGAR DADOS ──
+        async function carregarDadosDash() {
+            const dot = document.getElementById('dash-dot');
+            const txt = document.getElementById('dash-status-text');
+            dot.style.background = '#f39c12';
+            txt.textContent = 'Carregando...';
+            const BASE_URL = "https://script.google.com/macros/s/AKfycbwLpm7vxFHibdzH0ALxmbIYsvAmuFWb_TNGW711KysKrvkYo2vvIpTuYU4d61vyQirVXA/exec";
+            try {
+                const resp = await fetch(BASE_URL);
+                dadosBrutosDash = await resp.json();
+                dot.style.background = '#2ecc71';
+                txt.textContent = Object.keys(dadosBrutosDash).length + ' registros';
+                dashCarregado = true;
+                dashFiltrarPorPeriodo();
+            } catch(e) {
+                dot.style.background = '#e74c3c';
+                txt.textContent = 'Erro na conexão';
+            }
+        }
+
+        // ── MAPEAMENTO ──
+        const dashCatMap = {
+            "Dosagem Marshall":"CARACTERIZAÇÃO DE MATERIAIS","Dosagem Superpave":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Extração de ligante":"CARACTERIZAÇÃO DE MATERIAIS","Fluir ligante":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Homogeneização":"CARACTERIZAÇÃO DE MATERIAIS","Abrasão Los Angeles":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Densidade e absorção":"CARACTERIZAÇÃO DE MATERIAIS","Adesividade (Tradicional)":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Adesividade (ABS)":"CARACTERIZAÇÃO DE MATERIAIS","Granulometria":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Indice de forma":"CARACTERIZAÇÃO DE MATERIAIS","Sanidade":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Secagem / Estufa":"CARACTERIZAÇÃO DE MATERIAIS","Serragem de CPs":"CARACTERIZAÇÃO DE MATERIAIS",
+            "Balança":"CARACTERIZAÇÃO DE MATERIAIS","Prensa Marshall":"ENSAIOS MECÂNICOS",
+            "Prensa UTM-25":"ENSAIOS MECÂNICOS","Prensa UTM-30":"ENSAIOS MECÂNICOS",
+            "Prensa MTS":"ENSAIOS MECÂNICOS","Prensa RiO":"ENSAIOS MECÂNICOS"
+        };
+
+        function dashGetCat(chave) {
+            if (chave.includes('-[AULA]-')) return 'USO DO LABORATÓRIO PARA AULAS';
+            for (const [k,v] of Object.entries(dashCatMap)) { if (chave.includes('-'+k+'-')) return v; }
+            return 'Outro';
+        }
+        function dashGetEnsaio(chave) {
+            const p = chave.split('-');
+            return p.slice(3, p.length - 1).join('-');
+        }
+        function dashGetData(chave) { const p=chave.split('-'); return p[0]+'-'+p[1]+'-'+p[2]; }
+        function dashGetHora(chave) { const p=chave.split('-'); return p[p.length-1]; }
+        function dashGetSemana(data) {
+            const d = new Date(data+'T00:00:00');
+            d.setDate(d.getDate() - d.getDay());
+            return d.toISOString().split('T')[0];
+        }
+
+        // ── FILTROS ──
+        function dashFiltrarPorPeriodo() {
+            const per = document.getElementById('dash-filtro-periodo').value;
+            const hoje = new Date();
+            if (per !== '0') {
+                const de = new Date(hoje); de.setDate(de.getDate() - parseInt(per));
+                document.getElementById('dash-filtro-de').value = de.toISOString().split('T')[0];
+                document.getElementById('dash-filtro-ate').value = hoje.toISOString().split('T')[0];
+            } else {
+                document.getElementById('dash-filtro-de').value = '';
+                document.getElementById('dash-filtro-ate').value = '';
+            }
+            aplicarFiltrosDash();
+        }
+
+        function aplicarFiltrosDash() {
+            const cat = document.getElementById('dash-filtro-cat').value;
+            const de  = document.getElementById('dash-filtro-de').value;
+            const ate = document.getElementById('dash-filtro-ate').value;
+            dadosFiltradosDash = {};
+            for (const [chave, valor] of Object.entries(dadosBrutosDash)) {
+                const data = dashGetData(chave);
+                const c    = dashGetCat(chave);
+                if (cat && c !== cat) continue;
+                if (de  && data < de)  continue;
+                if (ate && data > ate) continue;
+                dadosFiltradosDash[chave] = valor;
+            }
+            dashRenderizarTudo();
+        }
+
+        // ── PROCESSAR ──
+        function dashProcessar(dados) {
+            const porEnsaio={}, porCat={}, porHora={}, porSemana={}, usuarios=new Set();
+            for (const [chave, usuario] of Object.entries(dados)) {
+                const ensaio = dashGetEnsaio(chave);
+                const cat    = dashGetCat(chave);
+                const hora   = dashGetHora(chave);
+                const data   = dashGetData(chave);
+                if (!porEnsaio[ensaio]) porEnsaio[ensaio] = {count:0, categoria:cat};
+                porEnsaio[ensaio].count++;
+                porCat[cat] = (porCat[cat]||0) + 1;
+                porHora[hora] = (porHora[hora]||0) + 1;
+                const sem = dashGetSemana(data);
+                porSemana[sem] = (porSemana[sem]||0) + 1;
+                if (typeof usuario === 'string') usuarios.add(usuario.trim().toLowerCase());
+            }
+            return {porEnsaio, porCat, porHora, porSemana, usuarios};
+        }
+
+        function dashRenderizarTudo() {
+            const p = dashProcessar(dadosFiltradosDash);
+            // KPIs
+            const total = Object.keys(dadosFiltradosDash).length;
+            document.getElementById('dash-kpi-total').textContent = total.toLocaleString('pt-BR');
+            const topE = Object.entries(p.porEnsaio).sort((a,b)=>b[1].count-a[1].count)[0];
+            if (topE) { document.getElementById('dash-kpi-top').textContent = topE[0].replace('[AULA]','Aulas'); document.getElementById('dash-kpi-top-sub').textContent = topE[1].count+' reservas'; }
+            document.getElementById('dash-kpi-usuarios').textContent = p.usuarios.size || '—';
+            const topH = Object.entries(p.porHora).sort((a,b)=>b[1]-a[1])[0];
+            if (topH) { document.getElementById('dash-kpi-pico').textContent = topH[0]; document.getElementById('dash-kpi-pico-sub').textContent = topH[1]+' reservas'; }
+            // Charts
+            dashChartProc(p.porEnsaio);
+            dashChartCat(p.porCat);
+            dashChartTime(p.porSemana);
+            dashChartHora(p.porHora);
+            dashTabela(p.porEnsaio);
+        }
+
+        function dashDestroy(id) { if(chartsDash[id]){chartsDash[id].destroy();delete chartsDash[id];} }
+
+        function dashChartProc(porEnsaio) {
+            const sorted = Object.entries(porEnsaio).sort((a,b)=>b[1].count-a[1].count).slice(0,10);
+            dashDestroy('proc');
+            const ctx = document.getElementById('dash-chart-proc').getContext('2d');
+            chartsDash['proc'] = new Chart(ctx, {
+                type:'bar',
+                data:{ labels: sorted.map(([n])=>n.replace('[AULA]','Aulas')),
+                       datasets:[{label:'Reservas', data:sorted.map(([,v])=>v.count),
+                       backgroundColor: sorted.map(([,v])=>v.categoria==='ENSAIOS MECÂNICOS'?'#e74c3c':v.categoria==='USO DO LABORATÓRIO PARA AULAS'?'#27ae60':'#1A4A5A'),
+                       borderRadius:5, borderSkipped:false}]},
+                options:{indexAxis:'y', responsive:true, maintainAspectRatio:false,
+                    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} reservas`}}},
+                    scales:{x:{grid:{color:'#f0f4f6'}, ticks:{font:{family:'Inter',size:10}}}, y:{grid:{display:false}, ticks:{font:{family:'Inter',size:10}}}}}
+            });
+        }
+
+        function dashChartCat(porCat) {
+            const labels = Object.keys(porCat).map(c=>c==='CARACTERIZAÇÃO DE MATERIAIS'?'Caracterização':c==='ENSAIOS MECÂNICOS'?'Ensaios Mecânicos':'Aulas');
+            dashDestroy('cat');
+            const ctx = document.getElementById('dash-chart-cat').getContext('2d');
+            chartsDash['cat'] = new Chart(ctx, {
+                type:'doughnut',
+                data:{ labels, datasets:[{data:Object.values(porCat), backgroundColor:['#1A4A5A','#D35400','#27ae60'], borderWidth:3, borderColor:'#fff', hoverOffset:6}]},
+                options:{responsive:true, maintainAspectRatio:false, cutout:'65%',
+                    plugins:{legend:{position:'bottom', labels:{font:{family:'Inter',size:11}, padding:12, usePointStyle:true}},
+                    tooltip:{callbacks:{label:c=>` ${c.raw} reservas (${Math.round(c.raw/c.dataset.data.reduce((a,b)=>a+b,0)*100)}%)`}}}}
+            });
+        }
+
+        function dashChartTime(porSemana) {
+            const semanas = Object.keys(porSemana).sort();
+            dashDestroy('time');
+            const ctx = document.getElementById('dash-chart-time').getContext('2d');
+            chartsDash['time'] = new Chart(ctx, {
+                type:'line',
+                data:{ labels: semanas.map(s=>{ const d=new Date(s+'T00:00:00'); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}); }),
+                       datasets:[{label:'Reservas', data:semanas.map(s=>porSemana[s]), borderColor:'#1A4A5A', backgroundColor:'rgba(26,74,90,0.08)', fill:true, tension:0.4, pointBackgroundColor:'#1A4A5A', pointRadius:4, borderWidth:2}]},
+                options:{responsive:true, maintainAspectRatio:false,
+                    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} reservas`}}},
+                    scales:{x:{grid:{display:false}, ticks:{font:{family:'Inter',size:10}, maxTicksLimit:8}}, y:{grid:{color:'#f0f4f6'}, ticks:{font:{family:'Inter',size:10}, stepSize:1}}}}
+            });
+        }
+
+        function dashChartHora(porHora) {
+            const horas=[]; const vals=[];
+            for(let h=7;h<=17;h++){const k=h.toString().padStart(2,'0')+':00';horas.push(k);vals.push(porHora[k]||0);}
+            const mx=Math.max(...vals);
+            dashDestroy('hora');
+            const ctx = document.getElementById('dash-chart-hora').getContext('2d');
+            chartsDash['hora'] = new Chart(ctx, {
+                type:'bar',
+                data:{ labels:horas, datasets:[{label:'Reservas', data:vals, backgroundColor:vals.map(v=>v===mx?'#D35400':'rgba(26,74,90,0.7)'), borderRadius:5, borderSkipped:false}]},
+                options:{responsive:true, maintainAspectRatio:false,
+                    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} reservas`}}},
+                    scales:{x:{grid:{display:false}, ticks:{font:{family:'Inter',size:10}}}, y:{grid:{color:'#f0f4f6'}, ticks:{font:{family:'Inter',size:10}, stepSize:1}}}}
+            });
+        }
+
+        function dashTabela(porEnsaio) {
+            const sorted = Object.entries(porEnsaio).sort((a,b)=>b[1].count-a[1].count);
+            const total = sorted.reduce((s,[,v])=>s+v.count,0)||1;
+            const maxC  = sorted[0]?.[1].count||1;
+            document.getElementById('dash-table-count').textContent = sorted.length+' procedimentos';
+            if(!sorted.length){document.getElementById('dash-tabela-corpo').innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;color:#aaa;">Nenhum dado para este filtro.</td></tr>';return;}
+            let html='';
+            sorted.forEach(([nome,info],i)=>{
+                const rank=i+1;
+                const badgeStyle = rank===1?'background:#fff3cd;color:#856404':rank===2?'background:#e9ecef;color:#495057':rank===3?'background:#fdecea;color:#842029':'background:#f0f4f6;color:#6b8a96';
+                const pct=Math.round((info.count/total)*100);
+                const barPct=Math.round((info.count/maxC)*100);
+                const tag = info.categoria==='ENSAIOS MECÂNICOS'?'<span style="background:#fce4ec;color:#880e4f;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;">Mecânicos</span>':info.categoria==='USO DO LABORATÓRIO PARA AULAS'?'<span style="background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;">Aulas</span>':'<span style="background:#e3f2fd;color:#1565c0;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:700;">Caracterização</span>';
+                html+=`<tr style="border-bottom:1px solid #eef2f4;">
+                    <td style="padding:12px 16px;"><span style="${badgeStyle};display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:0.73rem;font-weight:700;">${rank}</span></td>
+                    <td style="padding:12px 16px;font-weight:600;font-size:0.85rem;">${nome.replace('[AULA]','Aulas')}</td>
+                    <td style="padding:12px 16px;">${tag}</td>
+                    <td style="padding:12px 16px;font-weight:700;font-size:0.85rem;">${info.count}</td>
+                    <td style="padding:12px 16px;min-width:140px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="flex:1;height:6px;background:#e8eef1;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${barPct}%;background:linear-gradient(90deg,#1A4A5A,#2a6f84);border-radius:3px;"></div></div>
+                            <span style="font-size:0.73rem;color:#6b8a96;min-width:30px;">${pct}%</span>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('dash-tabela-corpo').innerHTML=html;
+        }
     </script>
 </body>
 </html>
