@@ -715,6 +715,8 @@
 
             for (let h = 7; h <= 17; h++) {
                 const hora = h.toString().padStart(2, '0') + ":00";
+                const horaFim = (h + 1).toString().padStart(2, '0') + ":00";
+                const horaExibida = `${hora} - ${horaFim}`;
                 let ocupado = false;
                 let ocupadoPor = "";
 
@@ -740,20 +742,20 @@
 
                 if (ocupado) {
                     html += `<tr style="background:#fff5f5;">
-                        <td>${hora}</td>
+                        <td>${horaExibida}</td>
                         <td class="status-indisponivel">🔒 Reservado por: ${ocupadoPor}</td>
                         <td style="color:#aaa;">—</td>
                     </tr>`;
                 } else if (restritoPorSecagem) {
                     html += `<tr style="background:#fff8f0;">
-                        <td>${hora}</td>
+                        <td>${horaExibida}</td>
                         <td class="status-indisponivel">⛔ Restrito (Início 16h)</td>
                         <td style="color:#aaa;">—</td>
                     </tr>`;
                 } else {
                     const isDosagem = (ensaioSelecionado === "Dosagem Marshall" || ensaioSelecionado === "Dosagem Superpave") && categoriaAtiva === 'CARACTERIZAÇÃO DE MATERIAIS';
                     html += `<tr>
-                        <td>${hora}</td>
+                        <td>${horaExibida}</td>
                         <td class="status-disponivel">Disponível</td>
                         <td><input type="checkbox" name="selecionar-hora" value="${hora}" ${isDosagem ? 'checked disabled' : ''}></td>
                     </tr>`;
