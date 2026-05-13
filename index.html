@@ -736,10 +736,18 @@
                     }
                 }
 
+                const restritoPorSecagem = ensaioSelecionado === "Secagem / Estufa" && h < 16;
+
                 if (ocupado) {
                     html += `<tr style="background:#fff5f5;">
                         <td>${hora}</td>
                         <td class="status-indisponivel">🔒 Reservado por: ${ocupadoPor}</td>
+                        <td style="color:#aaa;">—</td>
+                    </tr>`;
+                } else if (restritoPorSecagem) {
+                    html += `<tr style="background:#fff8f0;">
+                        <td>${hora}</td>
+                        <td class="status-indisponivel">⛔ Restrito (Início 16h)</td>
                         <td style="color:#aaa;">—</td>
                     </tr>`;
                 } else {
